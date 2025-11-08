@@ -24,7 +24,6 @@ const isValidProductId = (possiblyId) => {
   return !invalid.has(lower);
 };
 
-// CREATE ORDER (CHECKOUT PAGE)
 export const createOrder = async (req, res) => {
   try {
     const { planType, email, name } = req.body;
@@ -65,7 +64,7 @@ export const createOrder = async (req, res) => {
       };
 
       const client = getDodoClient();
-      // Debug: print payload we send to Dodo (sanitized)
+
       try {
         console.log('Dodo checkoutSessions.create → request', {
           product_cart: requestData.product_cart,
@@ -75,7 +74,7 @@ export const createOrder = async (req, res) => {
         });
       } catch (_) {}
       const response = await client.checkoutSessions.create(requestData);
-      // Debug: print response from Dodo
+
       try {
         console.log('Dodo checkoutSessions.create ← response', {
           id: response?.id || response?.session_id,
@@ -120,8 +119,6 @@ export const createOrder = async (req, res) => {
   }
 };
 
-
-// VERIFY PAYMENT
 export const verifyPayment = async (req, res) => {
   try {
     const { session_id } = req.body;
@@ -137,7 +134,6 @@ export const verifyPayment = async (req, res) => {
       });
     } catch (_) {}
 
-    // Fast-path: if webhook already marked this payment completed, trust DB
     const existing = await Payment.findOne({ dodoSessionId: session_id });
     if (existing && existing.status === 'completed') {
       const userIdFromToken = req.user?._id;
@@ -160,7 +156,6 @@ export const verifyPayment = async (req, res) => {
       return res.json({ message: 'Payment verified (guest)' });
     }
 
-    // Retrieve checkout session using SDK (map provider errors to 4xx)
     let s;
     try {
       const client = getDodoClient();
@@ -193,17 +188,14 @@ export const verifyPayment = async (req, res) => {
       return res.status(400).json({ message: 'Payment not completed', status: rawStatus });
     }
 
-    // Always ensure payment data is written to payment schema on success
     let payment = await Payment.findOne({ dodoSessionId: session_id });
     
-    // Extract payment data from session response
     const paymentAmount = s?.amount || s?.amount_total || s?.total_amount || 0;
     const paymentCurrency = s?.currency || s?.currency_code || 'INR';
     const paymentId = s?.payment_id || s?.payment_intent_id || s?.id || null;
     const metadata = s?.metadata || {};
     const planType = metadata.planType || payment?.planType || 'monthly';
     
-    // If payment doesn't exist, create it with success data
     if (!payment) {
       payment = await Payment.create({
         userId: req.user?._id || null,
@@ -220,7 +212,7 @@ export const verifyPayment = async (req, res) => {
         }
       });
     } else {
-      // Update existing payment with success data
+
       payment.status = 'completed';
       if (paymentId && !payment.dodoPaymentId) {
         payment.dodoPaymentId = paymentId;
@@ -259,16 +251,14 @@ export const verifyPayment = async (req, res) => {
   }
 };
 
-// WEBHOOK: Provider → our server
 export const handlePaymentWebhook = async (req, res) => {
   try {
-    // Read raw body for signature verification
+
     const rawBody =
       Buffer.isBuffer(req.body) ? req.body.toString('utf8') :
       typeof req.body === 'string' ? req.body :
       JSON.stringify(req.body || {});
 
-    // Verify signature if secret and library are available
     const secret =
       process.env.DODO_PAYMENTS_WEBHOOK_SECRET ||
       process.env.DODO_WEBHOOK_KEY ||
@@ -288,7 +278,7 @@ export const handlePaymentWebhook = async (req, res) => {
         payload = JSON.parse(rawBody);
       } catch (verErr) {
         console.error('Webhook signature verification failed:', verErr?.message || verErr);
-        // For test/dev, continue without failing delivery to avoid retries
+
         try { payload = JSON.parse(rawBody); } catch { payload = {}; }
       }
     } else {
@@ -296,7 +286,7 @@ export const handlePaymentWebhook = async (req, res) => {
     }
 
     const body = payload || {};
-    // Flexible extraction for different payload shapes
+
     const type = body.type || body.event || body.event_type || '';
     const data = body.data || body.event?.data || body.payload || body.object || body;
     const sessionId =
@@ -315,12 +305,11 @@ export const handlePaymentWebhook = async (req, res) => {
       data.is_completed === true ||
       ['completed', 'succeeded', 'paid', 'success'].includes(statusStr);
 
-    // Handle core event types - Always write success payment data to payment schema
     if (type === 'checkout.session.completed' || isCompleted) {
       if (!sessionId) {
         console.warn('Webhook completed event missing session_id');
       } else {
-        // Extract all payment data from webhook payload
+
         const paymentAmount = data.amount || data.amount_total || data.total_amount || 0;
         const paymentCurrency = data.currency || data.currency_code || 'INR';
         const paymentId = data.payment_id || data.payment_intent_id || data.id || null;
@@ -328,11 +317,10 @@ export const handlePaymentWebhook = async (req, res) => {
         const planType = metadata.planType || 'monthly';
         const userIdFromMeta = metadata.userId || null;
         
-        // Always ensure payment data is written to payment schema
         let payment = await Payment.findOne({ dodoSessionId: sessionId });
         
         if (!payment) {
-          // Create new payment record with all success data
+
           payment = await Payment.create({
             userId: userIdFromMeta || null,
             dodoSessionId: sessionId,
@@ -348,7 +336,7 @@ export const handlePaymentWebhook = async (req, res) => {
             }
           });
         } else {
-          // Update existing payment with complete success data
+
           payment.status = 'completed';
           if (paymentId && !payment.dodoPaymentId) {
             payment.dodoPaymentId = paymentId;
@@ -373,7 +361,6 @@ export const handlePaymentWebhook = async (req, res) => {
           await payment.save();
         }
         
-        // Activate subscription for user if userId exists
         if (payment.userId) {
           const user = await User.findById(payment.userId);
           if (user) {
@@ -392,7 +379,6 @@ export const handlePaymentWebhook = async (req, res) => {
       }
     }
 
-    // Subscription lifecycle events
     if (type && type.startsWith('subscription.')) {
       const meta = data.metadata || {};
       const planType = meta.planType || 'monthly';
@@ -424,11 +410,10 @@ export const handlePaymentWebhook = async (req, res) => {
     return res.json({ received: true });
   } catch (err) {
     console.error('Webhook error:', err);
-    return res.status(200).json({ received: true }); // Acknowledge to avoid replays; log for ops
+    return res.status(200).json({ received: true });
   }
 };
 
-// GET SUBSCRIPTION STATUS
 export const getSubscriptionStatus = async (req, res) => {
   try {
     const userId = req.user?._id;
@@ -437,7 +422,6 @@ export const getSubscriptionStatus = async (req, res) => {
     const user = await User.findById(userId).select('subscription role');
     if (!user) return res.status(404).json({ message: 'User not found' });
 
-    // Admin users always have active subscription
     if (user.role === 'admin') {
       return res.json({ 
         subscription: {
@@ -456,7 +440,6 @@ export const getSubscriptionStatus = async (req, res) => {
   }
 };
 
-// GET PAYMENT HISTORY
 export const getPaymentHistory = async (req, res) => {
   try {
     const userId = req.user?._id;
@@ -470,10 +453,9 @@ export const getPaymentHistory = async (req, res) => {
   }
 };
 
-// GET PLANS
 export const getPlans = (req, res) => {
   try {
-    // Return a safe view of plans
+
     const plans = Object.entries(SUBSCRIPTION_PLANS).map(([key, plan]) => ({
       key,
       name: plan.name,

@@ -1,6 +1,5 @@
 import User from '../models/user.js';
 
-// Middleware to check if user has active subscription
 export const checkPaidUser = async (req, res, next) => {
   try {
     if (!req.user) {
@@ -14,27 +13,24 @@ export const checkPaidUser = async (req, res, next) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // Admin users have access to all features
     if (user.role === 'admin') {
       return next();
     }
 
-    // Check if subscription is active and not expired
     if (user.subscription?.isActive && user.subscription?.expiryDate) {
       const now = new Date();
       const expiryDate = new Date(user.subscription.expiryDate);
       
       if (now <= expiryDate) {
-        // Subscription is active
+
         return next();
       } else {
-        // Subscription expired
+
         user.subscription.isActive = false;
         await user.save();
       }
     }
 
-    // User doesn't have active subscription
     return res.status(403).json({ 
       message: 'Premium subscription required',
       hasAccess: false,
@@ -47,4 +43,3 @@ export const checkPaidUser = async (req, res, next) => {
     });
   }
 };
-

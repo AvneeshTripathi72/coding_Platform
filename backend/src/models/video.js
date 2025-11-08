@@ -31,7 +31,7 @@ const videoSchema = new Schema({
   },
 
   duration: {
-    type: Number, // Duration in seconds
+    type: Number,
     default: 0,
   },
 
@@ -68,11 +68,9 @@ const videoSchema = new Schema({
   },
 });
 
-// Index for faster queries
 videoSchema.index({ problemId: 1 });
 videoSchema.index({ uploadedBy: 1 });
 videoSchema.index({ createdAt: -1 });
 
 const Video = mongoose.model("Video", videoSchema);
 export default Video;
-

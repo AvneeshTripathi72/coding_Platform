@@ -1,4 +1,4 @@
-import mongoose  from "mongoose";       
+import mongoose from "mongoose";
 const {Schema}=mongoose;
 
 const submissionSchema=new Schema({
@@ -55,37 +55,6 @@ const submissionSchema=new Schema({
         default:Date.now
     }
 });
-
-// create the index to search submission by userId and problemId faster because we will often query by these fields many times
-// to check how many times a user has submitted for a particular problem to logn time fetch
-// example
-// userid problemid
-// 4 10
-//6 8 
-//4 9 
-// 4 10
-//5 7
-// 4 8
-// they are sort to use the index on (userid,problemid) to fetch all submissions of user 4 for problem 10 quickly
-// example
-// userid problemid
-// 4 10
-// 4 8
-// 4 9
-// 4 10
-// 5 7
-// 4 8
-// they are sort to use the index on (userid,problemid) to fetch all submissions of user 4 for problem 10 quickly
-// then sort problemid
-// userid problemid
-//  -----
-// | 4 8 |
-// | 4 9 |
-// | 4 10 |
-// | 4 10 |
-// | 5 7 |
-// | 6 8 |
-// -----  
 
 const Submission = mongoose.model("Submission", submissionSchema);
 submissionSchema.index({ userId: 1, problemId: 1 });

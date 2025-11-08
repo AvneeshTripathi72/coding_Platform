@@ -7,11 +7,11 @@ const respond = (res, code, message, extras = {}) =>
 export const validateCreateOrder = (req, res, next) => {
 	try {
 		const { planType, email, name } = req.body || {};
-		// planType is always required and must be supported
+
 		if (!planType || !SUBSCRIPTION_PLANS[planType]) {
 			return respond(res, 400, 'Invalid plan type');
 		}
-		// If user is not authenticated, require guest email and name
+
 		const isGuest = !req.user;
 		if (isGuest) {
 			if (!email || !validator.isEmail(String(email).trim())) {
@@ -21,10 +21,10 @@ export const validateCreateOrder = (req, res, next) => {
 				return respond(res, 400, 'Name must be at least 2 characters');
 			}
 		}
-		// Basic sanitation
+
 		if (typeof req.body?.email === 'string') req.body.email = req.body.email.trim();
 		if (typeof req.body?.name === 'string') req.body.name = req.body.name.trim();
-		req.body.planType = planType; // ensure normalized
+		req.body.planType = planType;
 		return next();
 	} catch (err) {
 		return respond(res, 400, 'Invalid request body', { error: err.message });
@@ -43,5 +43,3 @@ export const validateVerifyPayment = (req, res, next) => {
 		return respond(res, 400, 'Invalid request body', { error: err.message });
 	}
 };
-
-

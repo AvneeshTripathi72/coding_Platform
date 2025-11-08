@@ -10,9 +10,7 @@ export async function getOverviewStats(req, res){
       Submission.find({ userId }).select('status createdAt').limit(500),
       User.findById(userId).select('problemsSolved')
     ])
-    // Count unique problems solved from user's problemsSolved array
     const solved = Array.isArray(user?.problemsSolved) ? user.problemsSolved.length : 0
-    // simple acceptanceAvg from last 500 user submissions
     const total = userSubs.length || 1
     const accepted = userSubs.filter(s=>s.status==='accepted').length
     const acceptanceAvg = Math.round((accepted/total)*100)
@@ -27,7 +25,6 @@ export async function getUserStreak(req, res){
     const userId = req.user._id
     const subs = await Submission.find({ userId }).select('createdAt status').sort({ createdAt: -1 }).limit(1000)
     const days = new Set(subs.map(s=> new Date(s.createdAt).toISOString().slice(0,10)))
-    // naive streak: count back from today
     let streak = 0
     let d = new Date()
     for(;;){
@@ -40,5 +37,3 @@ export async function getUserStreak(req, res){
     res.status(500).json({ message: 'Error getting streak: ' + err.message })
   }
 }
-
-

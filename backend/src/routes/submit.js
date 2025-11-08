@@ -9,5 +9,4 @@ submitRouter.post('/run-custom', userMiddleware, userRunCustomInput);
 submitRouter.get('/submissions/user', userMiddleware, getUserSubmissions);
 submitRouter.get('/submissions/problem/:id', userMiddleware, getProblemSubmissions);
 
-
 export default submitRouter

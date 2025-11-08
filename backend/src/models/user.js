@@ -11,7 +11,6 @@ const userSchema=new Schema({
         type:String,
         minLength:3,
         maxLength:30,
-        //required:true,
     },
     emailId:{
         type:String,
@@ -75,12 +74,6 @@ const userSchema=new Schema({
     },
 
 });
-// it is also a common practice to delete all submissions related to that user
-// userSchema.post('findOneAndDelete', async function(userInfo) {
-//     if (userInfo) {
-//         await Submission.deleteMany({ user: userInfo._id });
-//     }
-// });
 
 const User=mongoose.model('User',userSchema);
 export default User;

@@ -18,17 +18,13 @@ const aiChat = async (req, res) => {
       return res.status(500).json({ message: 'AI service is not configured' });
     }
     
-    // Validate API key format (should start with AIza)
     if (!geminiKey.startsWith('AIza')) {
       console.error('API key format appears invalid (should start with AIza)');
       return res.status(500).json({ message: 'Invalid API key format' });
     }
 
-    // Initialize Gemini AI
     const genAI = new GoogleGenerativeAI(geminiKey);
     
-    // Try newer models first, then fallback to gemini-pro
-    // gemini-2.5-flash is the latest model (as shown in user's example)
     const modelNames = [
       'gemini-2.5-flash',
       'gemini-2.0-flash-exp',
@@ -37,12 +33,10 @@ const aiChat = async (req, res) => {
       'gemini-pro'
     ];
     
-    // Initialize with the first model (we'll test it during the API call)
     let model = genAI.getGenerativeModel({ model: modelNames[0] });
     let modelName = modelNames[0];
     console.log(`Initialized Gemini model: ${modelName}`);
 
-    // Build context-aware prompt
     let prompt = `You are a helpful coding assistant for a competitive programming platform. `;
     
     if (problemContext) {
@@ -62,13 +56,11 @@ const aiChat = async (req, res) => {
     prompt += `If the question is about code, provide code examples when relevant. `;
     prompt += `If the question is about the problem, help guide the user without giving away the complete solution.`;
 
-    // Generate response - try different models if one fails
     console.log(`Sending request to Gemini API using model: ${modelName}...`);
     
     let result;
     let lastError;
     
-    // Try each model until one works
     for (const name of modelNames) {
       try {
         const testModel = genAI.getGenerativeModel({ model: name });
@@ -103,7 +95,6 @@ const aiChat = async (req, res) => {
     console.error('Error message:', error.message);
     console.error('Error stack:', error.stack);
     
-    // Check for specific error types
     let errorMessage = 'Failed to get AI response';
     let statusCode = 500;
     
@@ -137,4 +128,3 @@ const aiChat = async (req, res) => {
 };
 
 export default aiChat;
-

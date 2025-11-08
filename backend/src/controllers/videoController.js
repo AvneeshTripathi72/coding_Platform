@@ -2,7 +2,6 @@ import cloudinary from '../config/cloudinary.js';
 import Problem from '../models/problem.js';
 import Video from '../models/video.js';
 
-// Get Cloudinary upload signature/token for frontend direct upload
 export const getUploadToken = async (req, res) => {
   try {
     console.log('=== getUploadToken called ===');
@@ -18,7 +17,6 @@ export const getUploadToken = async (req, res) => {
 
     console.log('Problem ID:', problemId);
 
-    // Verify problem exists
     const problem = await Problem.findById(problemId);
     if (!problem) {
       console.error('[Error] Problem not found:', problemId);
@@ -26,13 +24,9 @@ export const getUploadToken = async (req, res) => {
     }
     console.log('Problem found:', problem.title);
 
-    // Generate upload preset (you can create a preset in Cloudinary dashboard)
-    // For now, we'll use unsigned upload with folder structure
     const timestamp = Math.round(new Date().getTime() / 1000);
     const folder = `code-arena/problems/${problemId}/videos`;
     
-    // Generate signature for unsigned upload (if using unsigned preset)
-    // Or return the preset name if using unsigned preset
     const uploadPreset = process.env.CLOUDINARY_UPLOAD_PRESET || 'code_arena_videos';
     const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
     
@@ -69,7 +63,6 @@ export const getUploadToken = async (req, res) => {
   }
 };
 
-// Save video metadata after Cloudinary upload
 export const saveVideo = async (req, res) => {
   try {
     console.log('=== saveVideo called ===');
@@ -94,7 +87,6 @@ export const saveVideo = async (req, res) => {
       });
     }
 
-    // Verify problem exists
     const problem = await Problem.findById(problemId);
     if (!problem) {
       console.error('[Error] Problem not found:', problemId);
@@ -136,7 +128,6 @@ export const saveVideo = async (req, res) => {
   }
 };
 
-// Get all videos (admin only)
 export const getAllVideos = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
@@ -175,7 +166,6 @@ export const getAllVideos = async (req, res) => {
   }
 };
 
-// Get all videos for a problem
 export const getProblemVideos = async (req, res) => {
   try {
     const { problemId } = req.params;
@@ -194,7 +184,6 @@ export const getProblemVideos = async (req, res) => {
   }
 };
 
-// Increment video views (called when video starts playing)
 export const incrementVideoViews = async (req, res) => {
   try {
     const { videoId } = req.params;
@@ -204,7 +193,6 @@ export const incrementVideoViews = async (req, res) => {
       return res.status(404).json({ message: 'Video not found' });
     }
 
-    // Increment views
     video.views += 1;
     await video.save();
 
@@ -218,7 +206,6 @@ export const incrementVideoViews = async (req, res) => {
   }
 };
 
-// Get single video
 export const getVideo = async (req, res) => {
   try {
     const { videoId } = req.params;
@@ -231,7 +218,6 @@ export const getVideo = async (req, res) => {
       return res.status(404).json({ message: 'Video not found' });
     }
 
-    // Increment views
     video.views += 1;
     await video.save();
 
@@ -245,7 +231,6 @@ export const getVideo = async (req, res) => {
   }
 };
 
-// Update video
 export const updateVideo = async (req, res) => {
   try {
     const { videoId } = req.params;
@@ -257,7 +242,6 @@ export const updateVideo = async (req, res) => {
       return res.status(404).json({ message: 'Video not found' });
     }
 
-    // Check if user is the uploader or admin
     if (video.uploadedBy.toString() !== userId && req.user.role !== 'admin') {
       return res.status(403).json({ message: 'Unauthorized to update this video' });
     }
@@ -279,7 +263,6 @@ export const updateVideo = async (req, res) => {
   }
 };
 
-// Delete video
 export const deleteVideo = async (req, res) => {
   try {
     const { videoId } = req.params;
@@ -290,17 +273,15 @@ export const deleteVideo = async (req, res) => {
       return res.status(404).json({ message: 'Video not found' });
     }
 
-    // Check if user is the uploader or admin
     if (video.uploadedBy.toString() !== userId && req.user.role !== 'admin') {
       return res.status(403).json({ message: 'Unauthorized to delete this video' });
     }
 
-    // Delete from Cloudinary
     try {
       await cloudinary.uploader.destroy(video.cloudinaryVideoId, { resource_type: 'video' });
     } catch (cloudinaryError) {
       console.error('Error deleting from Cloudinary:', cloudinaryError);
-      // Continue with database deletion even if Cloudinary deletion fails
+
     }
 
     await Video.findByIdAndDelete(videoId);
@@ -313,4 +294,3 @@ export const deleteVideo = async (req, res) => {
     res.status(500).json({ message: 'Error deleting video', error: error.message });
   }
 };
-

@@ -6,7 +6,7 @@ const paymentSchema = new Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: false, // Can be null for guest payments
+    required: false,
   },
   dodoSessionId: {
     type: String,
@@ -59,4 +59,3 @@ paymentSchema.pre('save', function (next) {
 
 const Payment = mongoose.model('Payment', paymentSchema);
 export default Payment;
-

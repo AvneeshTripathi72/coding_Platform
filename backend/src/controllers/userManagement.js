@@ -2,7 +2,6 @@ import bcrypt from 'bcryptjs'
 import Submission from '../models/submission.js'
 import User from '../models/user.js'
 
-// Get all users (admin only)
 export const getAllUsers = async (req, res) => {
   try {
     console.log('getAllUsers called - User:', req.user)
@@ -28,7 +27,7 @@ export const getAllUsers = async (req, res) => {
         .skip(skip)
         .limit(limit)
         .sort({ createdAt: -1 })
-        .lean(), // Use lean() for better performance
+        .lean(),
       User.countDocuments(query)
     ])
 
@@ -36,7 +35,7 @@ export const getAllUsers = async (req, res) => {
       return {
         ...user,
         solvedCount: Array.isArray(user.problemsSolved) ? user.problemsSolved.length : 0,
-        _id: user._id.toString() // Ensure _id is a string
+        _id: user._id.toString()
       }
     })
 
@@ -49,7 +48,6 @@ export const getAllUsers = async (req, res) => {
   }
 }
 
-// Create user (admin only)
 export const createUser = async (req, res) => {
   try {
     const { firstName, lastName, emailId, password, age, role } = req.body
@@ -82,7 +80,6 @@ export const createUser = async (req, res) => {
   }
 }
 
-// Update user (admin only)
 export const updateUser = async (req, res) => {
   try {
     const { id } = req.params
@@ -113,15 +110,12 @@ export const updateUser = async (req, res) => {
   }
 }
 
-// Delete user (admin only)
 export const deleteUser = async (req, res) => {
   try {
     const { id } = req.params
 
-    // Delete user's submissions
     await Submission.deleteMany({ userId: id })
 
-    // Delete user
     const deletedUser = await User.findByIdAndDelete(id)
     if (!deletedUser) {
       return res.status(404).json({ message: 'User not found' })
@@ -133,7 +127,6 @@ export const deleteUser = async (req, res) => {
   }
 }
 
-// Get user by ID (admin only)
 export const getUserById = async (req, res) => {
   try {
     const { id } = req.params
@@ -154,19 +147,16 @@ export const getUserById = async (req, res) => {
   }
 }
 
-// Lock/Unlock user subscription (admin only)
 export const toggleSubscriptionLock = async (req, res) => {
   try {
     const { id } = req.params
-    const { lock } = req.body // lock: true to lock, false to unlock
+    const { lock } = req.body
 
     const user = await User.findById(id)
     if (!user) {
       return res.status(404).json({ message: 'User not found' })
     }
 
-    // Lock subscription: set isActive to false
-    // Unlock subscription: restore isActive based on expiry date
     if (lock === true) {
       user.subscription.isActive = false
       await user.save()
@@ -175,7 +165,6 @@ export const toggleSubscriptionLock = async (req, res) => {
         subscription: user.subscription 
       })
     } else if (lock === false) {
-      // Unlock: check if subscription should be active based on expiry
       if (user.subscription.expiryDate) {
         const expiryDate = new Date(user.subscription.expiryDate)
         const now = new Date()
@@ -196,7 +185,6 @@ export const toggleSubscriptionLock = async (req, res) => {
   }
 }
 
-// Update user subscription manually (admin only)
 export const updateUserSubscription = async (req, res) => {
   try {
     const { id } = req.params
@@ -221,4 +209,3 @@ export const updateUserSubscription = async (req, res) => {
     res.status(500).json({ message: 'Error updating subscription: ' + err.message })
   }
 }
-

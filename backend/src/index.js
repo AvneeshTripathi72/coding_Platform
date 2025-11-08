@@ -18,16 +18,14 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
-// CORS configuration
 const corsOptions = {
     origin: function (origin, callback) {
         const allowedOrigins = ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175', 'http://localhost:3000'];
-        // Allow requests with no origin (like mobile apps, Postman, or curl)
         if (!origin) return callback(null, true);
         if (allowedOrigins.indexOf(origin) !== -1) {
             callback(null, true);
         } else {
-            callback(null, true); // For development, allow all origins
+            callback(null, true);
         }
     },
     credentials: true,
@@ -49,10 +47,8 @@ app.use('/ai', aiChatRouter);
 app.use('/videos', videoRouter);
 app.use('/payment', paymentRouter);
 
-// Log that AI routes are registered
 console.log('AI Chat router mounted at /ai');
 
-// Log registered routes on startup
 console.log('Registered routes:');
 console.log('  GET  /users/test - Test route');
 console.log('  GET  /users/all - Get all users (admin)');
@@ -63,12 +59,10 @@ console.log('  DELETE /users/delete/:id - Delete user (admin)');
 console.log('  GET  /ai/test - AI Chat test route');
 console.log('  POST /ai/chat - AI Chat endpoint');
 
-// Test route to verify server is running
 app.get('/', (req, res) => {
     res.send('API is running...');
 });
 
-// Debug route to list all registered routes
 app.get('/debug/routes', (req, res) => {
     const routes = [];
     app._router.stack.forEach((middleware) => {

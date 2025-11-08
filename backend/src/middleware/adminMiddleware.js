@@ -11,7 +11,6 @@ const adminMiddleware = async (req, res, next) => {
       return res.status(401).json({ message: "Unauthorized: No token provided" });
     }
 
-    // Check both possible blacklist key formats
     const isBlacklisted1 = await redisClient.get(`blacklist:${token}`);
     const isBlacklisted2 = await redisClient.get(`bl_${token}`);
     if (isBlacklisted1 || isBlacklisted2) {

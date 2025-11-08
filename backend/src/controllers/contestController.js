@@ -3,7 +3,6 @@ import Contest from "../models/contest.js";
 import Problem from "../models/problem.js";
 import User from "../models/user.js";
 
-// Get all contests (user can see public contests and their own contests)
 export async function getAllContests(req, res) {
   try {
     const userId = req.user._id || req.user.id;
@@ -38,7 +37,6 @@ export async function getAllContests(req, res) {
       .skip(skip)
       .limit(parseInt(limit));
 
-    // Update status and check participant status for each contest
     const now = new Date();
     const userIdStr = userId?.toString();
     const userRole = req.user?.role;
@@ -53,8 +51,6 @@ export async function getAllContests(req, res) {
         contestObj.status = "ongoing";
       }
       
-      // Check if user is participant - creator is automatically a participant
-      // Admins also have automatic access to all contests
       const creatorIdStr = contest.creator?._id?.toString() || contest.creator?.toString();
       const isCreator = creatorIdStr === userIdStr;
       const isParticipant = isAdmin || isCreator || contest.participants.some(p => {
@@ -80,7 +76,6 @@ export async function getAllContests(req, res) {
   }
 }
 
-// Get contest by ID
 export async function getContestById(req, res) {
   try {
     const { id } = req.params;
@@ -95,14 +90,12 @@ export async function getContestById(req, res) {
       return res.status(404).json({ message: "Contest not found" });
     }
 
-    // Check if user has access - admins have access to all contests
     const userRole = req.user?.role;
     const isAdmin = userRole === 'admin';
     if (!contest.isPublic && contest.creator.toString() !== userId && !isAdmin) {
       return res.status(403).json({ message: "Access denied" });
     }
 
-    // Update status
     const now = new Date();
     let status = "upcoming";
     if (contest.startTime <= now && contest.endTime >= now) {
@@ -114,25 +107,21 @@ export async function getContestById(req, res) {
     const contestObj = contest.toObject();
     contestObj.status = status;
     
-    // Check if user is participant - creator is automatically a participant
-    // Admins also have automatic access to all contests
     const userIdStr = userId?.toString();
     
-    // Get creator ID - handle both populated (object with _id) and unpopulated (ObjectId) cases
     let creatorIdStr = null;
     if (contest.creator) {
       if (contest.creator._id) {
-        // Populated - it's a document object
+
         creatorIdStr = contest.creator._id.toString();
       } else {
-        // Unpopulated - it's an ObjectId
+
         creatorIdStr = contest.creator.toString();
       }
     }
     
     const isCreator = creatorIdStr === userIdStr;
     
-    // Check participants (handle both populated and unpopulated cases)
     const participantsArray = contest.participants || [];
     const isInParticipants = participantsArray.length > 0 && participantsArray.some(p => {
       const participantId = p?._id?.toString() || p?.toString();
@@ -150,7 +139,6 @@ export async function getContestById(req, res) {
   }
 }
 
-// Create contest (admin only)
 export async function createContest(req, res) {
   try {
     const userId = req.user._id || req.user.id;
@@ -164,7 +152,6 @@ export async function createContest(req, res) {
       return res.status(400).json({ message: "End time must be after start time" });
     }
 
-    // Validate problems exist
     if (problems && problems.length > 0) {
       const validProblems = await Problem.find({ _id: { $in: problems } });
       if (validProblems.length !== problems.length) {
@@ -180,7 +167,7 @@ export async function createContest(req, res) {
       problems: problems || [],
       creator: userId,
       isPublic,
-      participants: [userId], // Creator is automatically a participant
+      participants: [userId],
     });
 
     await contest.save();
@@ -197,7 +184,6 @@ export async function createContest(req, res) {
   }
 }
 
-// Update contest (admin only)
 export async function updateContest(req, res) {
   try {
     const { id } = req.params;
@@ -213,7 +199,7 @@ export async function updateContest(req, res) {
     if (startTime) contest.startTime = new Date(startTime);
     if (endTime) contest.endTime = new Date(endTime);
     if (problems !== undefined) {
-      // Validate problems exist
+
       if (problems.length > 0) {
         const validProblems = await Problem.find({ _id: { $in: problems } });
         if (validProblems.length !== problems.length) {
@@ -238,7 +224,6 @@ export async function updateContest(req, res) {
   }
 }
 
-// Delete contest (admin only)
 export async function deleteContest(req, res) {
   try {
     const { id } = req.params;
@@ -255,7 +240,6 @@ export async function deleteContest(req, res) {
   }
 }
 
-// Join contest
 export async function joinContest(req, res) {
   try {
     const { id } = req.params;
@@ -266,14 +250,12 @@ export async function joinContest(req, res) {
       return res.status(404).json({ message: "Contest not found" });
     }
 
-    // Check if user has access - admins have access to all contests
     const userRole = req.user?.role;
     const isAdmin = userRole === 'admin';
     if (!contest.isPublic && contest.creator.toString() !== userId && !isAdmin) {
       return res.status(403).json({ message: "Access denied" });
     }
 
-    // Check if already joined
     if (contest.participants.includes(userId)) {
       return res.status(400).json({ message: "Already joined this contest" });
     }
@@ -288,7 +270,6 @@ export async function joinContest(req, res) {
   }
 }
 
-// Get user's contests
 export async function getMyContests(req, res) {
   try {
     const userId = req.user._id || req.user.id;
@@ -319,7 +300,6 @@ export async function getMyContests(req, res) {
       .populate('participants', '_id')
       .sort({ startTime: -1 });
 
-    // Update status and set participant flag
     const now = new Date();
     const userIdStr = userId?.toString();
     const contestsWithStatus = contests.map(contest => {
@@ -332,8 +312,6 @@ export async function getMyContests(req, res) {
         contestObj.status = "ongoing";
       }
       
-      // Since these are user's contests (creator or participant), set isParticipant to true
-      // Admins also have automatic access to all contests
       const userRole = req.user?.role;
       const isAdmin = userRole === 'admin';
       const creatorIdStr = contest.creator?._id?.toString() || contest.creator?.toString();
@@ -354,17 +332,14 @@ export async function getMyContests(req, res) {
   }
 }
 
-// Get user's contest creation count for current month
 export async function getContestCreationCount(req, res) {
   try {
     const userId = req.user._id || req.user.id;
     
-    // Get start and end of current month
     const now = new Date();
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
     const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
     
-    // Count contests created by user this month
     const count = await Contest.countDocuments({
       creator: userId,
       createdAt: {
@@ -373,14 +348,13 @@ export async function getContestCreationCount(req, res) {
       }
     });
     
-    // Get user subscription status
     const user = await User.findById(userId).select('subscription');
     const hasActiveSubscription = user?.subscription?.isActive && 
       user.subscription.expiryDate && 
       new Date() <= new Date(user.subscription.expiryDate);
     
-    const maxContests = 5; // Maximum contests per month
-    const freeContests = 4; // Free contests before requiring subscription
+    const maxContests = 5;
+    const freeContests = 4;
     const remaining = Math.max(0, maxContests - count);
     const canCreateMore = count < maxContests;
     const requiresSubscription = count >= freeContests && !hasActiveSubscription;
@@ -399,7 +373,6 @@ export async function getContestCreationCount(req, res) {
   }
 }
 
-// Create personal contest (for regular users)
 export async function createPersonalContest(req, res) {
   try {
     const userId = req.user._id || req.user.id;
@@ -409,12 +382,10 @@ export async function createPersonalContest(req, res) {
       return res.status(400).json({ message: "Title and description are required" });
     }
 
-    // Validate exactly 4 problems
     if (!problems || !Array.isArray(problems) || problems.length !== 4) {
       return res.status(400).json({ message: "Exactly 4 problems must be selected" });
     }
 
-    // Validate problems exist - use mongoose.Types.ObjectId for validation
     const validProblemIds = problems.filter(id => mongoose.Types.ObjectId.isValid(id));
     
     if (validProblemIds.length !== 4) {
@@ -428,7 +399,6 @@ export async function createPersonalContest(req, res) {
       });
     }
 
-    // Check monthly contest creation limit
     const now = new Date();
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
     const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
@@ -441,8 +411,8 @@ export async function createPersonalContest(req, res) {
       }
     });
 
-    const maxContests = 5; // Maximum contests per month
-    const freeContests = 4; // Free contests before requiring subscription
+    const maxContests = 5;
+    const freeContests = 4;
     
     if (contestsThisMonth >= maxContests) {
       return res.status(403).json({ 
@@ -451,7 +421,6 @@ export async function createPersonalContest(req, res) {
       });
     }
 
-    // Check if subscription is required (after 4 contests)
     if (contestsThisMonth >= freeContests) {
       const user = await User.findById(userId).select('subscription');
       const hasActiveSubscription = user?.subscription?.isActive && 
@@ -468,9 +437,8 @@ export async function createPersonalContest(req, res) {
       }
     }
 
-    // Set duration to 1.30 hours (90 minutes)
     const startTime = new Date();
-    const endTime = new Date(startTime.getTime() + 90 * 60 * 1000); // 90 minutes in milliseconds
+    const endTime = new Date(startTime.getTime() + 90 * 60 * 1000);
 
     const contest = new Contest({
       title: title.trim(),
@@ -479,8 +447,8 @@ export async function createPersonalContest(req, res) {
       endTime,
       problems: validProblemIds,
       creator: userId,
-      isPublic: false, // Personal contests are private by default
-      participants: [userId], // Creator is automatically a participant
+      isPublic: false,
+      participants: [userId],
     });
 
     await contest.save();
@@ -500,4 +468,3 @@ export async function createPersonalContest(req, res) {
     });
   }
 }
-

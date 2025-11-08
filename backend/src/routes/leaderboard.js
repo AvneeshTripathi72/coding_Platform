@@ -20,5 +20,3 @@ leaderboardRouter.get('/top', userMiddleware, async (req, res) => {
 })
 
 export default leaderboardRouter
-
-

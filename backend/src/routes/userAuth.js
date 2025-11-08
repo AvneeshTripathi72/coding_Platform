@@ -14,5 +14,4 @@ authRouter.post("/admin/register",adminMiddleware,adminRegister);
 
 authRouter.get('/checkAuth', userMiddleware, getUserProfile)
 
-
 export default authRouter

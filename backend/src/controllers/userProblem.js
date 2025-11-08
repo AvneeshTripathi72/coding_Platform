@@ -7,26 +7,6 @@ const  createProblem = async (req, res) => {
         const { title, description, difficulty, tags,
      visibleTestCases, hiddenTestCases,starterCode,
     referenceSolutions,problemCreator,acceptanceRate ,constraints } = req.body;
- //   console.log("Creating problem with title:", req.body);
-    // let submission = [];
-    // for(const { language, completeCode } of referenceSolutions ) {
-    //     console.log("Creating submission for reference solution:", { language, completeCode });
-    //     const language_id = getLanguageId(language);
-    //     if (!language_id) {
-    //         return res.status(400).json({ message: `Unsupported language: ${language}` });
-    //     }
-
-    //    // i am creaeting submission batch for each reference solution
-    //   submission = visibleTestCases.map((testcases) => ({
-    //      source_code: completeCode,
-    //      language_id: language_id,
-    //      stdin: testcases.input,
-    //      expected_output: testcases.output,
-    //      cpu_time_limit: 2,
-    //      memory_limit: 128000,
-    //     }));
-    //      //  const finalsubmissionResults =  await submitToken(submitResult);
-    // }
 
     let submission = [];
 for (const { language, completeCode } of referenceSolutions) {
@@ -46,38 +26,16 @@ for (const { language, completeCode } of referenceSolutions) {
     submission.push(...submissionsForLang);
 }
      
-
 console.log("Submission batch prepared for all reference solutions and test cases:", req.body);
-
-
-    
-
-   // console.log("Submission batch created for reference solutions:", submission);
-
 
    const submitResult  =  await submitBatch(submission);
    console.log("Submit batch result:", submitResult);
     const finalsubmissionResults =  await submitToken(submitResult);
-  // console.log("All reference solutions submitted successfully." + req.result._id);
+
      await Problem.create({
      ...req.body,
      problemCreator: req._id,
    });
-
-//     console.log("Final submission results from reference solutions:", finalsubmissionResults);
-//    for(const test of finalsubmissionResults){
-//        if (test.status && test.status.id === 3) {
-//            console.log("Final submission results:", test);
-//        }
-//        else {
-//         return res.status(400).json({ message: "Reference solution failed on some test cases." });
-//        }
-//    }
-
-
-//   ab ham isko ab db ke andar save karenge
- 
-
 
    res.status(201).json({ message: "Problem created successfully" });
     } catch (err) {
@@ -86,7 +44,6 @@ console.log("Submission batch prepared for all reference solutions and test case
 }
 
 const updateProblem = async (req,res) => {
-
 
      const {id} = req.params;
      try {
@@ -100,26 +57,6 @@ const updateProblem = async (req,res) => {
 const { title, description, difficulty, tags,
      visibleTestCases, hiddenTestCases,starterCode,
     referenceSolutions,problemCreator,acceptanceRate ,constraints } = req.body;
- //   console.log("Creating problem with title:", req.body);
-    // let submission = [];
-    // for(const { language, completeCode } of referenceSolutions ) {
-    //     console.log("Creating submission for reference solution:", { language, completeCode });
-    //     const language_id = getLanguageId(language);
-    //     if (!language_id) {
-    //         return res.status(400).json({ message: `Unsupported language: ${language}` });
-    //     }
-
-    //    // i am creaeting submission batch for each reference solution
-    //   submission = visibleTestCases.map((testcases) => ({
-    //      source_code: completeCode,
-    //      language_id: language_id,
-    //      stdin: testcases.input,
-    //      expected_output: testcases.output,
-    //      cpu_time_limit: 2,
-    //      memory_limit: 128000,
-    //     }));
-    //      //  const finalsubmissionResults =  await submitToken(submitResult);
-    // }
 
     let submission = [];
 for (const { language, completeCode } of referenceSolutions) {
@@ -139,7 +76,6 @@ for (const { language, completeCode } of referenceSolutions) {
     submission.push(...submissionsForLang);
 }
      
-
 console.log("Submission batch prepared for all reference solutions and test cases:", req.body);
 
  const newProblem = await Problem.findByIdAndUpdate(id, {...req.body}, {runValidators: true});
@@ -147,32 +83,6 @@ console.log("Submission batch prepared for all reference solutions and test case
 if(!newProblem){
     return res.status(500).json({message: "Problem not updated"});
 }
-   // console.log("Submission batch created for reference solutions:", submission);
-
-
-//    const submitResult  =  await submitBatch(submission);
-//    console.log("Submit batch result:", submitResult);
-//     const finalsubmissionResults =  await submitToken(submitResult);
-  // console.log("All reference solutions submitted successfully." + req.result._id);
-//      await Problem.create({
-//      ...req.body,
-//      problemCreator: req._id,
-//    });
-
-//     console.log("Final submission results from reference solutions:", finalsubmissionResults);
-//    for(const test of finalsubmissionResults){
-//        if (test.status && test.status.id === 3) {
-//            console.log("Final submission results:", test);
-//        }
-//        else {
-//         return res.status(400).json({ message: "Reference solution failed on some test cases." });
-//        }
-//    }
-
-
-//   ab ham isko ab db ke andar save karenge
- 
-
 
    res.status(201).json({ message: "Problem Update successfully" });
      }
@@ -203,7 +113,6 @@ const deleteProblem = async (req,res)=>{
     }
 }
 
-
 const getProblemById = async (req,res)=>{
     const {id} = req.params;
     try{
@@ -211,8 +120,6 @@ const getProblemById = async (req,res)=>{
             return res.status(400).json({message: "Problem id is required"});
         }
 
-        // Include visibleTestCases and referenceSolutions for display, but exclude hiddenTestCases for security
-        // Use lean() to get plain JavaScript object and ensure all fields are included
         const existingProblem = await Problem.findById(id)
             .select('-hiddenTestCases -problemCreator -submissions')
             .lean();
@@ -221,12 +128,10 @@ const getProblemById = async (req,res)=>{
             return res.status(404).json({message: "Problem not found"});
         }
         
-        // Log to verify referenceSolutions are included
         console.log('Problem fetched - has referenceSolutions:', !!existingProblem.referenceSolutions);
         console.log('ReferenceSolutions count:', existingProblem.referenceSolutions?.length || 0);
         console.log('ReferenceSolutions data:', existingProblem.referenceSolutions);
         
-        // Ensure referenceSolutions is always an array (even if empty)
         if (!existingProblem.referenceSolutions) {
             existingProblem.referenceSolutions = [];
         }
@@ -245,7 +150,6 @@ const getProblemByIdForAdmin = async (req,res)=>{
             return res.status(400).json({message: "Problem id is required"});
         }
 
-        // Admins can see all fields including hiddenTestCases and referenceSolutions
         const existingProblem = await Problem.findById(id).select('-problemCreator -submissions');
         if(!existingProblem){
             return res.status(404).json({message: "Problem not found"});
@@ -257,8 +161,6 @@ const getProblemByIdForAdmin = async (req,res)=>{
     }
 }
 
-
-
 const getAllProblems = async (req,res)=>{
     try{    
        const page = Math.max(parseInt(req.query.page) || 1, 1);
@@ -266,16 +168,16 @@ const getAllProblems = async (req,res)=>{
        const skip = (page - 1) * limit;
 
        const filter = {};
-       // difficulty=easy|medium|hard
+
        if (req.query.difficulty) {
          filter.difficulty = new RegExp(`^${req.query.difficulty}$`, 'i');
        }
-       // tags=dp,array
+
        if (req.query.tags) {
          const tags = String(req.query.tags).split(',').map(t => t.trim().toLowerCase()).filter(Boolean);
          if (tags.length) filter.tags = { $in: tags };
        }
-       // search by title
+
        if (req.query.search) {
          filter.title = { $regex: req.query.search, $options: 'i' };
        }
@@ -288,7 +190,6 @@ const getAllProblems = async (req,res)=>{
          Problem.countDocuments(filter)
        ]);
 
-       // annotate solved if user available
        let solvedSet = new Set();
        if (req.user && Array.isArray(req.user.problemsSolved)) {
          solvedSet = new Set(req.user.problemsSolved.map(id => String(id)));
@@ -326,7 +227,7 @@ const getTopics = async (req, res) => {
 const getAllProblemsSolvedByUser = async (req,res)=>{
     try{
        const userId = req.user._id;
-     //  console.log("Fetching problems solved by user with ID:", userId);
+
        const user = await User.findById(userId).populate('problemsSolved','_id title description difficulty tags');
        if(!user){
         return res.status(404).json({message: "User not found"});
@@ -358,6 +259,5 @@ const getAllProblemsSubmittedTimesByUser = async (req,res)=>{
     }
 
 }
-
 
 export { createProblem,updateProblem,deleteProblem,getProblemById,getProblemByIdForAdmin,getAllProblems,getAllProblemsSolvedByUser,getAllProblemsSubmittedTimesByUser, getTopics }

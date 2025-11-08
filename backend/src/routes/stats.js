@@ -8,5 +8,3 @@ statsRouter.get('/overview', userMiddleware, getOverviewStats)
 statsRouter.get('/streak', userMiddleware, getUserStreak)
 
 export default statsRouter
-
-

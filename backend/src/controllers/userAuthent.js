@@ -9,9 +9,9 @@ import validate from '../utils/validator.js';
 dotenv.config()
 
 const register = async (req, res) => {
- //   console.log("User registration data:", req.body);
+
     try {
-       // validate(req.body)
+
         const { firstName, lastName, emailId, password, age } = req.body
        console.log("User registration data:", req.body);
          req.body.role = 'user'
@@ -25,8 +25,6 @@ const register = async (req, res) => {
 
       console.log("firstName = " +  firstName + ", lastName = " + lastName + ", email = " + emailId + ", password = " + password + ", age = " + age);
          const newUser = await User.create({ firstName, lastName, emailId, password: hashedPassword, age })
-
-
 
         const token = jwt.sign(
             { 
@@ -42,7 +40,6 @@ const register = async (req, res) => {
         res.cookie('token', token, { httpOnly: true, maxAge: 7 * 24 * 60 * 60 * 1000, sameSite: 'lax', secure: false })
         console.log(`user registered:`, newUser.emailId);
         
-        // Return user object for frontend
         res.status(201).json({ 
             message: `${newUser.role} registered successfully`, 
             token,
@@ -102,7 +99,6 @@ const login = async (req, res) => {
         
         console.log(`${user.role} logged in:`, user.emailId);
         
-        // Return user object for frontend
         res.status(200).json({ 
             message: `${user.role} logged in successfully`, 
             token,
@@ -130,14 +126,13 @@ const logout = async (req, res) => {
     if (!token) return res.status(400).json({ message: "No token found" });
 
     const decoded = jwt.decode(token);
-    // 
+
     let expiresIn = decoded?.exp
       ? decoded.exp - Math.floor(Date.now() / 1000)
-      : 3600; // default 1 hour
+      : 3600;
 
     if (expiresIn <= 0) expiresIn = 1;
 
-    // Blacklist the token in Redis (using same key format as middleware)
     await redisClient.set(`blacklist:${token}`, "blacklisted", { EX: expiresIn });
 
     res.clearCookie("token");
@@ -147,7 +142,6 @@ const logout = async (req, res) => {
     res.status(500).json({ message: "Logout failed", error: err.message });
   }
 }
-
 
     const adminRegister = async (req, res) => {
     try {
@@ -168,7 +162,7 @@ const getUserProfile = async (req, res) => {
     try {
         const user = await User.findById(req.user._id).select('-password')
         if (!user) return res.status(404).json({ message: 'User not found' })
-        // Return in same format as login for consistency
+
         res.status(200).json({ 
             user: {
                 _id: user._id,
@@ -187,14 +181,12 @@ const getUserProfile = async (req, res) => {
     }
 }
 
-
 const deleteUserProfile = async (req,res) => {
     try{
       const userId = req.user._id;
-      // user schema delete
+
      await User.findByIdAndDelete(userId);
 
-     // delete also submission schema
    await   Submission.deleteMany({ user: userId });
     res.status(200).json("Succesfull Delete");
 
@@ -206,4 +198,3 @@ const deleteUserProfile = async (req,res) => {
 }
 
 export { adminRegister, deleteUserProfile, getUserProfile, login, logout, register };
-

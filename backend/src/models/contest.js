@@ -57,15 +57,8 @@ const contestSchema = new Schema({
   },
 });
 
-// Index for faster queries
 contestSchema.index({ startTime: 1, endTime: 1 });
 contestSchema.index({ creator: 1 });
 
 const Contest = mongoose.model("Contest", contestSchema);
 export default Contest;
-
-
-
-
-
-
