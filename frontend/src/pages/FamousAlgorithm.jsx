@@ -353,9 +353,8 @@ function FamousAlgorithm() {
       let passed = false
       let actualOutput = ''
       
-      // Simple validation - in real implementation would run actual algorithm
       if (algorithmId === 'two-sum-sorted') {
-        // Mock validation
+
         passed = true
         actualOutput = example.output
       } else if (algorithmId === 'remove-duplicates') {
@@ -489,7 +488,7 @@ function FamousAlgorithm() {
     
     const moveStep = () => {
       if (i >= arr.length) {
-        // Fill remaining with zeros
+
         for (let j = nonZeroIndex; j < arr.length; j++) {
           arr[j] = 0
         }
@@ -524,7 +523,7 @@ function FamousAlgorithm() {
 
   const codeExamples = {
     'two-sum-sorted': {
-      javascript: `// Two Sum (Sorted Array) - Two Pointer
+      javascript: `
 function twoSum(numbers, target) {
   let left = 0;
   let right = numbers.length - 1;
@@ -533,7 +532,7 @@ function twoSum(numbers, target) {
     const sum = numbers[left] + numbers[right];
     
     if (sum === target) {
-      return [left + 1, right + 1]; // 1-indexed
+      return [left + 1, right + 1];
     } else if (sum < target) {
       left++;
     } else {
@@ -544,10 +543,9 @@ function twoSum(numbers, target) {
   return [];
 }
 
-// Usage
 const numbers = [2, 7, 11, 15];
 const target = 9;
-console.log(twoSum(numbers, target)); // [1, 2]`,
+console.log(twoSum(numbers, target));
       python: `# Two Sum (Sorted Array) - Two Pointer
 def twoSum(numbers, target):
     left = 0
@@ -569,7 +567,7 @@ def twoSum(numbers, target):
 numbers = [2, 7, 11, 15]
 target = 9
 print(twoSum(numbers, target))  # [1, 2]`,
-      java: `// Two Sum (Sorted Array) - Two Pointer
+      java: `
 public class TwoSum {
     public static int[] twoSum(int[] numbers, int target) {
         int left = 0;
@@ -579,7 +577,7 @@ public class TwoSum {
             int sum = numbers[left] + numbers[right];
             
             if (sum == target) {
-                return new int[]{left + 1, right + 1}; // 1-indexed
+                return new int[]{left + 1, right + 1};
             } else if (sum < target) {
                 left++;
             } else {
@@ -594,10 +592,10 @@ public class TwoSum {
         int[] numbers = {2, 7, 11, 15};
         int target = 9;
         int[] result = twoSum(numbers, target);
-        System.out.println(Arrays.toString(result)); // [1, 2]
+        System.out.println(Arrays.toString(result));
     }
 }`,
-      c: `// Two Sum (Sorted Array) - Two Pointer
+      c: `
 #include <stdio.h>
 
 int* twoSum(int* numbers, int numbersSize, int target, int* returnSize) {
@@ -610,7 +608,7 @@ int* twoSum(int* numbers, int numbersSize, int target, int* returnSize) {
         int sum = numbers[left] + numbers[right];
         
         if (sum == target) {
-            result[0] = left + 1; // 1-indexed
+            result[0] = left + 1;
             result[1] = right + 1;
             return result;
         } else if (sum < target) {
@@ -623,7 +621,7 @@ int* twoSum(int* numbers, int numbersSize, int target, int* returnSize) {
     *returnSize = 0;
     return NULL;
 }`,
-      cpp: `// Two Sum (Sorted Array) - Two Pointer
+      cpp: `
 #include <iostream>
 #include <vector>
 using namespace std;
@@ -636,7 +634,7 @@ vector<int> twoSum(vector<int>& numbers, int target) {
         int sum = numbers[left] + numbers[right];
         
         if (sum == target) {
-            return {left + 1, right + 1}; // 1-indexed
+            return {left + 1, right + 1};
         } else if (sum < target) {
             left++;
         } else {
@@ -648,7 +646,7 @@ vector<int> twoSum(vector<int>& numbers, int target) {
 }`
     },
     'remove-duplicates': {
-      javascript: `// Remove Duplicates from Sorted Array
+      javascript: `
 function removeDuplicates(nums) {
   if (nums.length === 0) return 0;
   
@@ -664,10 +662,9 @@ function removeDuplicates(nums) {
   return uniqueIndex;
 }
 
-// Usage
 const nums = [1, 1, 2];
 const k = removeDuplicates(nums);
-console.log(k, nums.slice(0, k)); // 2 [1, 2]`,
+console.log(k, nums.slice(0, k));
       python: `# Remove Duplicates from Sorted Array
 def remove_duplicates(nums):
     if len(nums) == 0:
@@ -686,7 +683,7 @@ def remove_duplicates(nums):
 nums = [1, 1, 2]
 k = remove_duplicates(nums)
 print(k, nums[:k])  # 2 [1, 2]`,
-      java: `// Remove Duplicates from Sorted Array
+      java: `
 public class RemoveDuplicates {
     public static int removeDuplicates(int[] nums) {
         if (nums.length == 0) return 0;
@@ -706,10 +703,10 @@ public class RemoveDuplicates {
     public static void main(String[] args) {
         int[] nums = {1, 1, 2};
         int k = removeDuplicates(nums);
-        System.out.println(k); // 2
+        System.out.println(k);
     }
 }`,
-      c: `// Remove Duplicates from Sorted Array
+      c: `
 #include <stdio.h>
 
 int removeDuplicates(int* nums, int numsSize) {
@@ -726,7 +723,7 @@ int removeDuplicates(int* nums, int numsSize) {
     
     return uniqueIndex;
 }`,
-      cpp: `// Remove Duplicates from Sorted Array
+      cpp: `
 #include <iostream>
 #include <vector>
 using namespace std;
@@ -747,11 +744,10 @@ int removeDuplicates(vector<int>& nums) {
 }`
     },
     'move-zeroes': {
-      javascript: `// Move Zeroes to End
+      javascript: `
 function moveZeroes(nums) {
   let nonZeroIndex = 0;
   
-  // Move all non-zero elements to the front
   for (let i = 0; i < nums.length; i++) {
     if (nums[i] !== 0) {
       nums[nonZeroIndex] = nums[i];
@@ -759,7 +755,6 @@ function moveZeroes(nums) {
     }
   }
   
-  // Fill remaining positions with zeros
   for (let i = nonZeroIndex; i < nums.length; i++) {
     nums[i] = 0;
   }
@@ -767,10 +762,9 @@ function moveZeroes(nums) {
   return nums;
 }
 
-// Usage
 const nums = [0, 1, 0, 3, 12];
 moveZeroes(nums);
-console.log(nums); // [1, 3, 12, 0, 0]`,
+console.log(nums);
       python: `# Move Zeroes to End
 def move_zeroes(nums):
     non_zero_index = 0
@@ -791,12 +785,11 @@ def move_zeroes(nums):
 nums = [0, 1, 0, 3, 12]
 move_zeroes(nums)
 print(nums)  # [1, 3, 12, 0, 0]`,
-      java: `// Move Zeroes to End
+      java: `
 public class MoveZeroes {
     public static void moveZeroes(int[] nums) {
         int nonZeroIndex = 0;
         
-        // Move all non-zero elements to the front
         for (int i = 0; i < nums.length; i++) {
             if (nums[i] != 0) {
                 nums[nonZeroIndex] = nums[i];
@@ -804,7 +797,6 @@ public class MoveZeroes {
             }
         }
         
-        // Fill remaining positions with zeros
         for (int i = nonZeroIndex; i < nums.length; i++) {
             nums[i] = 0;
         }
@@ -813,16 +805,15 @@ public class MoveZeroes {
     public static void main(String[] args) {
         int[] nums = {0, 1, 0, 3, 12};
         moveZeroes(nums);
-        System.out.println(Arrays.toString(nums)); // [1, 3, 12, 0, 0]
+        System.out.println(Arrays.toString(nums));
     }
 }`,
-      c: `// Move Zeroes to End
+      c: `
 #include <stdio.h>
 
 void moveZeroes(int* nums, int numsSize) {
     int nonZeroIndex = 0;
     
-    // Move all non-zero elements to the front
     for (int i = 0; i < numsSize; i++) {
         if (nums[i] != 0) {
             nums[nonZeroIndex] = nums[i];
@@ -830,12 +821,11 @@ void moveZeroes(int* nums, int numsSize) {
         }
     }
     
-    // Fill remaining positions with zeros
     for (int i = nonZeroIndex; i < numsSize; i++) {
         nums[i] = 0;
     }
 }`,
-      cpp: `// Move Zeroes to End
+      cpp: `
 #include <iostream>
 #include <vector>
 using namespace std;
@@ -843,7 +833,6 @@ using namespace std;
 void moveZeroes(vector<int>& nums) {
     int nonZeroIndex = 0;
     
-    // Move all non-zero elements to the front
     for (int i = 0; i < nums.size(); i++) {
         if (nums[i] != 0) {
             nums[nonZeroIndex] = nums[i];
@@ -851,7 +840,6 @@ void moveZeroes(vector<int>& nums) {
         }
     }
     
-    // Fill remaining positions with zeros
     for (int i = nonZeroIndex; i < nums.size(); i++) {
         nums[i] = 0;
     }
@@ -866,7 +854,7 @@ void moveZeroes(vector<int>& nums) {
   return (
     <div className="min-h-screen" style={{ backgroundColor: COLORS.bg, color: COLORS.text }}>
       <div className="max-w-7xl mx-auto px-6 py-8">
-        {/* Header */}
+        {}
         <button
           onClick={() => navigate('/algo-visualization/array/most-famous-algorithms')}
           className="flex items-center gap-2 mb-6 text-white/80 hover:text-white transition"
@@ -875,7 +863,7 @@ void moveZeroes(vector<int>& nums) {
           <span>Back to Most Famous Algorithms</span>
         </button>
 
-        {/* Title */}
+        {}
         <div className="flex items-center gap-4 mb-6">
           <span className="text-5xl">{algorithm.icon}</span>
           <div>
@@ -883,7 +871,7 @@ void moveZeroes(vector<int>& nums) {
           </div>
         </div>
 
-        {/* Problem Description */}
+        {}
         <div className="rounded-2xl border p-6 mb-8" style={{ backgroundColor: COLORS.card, borderColor: COLORS.border }}>
           <h2 className="text-2xl font-bold mb-4">Problem Statement</h2>
           <p className="text-lg leading-relaxed mb-4" style={{ color: COLORS.textSecondary }}>
@@ -899,7 +887,7 @@ void moveZeroes(vector<int>& nums) {
           </div>
         </div>
 
-        {/* Test Cases */}
+        {}
         <div className="rounded-2xl border p-6 mb-8" style={{ backgroundColor: COLORS.card, borderColor: COLORS.border }}>
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-bold flex items-center gap-3">
@@ -927,7 +915,7 @@ void moveZeroes(vector<int>& nums) {
                     borderColor: testResult ? (testResult.passed ? COLORS.success : COLORS.error) : COLORS.border,
                   }}
                 >
-                  {/* Test case number badge */}
+                  {}
                   <div className="absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold" style={{ backgroundColor: COLORS.primary, color: 'white' }}>
                     {idx + 1}
                   </div>
@@ -970,7 +958,7 @@ void moveZeroes(vector<int>& nums) {
           </div>
         </div>
 
-        {/* Dry Run / Visualization */}
+        {}
         <div className="rounded-2xl border p-6 mb-8" style={{ backgroundColor: COLORS.card, borderColor: COLORS.border }}>
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-bold flex items-center gap-3">
@@ -988,7 +976,7 @@ void moveZeroes(vector<int>& nums) {
             </button>
           </div>
           
-          {/* Array Input */}
+          {}
           <div className="mb-6">
             <label className="block mb-2 font-semibold">Array Elements</label>
             <div className="flex gap-2 flex-wrap mb-4">
@@ -1041,7 +1029,7 @@ void moveZeroes(vector<int>& nums) {
             </div>
           </div>
 
-          {/* Bar Chart Visualization */}
+          {}
           <div className="mb-6 p-4 rounded-lg overflow-x-auto" style={{ backgroundColor: COLORS.bg, minHeight: '250px' }}>
             <div className="flex items-end justify-center gap-3 min-w-max">
               {arrayElements.map((element, index) => {
@@ -1079,7 +1067,7 @@ void moveZeroes(vector<int>& nums) {
             </div>
           </div>
 
-          {/* Status */}
+          {}
           {currentStep && (
             <div className="p-4 rounded-lg mb-4" style={{ backgroundColor: COLORS.primary + '20', border: `1px solid ${COLORS.primary}` }}>
               <p className="font-semibold text-sm" style={{ color: COLORS.primary }}>
@@ -1097,7 +1085,7 @@ void moveZeroes(vector<int>& nums) {
           )}
         </div>
 
-        {/* Code Implementation */}
+        {}
         <div className="rounded-2xl border p-6 mb-8" style={{ backgroundColor: COLORS.card, borderColor: COLORS.border }}>
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-2xl font-bold">Code Implementation</h2>
@@ -1131,7 +1119,7 @@ void moveZeroes(vector<int>& nums) {
           </pre>
         </div>
 
-        {/* Detailed Information */}
+        {}
         <section className="space-y-6">
           <div className="rounded-2xl border p-6" style={{ backgroundColor: COLORS.card, borderColor: COLORS.border }}>
             <h2 className="text-2xl font-bold mb-4">Approach</h2>
@@ -1258,4 +1246,3 @@ void moveZeroes(vector<int>& nums) {
 }
 
 export default FamousAlgorithm
-

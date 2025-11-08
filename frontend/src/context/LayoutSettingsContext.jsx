@@ -20,5 +20,3 @@ export function useLayoutSettings(){
 }
 
 export default LayoutSettingsContext
-
-

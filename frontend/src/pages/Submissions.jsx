@@ -84,7 +84,7 @@ function SubmissionsPage() {
                 </div>
               </div>
 
-              {/* Expanded Details */}
+              {}
               {selectedSubmission === s._id && (
                 <div className="mt-3 pt-3 border-t border-white/10 space-y-2 text-xs">
                   <div className="grid grid-cols-2 gap-4">
@@ -131,5 +131,3 @@ function SubmissionsPage() {
 }
 
 export default SubmissionsPage;
-
-

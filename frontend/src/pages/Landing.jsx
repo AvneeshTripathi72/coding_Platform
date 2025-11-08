@@ -46,7 +46,7 @@ function Landing(){
 
   return (
     <div className="text-white space-y-4">
-      {/* Hero Section */}
+      {}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="md:col-span-2 rounded-2xl bg-gradient-to-br from-amber-500/20 via-orange-500/20 to-pink-500/20 border border-white/10 p-5 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/10 rounded-full blur-3xl"></div>
@@ -80,14 +80,14 @@ function Landing(){
         </div>
       </div>
 
-      {/* Stats Dashboard */}
+      {}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <TotalProblemsCard value={stats.totalProblems} />
         <SolvedCard value={stats.solvedCount} solvedProblems={solvedProblems} />
         <AcceptanceCard value={`${stats.acceptanceAvg || 0}%`} />
       </div>
 
-      {/* Topic Tags */}
+      {}
       <section>
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-base font-semibold flex items-center gap-2">
@@ -109,7 +109,7 @@ function Landing(){
         </div>
       </section>
 
-      {/* Featured Problems */}
+      {}
       <section>
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-base font-semibold flex items-center gap-2">
@@ -165,7 +165,7 @@ function Landing(){
 function TotalProblemsCard({ value }){
   return (
     <div className="rounded-xl border border-white/10 bg-black/40 p-4 hover:bg-black/60 transition relative overflow-hidden group">
-      {/* Blue Code Icon - Top Left with glow effect */}
+      {}
       <div className="absolute top-3 left-3">
         <div className="relative">
           <div className="absolute inset-0 w-8 h-8 rounded-lg bg-blue-400/20 blur-sm group-hover:bg-blue-400/30 transition"></div>
@@ -173,7 +173,7 @@ function TotalProblemsCard({ value }){
         </div>
       </div>
       
-      {/* Content */}
+      {}
       <div className="mt-10">
         <div className="text-xs text-white/70 mb-2 font-medium">Total Problems</div>
         <div className="text-4xl font-bold text-white tracking-tight">{value}</div>
@@ -183,7 +183,7 @@ function TotalProblemsCard({ value }){
 }
 
 function SolvedCard({ value, solvedProblems = [] }){
-  // Calculate solved by difficulty
+
   const solvedByDifficulty = {
     easy: solvedProblems.filter(p => p.difficulty?.toLowerCase() === 'easy').length,
     medium: solvedProblems.filter(p => p.difficulty?.toLowerCase() === 'medium').length,
@@ -192,21 +192,21 @@ function SolvedCard({ value, solvedProblems = [] }){
 
   return (
     <div className="rounded-xl border border-white/10 bg-black/40 p-4 hover:bg-black/60 transition relative overflow-hidden group">
-      {/* Green Target Icon - Top Left with glow effect */}
+      {}
       <div className="absolute top-3 left-3">
         <div className="relative">
-          {/* Glow effect */}
+          {}
           <div className="absolute inset-0 w-8 h-8 rounded-full bg-emerald-400/20 blur-sm group-hover:bg-emerald-400/30 transition"></div>
-          {/* Outer ring */}
+          {}
           <div className="relative w-8 h-8 rounded-full border-2 border-emerald-400"></div>
-          {/* Middle ring */}
+          {}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-5 h-5 rounded-full border-2 border-emerald-400"></div>
-          {/* Inner dot */}
+          {}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-emerald-400 shadow-lg shadow-emerald-400/50"></div>
         </div>
       </div>
       
-      {/* Content */}
+      {}
       <div className="mt-10">
         <div className="text-xs text-white/70 mb-2 font-medium">Solved</div>
         <div className="text-4xl font-bold text-white tracking-tight mb-2">{value}</div>
@@ -225,7 +225,7 @@ function SolvedCard({ value, solvedProblems = [] }){
 function AcceptanceCard({ value }){
   return (
     <div className="rounded-xl border border-white/10 bg-black/40 p-4 hover:bg-black/60 transition relative overflow-hidden group">
-      {/* Amber TrendingUp Icon - Top Left with glow effect */}
+      {}
       <div className="absolute top-3 left-3">
         <div className="relative">
           <div className="absolute inset-0 w-8 h-8 rounded-lg bg-amber-400/20 blur-sm group-hover:bg-amber-400/30 transition"></div>
@@ -233,7 +233,7 @@ function AcceptanceCard({ value }){
         </div>
       </div>
       
-      {/* Content */}
+      {}
       <div className="mt-10">
         <div className="text-xs text-white/70 mb-2 font-medium">Acceptance</div>
         <div className="text-4xl font-bold text-white tracking-tight">{value}</div>
@@ -242,7 +242,4 @@ function AcceptanceCard({ value }){
   )
 }
 
-
 export default Landing
-
-

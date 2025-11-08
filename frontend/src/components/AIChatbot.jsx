@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import axiosClient from '../api/axiosClient.js';
 
-// Suggested prompts based on problem context
 const getSuggestedPrompts = (problem) => {
   if (!problem) return [];
   
@@ -34,7 +33,6 @@ function AIChatbot({ problem }) {
     scrollToBottom();
   }, [messages, loading]);
 
-  // Initialize with welcome message
   useEffect(() => {
     if (problem && messages.length === 0) {
       setMessages([
@@ -128,10 +126,10 @@ function AIChatbot({ problem }) {
 
   return (
     <div className="flex flex-col h-full bg-gradient-to-b from-black via-gray-950 to-black min-h-0 relative overflow-hidden">
-      {/* Animated background gradient */}
+      {}
       <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 via-transparent to-blue-500/5 pointer-events-none" />
       
-      {/* Header */}
+      {}
       <div className="relative z-10 border-b border-white/10 bg-black/40 backdrop-blur-sm px-4 py-3">
         <div className="flex items-center gap-3">
           <div className="relative">
@@ -150,7 +148,7 @@ function AIChatbot({ problem }) {
         </div>
       </div>
 
-      {/* Messages Area */}
+      {}
       <div className="flex-1 overflow-y-auto p-4 space-y-6 relative z-10">
         <AnimatePresence>
           {messages.map((msg, idx) => {
@@ -164,7 +162,7 @@ function AIChatbot({ problem }) {
               transition={{ duration: 0.3, delay: idx * 0.05 }}
               className={`flex gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}
             >
-              {/* Avatar */}
+              {}
               <div className={`flex-shrink-0 ${msg.role === 'user' ? 'order-2' : ''}`}>
                 {msg.role === 'user' ? (
                   <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center border-2 border-emerald-400/30">
@@ -178,7 +176,7 @@ function AIChatbot({ problem }) {
                 )}
               </div>
 
-              {/* Message Bubble */}
+              {}
               <div className={`flex-1 ${msg.role === 'user' ? 'items-end' : 'items-start'} flex flex-col gap-1 max-w-[80%]`}>
                 <motion.div
                   initial={{ opacity: 0 }}
@@ -190,7 +188,7 @@ function AIChatbot({ problem }) {
                       : 'bg-gradient-to-br from-white/8 to-white/3 text-white/95 border border-white/15 rounded-tl-sm backdrop-blur-md shadow-white/5'
                   }`}
                 >
-                  {/* Copy button for full message */}
+                  {}
                   <motion.button
                     onClick={() => copyToClipboard(msg.content)}
                     whileHover={{ scale: 1.1 }}
@@ -201,7 +199,7 @@ function AIChatbot({ problem }) {
                     <Copy className="h-3.5 w-3.5 text-white/80" />
                   </motion.button>
 
-                  {/* Message content with markdown */}
+                  {}
                   <div className="text-sm prose prose-invert prose-sm max-w-none [&>*:first-child]:mt-0 [&>*:last-child]:mb-0">
                     <ReactMarkdown
                       components={{
@@ -213,7 +211,7 @@ function AIChatbot({ problem }) {
                           
                           return !inline && match ? (
                             <div className="relative my-4 group/code">
-                              {/* Header with language and copy button */}
+                              {}
                               <div className="flex items-center justify-between bg-black/60 rounded-t-lg px-4 py-2 border-b border-white/10">
                                 <div className="flex items-center gap-2">
                                   <div className="w-2 h-2 rounded-full bg-emerald-400"></div>
@@ -246,7 +244,7 @@ function AIChatbot({ problem }) {
                                   )}
                                 </motion.button>
                               </div>
-                              {/* Code content */}
+                              {}
                               <div className="bg-gradient-to-br from-black/60 to-black/40 rounded-b-lg border border-white/10 border-t-0 overflow-hidden">
                                 <pre className="text-sm font-mono text-white/95 leading-relaxed p-4 overflow-x-auto">
                                   <code className="text-inherit whitespace-pre">{codeString}</code>
@@ -274,7 +272,7 @@ function AIChatbot({ problem }) {
                   </div>
                 </motion.div>
                 
-                {/* Timestamp */}
+                {}
                 <span className="text-xs text-white/30 px-1">
                   {formatTime(msg.timestamp)}
                 </span>
@@ -284,7 +282,7 @@ function AIChatbot({ problem }) {
           })}
         </AnimatePresence>
 
-        {/* Loading indicator */}
+        {}
         {loading && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -319,7 +317,7 @@ function AIChatbot({ problem }) {
           </motion.div>
         )}
 
-        {/* Suggested prompts */}
+        {}
         {showSuggestions && messages.length === 1 && suggestedPrompts.length > 0 && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -350,7 +348,7 @@ function AIChatbot({ problem }) {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input Area */}
+      {}
       <div className="relative z-10 border-t border-white/10 bg-gradient-to-t from-black/80 via-black/60 to-black/40 backdrop-blur-md p-4">
         <div className="flex gap-3 items-end">
           <div className="flex-1 relative">
@@ -359,7 +357,7 @@ function AIChatbot({ problem }) {
               value={inputMessage}
               onChange={(e) => {
                 setInputMessage(e.target.value);
-                // Auto-resize textarea
+
                 if (textareaRef.current) {
                   textareaRef.current.style.height = 'auto';
                   textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 120)}px`;

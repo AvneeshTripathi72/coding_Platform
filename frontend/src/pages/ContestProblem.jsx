@@ -113,7 +113,7 @@ function ContestProblem(){
 
   return (
     <div className="text-white space-y-6">
-      {/* Header */}
+      {}
       <div className="flex items-center gap-4">
         <button
           onClick={() => navigate('/contests')}
@@ -132,7 +132,7 @@ function ContestProblem(){
         </div>
       </div>
 
-      {/* Contest Info Cards */}
+      {}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="rounded-xl border border-white/10 bg-black/40 p-4">
           <div className="flex items-center gap-2 mb-2">
@@ -167,7 +167,7 @@ function ContestProblem(){
         </div>
       </div>
 
-      {/* Join Button */}
+      {}
       {contest.status === 'upcoming' && !contest.isParticipant && (
         <div className="rounded-xl border border-emerald-400/30 bg-emerald-400/10 p-6">
           <div className="flex items-center justify-between">
@@ -193,7 +193,7 @@ function ContestProblem(){
         </div>
       )}
 
-      {/* Problems List */}
+      {}
       <div>
         <h2 className="text-xl font-semibold mb-4">Problems</h2>
         {contest.problems && contest.problems.length > 0 ? (

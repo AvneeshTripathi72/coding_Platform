@@ -1,7 +1,6 @@
 import MonacoEditor from '@monaco-editor/react';
 import { useEffect, useRef } from 'react';
 
-// Available Monaco Editor themes (VS Code themes and custom themes)
 export const MONACO_THEMES = [
   { value: 'vs-dark', label: 'VS Dark' },
   { value: 'vs', label: 'VS Light' },
@@ -21,9 +20,7 @@ export const MONACO_THEMES = [
   { value: 'catppuccin-mocha', label: 'Catppuccin Mocha' },
 ];
 
-// Define custom themes
 const defineCustomThemes = (monaco) => {
-  // One Dark Pro Theme
   monaco.editor.defineTheme('one-dark-pro', {
     base: 'vs-dark',
     inherit: true,
@@ -46,7 +43,6 @@ const defineCustomThemes = (monaco) => {
     },
   });
 
-  // Dracula Theme
   monaco.editor.defineTheme('dracula', {
     base: 'vs-dark',
     inherit: true,
@@ -69,7 +65,6 @@ const defineCustomThemes = (monaco) => {
     },
   });
 
-  // GitHub Dark Theme
   monaco.editor.defineTheme('github-dark', {
     base: 'vs-dark',
     inherit: true,
@@ -92,7 +87,6 @@ const defineCustomThemes = (monaco) => {
     },
   });
 
-  // GitHub Light Theme
   monaco.editor.defineTheme('github-light', {
     base: 'vs',
     inherit: true,
@@ -115,7 +109,6 @@ const defineCustomThemes = (monaco) => {
     },
   });
 
-  // Material Dark Theme
   monaco.editor.defineTheme('material-dark', {
     base: 'vs-dark',
     inherit: true,
@@ -138,7 +131,6 @@ const defineCustomThemes = (monaco) => {
     },
   });
 
-  // Material Light Theme
   monaco.editor.defineTheme('material-light', {
     base: 'vs',
     inherit: true,
@@ -161,7 +153,6 @@ const defineCustomThemes = (monaco) => {
     },
   });
 
-  // Nord Theme
   monaco.editor.defineTheme('nord', {
     base: 'vs-dark',
     inherit: true,
@@ -184,7 +175,6 @@ const defineCustomThemes = (monaco) => {
     },
   });
 
-  // Monokai Theme
   monaco.editor.defineTheme('monokai', {
     base: 'vs-dark',
     inherit: true,
@@ -207,7 +197,6 @@ const defineCustomThemes = (monaco) => {
     },
   });
 
-  // Solarized Dark Theme
   monaco.editor.defineTheme('solarized-dark', {
     base: 'vs-dark',
     inherit: true,
@@ -230,7 +219,6 @@ const defineCustomThemes = (monaco) => {
     },
   });
 
-  // Solarized Light Theme
   monaco.editor.defineTheme('solarized-light', {
     base: 'vs',
     inherit: true,
@@ -253,7 +241,6 @@ const defineCustomThemes = (monaco) => {
     },
   });
 
-  // Tokyo Night Theme
   monaco.editor.defineTheme('tokyo-night', {
     base: 'vs-dark',
     inherit: true,
@@ -276,7 +263,6 @@ const defineCustomThemes = (monaco) => {
     },
   });
 
-  // Catppuccin Mocha Theme
   monaco.editor.defineTheme('catppuccin-mocha', {
     base: 'vs-dark',
     inherit: true,
@@ -300,7 +286,6 @@ const defineCustomThemes = (monaco) => {
   });
 };
 
-// Supported languages mapping (10+ languages)
 const SUPPORTED_LANGUAGES = {
   'python': { monaco: 'python', label: 'Python' },
   'Python': { monaco: 'python', label: 'Python' },
@@ -337,18 +322,16 @@ function CodeEditor({
   value = '', 
   onChange, 
   height = '100%',
-  theme = 'vs-dark', // Default to vs-dark, no longer tied to app theme
+  theme = 'vs-dark',
   options = {},
   onMount
 }) {
   const editorRef = useRef(null);
   const editorTheme = theme;
 
-  // Get Monaco language code
   const langConfig = SUPPORTED_LANGUAGES[language] || SUPPORTED_LANGUAGES['python'];
   const monacoLanguage = langConfig.monaco;
 
-  // Enhanced editor options with suggestions and autocomplete
   const editorOptions = {
     fontSize: 18,
     fontFamily: "'Fira Code', 'Consolas', 'Monaco', 'Courier New', monospace",
@@ -356,7 +339,6 @@ function CodeEditor({
     fontWeight: '400',
     letterSpacing: 0.5,
     lineHeight: 26,
-    // Minimap and scroll
     minimap: { 
       enabled: true,
       side: 'right',
@@ -367,19 +349,16 @@ function CodeEditor({
     scrollBeyondLastLine: false,
     scrollBeyondLastColumn: 5,
     automaticLayout: true,
-    // Word wrap and line numbers
     wordWrap: 'on',
     wordWrapColumn: 80,
     lineNumbers: 'on',
     lineNumbersMinChars: 3,
-    // Cursor and selection
     roundedSelection: false,
     cursorStyle: 'line',
     cursorBlinking: 'smooth',
     cursorSmoothCaretAnimation: 'on',
     cursorWidth: 2,
     smoothScrolling: true,
-    // Autocomplete and suggestions
     quickSuggestions: {
       other: true,
       comments: true,
@@ -392,7 +371,6 @@ function CodeEditor({
     tabCompletion: 'on',
     wordBasedSuggestions: 'matchingDocuments',
     wordBasedSuggestionsMode: 'matchingDocuments',
-    // Code intelligence
     formatOnPaste: true,
     formatOnType: true,
     formatOnSave: false,
@@ -409,50 +387,39 @@ function CodeEditor({
       highlightActiveIndentation: false,
       indentation: false
     },
-    // Additional features
-    renderWhitespace: 'none', // Don't show whitespace to reduce clutter
+    renderWhitespace: 'none',
     renderLineHighlight: 'all',
     renderIndentGuides: false,
     selectionHighlight: true,
     occurrencesHighlight: true,
     links: true,
     colorDecorators: true,
-    // Remove trailing whitespace automatically
     trimAutoWhitespace: true,
-    // Folding
     folding: true,
     foldingStrategy: 'indentation',
     showFoldingControls: 'always',
     unfoldOnClickAfterEndOfLine: true,
     foldingHighlight: true,
-    // Code lens and hover
     codeLens: false,
     hover: {
       enabled: true,
       delay: 300
     },
-    // Parameter hints
     parameterHints: {
       enabled: true,
       cycle: true
     },
-    // Accessibility
     accessibilitySupport: 'auto',
-    // Multi-cursor
     multiCursorModifier: 'ctrlCmd',
-    // Custom options override
     ...options,
   };
 
-  // Handle editor mount
   const handleEditorDidMount = (editor, monaco) => {
     editorRef.current = editor;
     monacoRef.current = monaco;
 
-    // Define all custom themes first
     defineCustomThemes(monaco);
 
-    // Set initial theme after a small delay to ensure themes are registered
     setTimeout(() => {
       try {
         console.log('Setting initial Monaco theme:', editorTheme);
@@ -460,7 +427,6 @@ function CodeEditor({
         console.log('Initial theme set successfully');
       } catch (error) {
         console.error('Error setting initial Monaco theme:', error);
-        // Fallback to vs-dark if theme doesn't exist
         try {
           monaco.editor.setTheme('vs-dark');
           console.log('Fell back to vs-dark theme');
@@ -468,31 +434,23 @@ function CodeEditor({
           console.error('Error setting fallback theme:', fallbackError);
         }
       }
-    }, 100); // Increased delay slightly to ensure themes are fully registered
+    }, 100);
 
-    // Configure language-specific settings
     configureLanguageFeatures(monaco, monacoLanguage);
 
-    // Add custom keybindings
     editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
-      // Prevent default save, could trigger custom save
       console.log('Save triggered');
     });
 
-    // Focus the editor
     editor.focus();
 
-    // Call custom onMount if provided
     if (onMount) {
       onMount(editor, monaco);
     }
   };
 
-  // Configure language-specific features
   const configureLanguageFeatures = (monaco, lang) => {
-    // Enable additional language features
     if (lang === 'python') {
-      // Python-specific configurations
       monaco.languages.setLanguageConfiguration('python', {
         comments: {
           lineComment: '#',
@@ -520,12 +478,11 @@ function CodeEditor({
       });
     }
 
-    // Configure for other languages similarly
     if (lang === 'javascript' || lang === 'typescript') {
       monaco.languages.setLanguageConfiguration(lang, {
         comments: {
           lineComment: '//',
-          blockComment: ['/*', '*/']
+          blockComment: ['']
         },
         brackets: [
           ['{', '}'],
@@ -544,10 +501,8 @@ function CodeEditor({
     }
   };
 
-  // Store monaco instance
   const monacoRef = useRef(null);
 
-  // Update editor when language changes
   useEffect(() => {
     if (editorRef.current && monacoRef.current) {
       const langConfig = SUPPORTED_LANGUAGES[language] || SUPPORTED_LANGUAGES['python'];
@@ -558,7 +513,6 @@ function CodeEditor({
     }
   }, [language]);
 
-  // Update editor when theme changes
   useEffect(() => {
     if (monacoRef.current && editorRef.current) {
       try {
@@ -567,7 +521,6 @@ function CodeEditor({
         console.log('Theme applied successfully');
       } catch (error) {
         console.error('Error setting Monaco theme:', error);
-        // Try to fallback to vs-dark
         try {
           monacoRef.current.editor.setTheme('vs-dark');
         } catch (fallbackError) {
@@ -585,7 +538,6 @@ function CodeEditor({
         theme={editorTheme}
       value={value || ''}
         onChange={(val) => {
-          // Just pass through the value - cleaning is done when code is loaded
           onChange?.(val || '');
         }}
         options={editorOptions}
@@ -603,6 +555,5 @@ function CodeEditor({
   );
 }
 
-// Export language mapping for use in other components
 export { SUPPORTED_LANGUAGES };
 export default CodeEditor;

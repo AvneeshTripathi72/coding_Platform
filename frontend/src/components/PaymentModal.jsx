@@ -14,17 +14,15 @@ function PaymentModal({ isOpen, onClose, planType: initialPlanType = 'monthly' }
     password: '',
     confirmPassword: '',
   });
-  // User is a guest if they're not authenticated or user object is null/undefined
+
   const isGuest = !isAuthenticated || !user;
   
-  // Debug: Log guest status (remove in production)
   useEffect(() => {
     if (isOpen) {
       console.log('PaymentModal - isGuest:', isGuest, 'isAuthenticated:', isAuthenticated, 'user:', user);
     }
   }, [isOpen, isGuest, isAuthenticated, user]);
 
-  // Reset form when modal opens
   useEffect(() => {
     if (isOpen) {
       setError('');
@@ -38,7 +36,6 @@ function PaymentModal({ isOpen, onClose, planType: initialPlanType = 'monthly' }
     }
   }, [isOpen]);
 
-  // Check if guest form is valid
   const isGuestFormValid = isGuest ? (
     guestInfo.email?.trim() &&
     guestInfo.email.includes('@') &&
@@ -90,32 +87,28 @@ function PaymentModal({ isOpen, onClose, planType: initialPlanType = 'monthly' }
   };
 
   const handlePayment = async () => {
-    // Clear any previous errors
+
     setError('');
     
-    // Validate guest info first - this must pass before proceeding
     if (isGuest) {
-      // Check if email is provided
+
       if (!guestInfo.email || !guestInfo.email.trim()) {
         setError('Email is required for guest checkout');
         return;
       }
       
-      // Check if name is provided
       if (!guestInfo.name || !guestInfo.name.trim()) {
         setError('Name is required for guest checkout');
         return;
       }
       
-      // Check if password is provided
       if (!guestInfo.password || !guestInfo.password.trim()) {
         setError('Password is required for guest checkout');
         return;
       }
       
-      // Run full validation
       if (!validateGuestInfo()) {
-        return; // Error is already set by validateGuestInfo
+        return;
       }
     }
 
@@ -126,13 +119,10 @@ function PaymentModal({ isOpen, onClose, planType: initialPlanType = 'monthly' }
         planType,
       };
 
-      // Only include email and name for guest users (not authenticated users)
       if (isGuest) {
         const trimmedEmail = guestInfo.email?.trim();
         const trimmedName = guestInfo.name?.trim();
         
-        // These checks should never fail here since we validated above,
-        // but keeping as safety net
         if (!trimmedEmail) {
           setError('Email is required for guest checkout');
           setLoading(false);
@@ -148,12 +138,11 @@ function PaymentModal({ isOpen, onClose, planType: initialPlanType = 'monthly' }
         orderData.email = trimmedEmail;
         orderData.name = trimmedName;
       }
-      // For authenticated users, email and name come from the backend via req.user
 
       const response = await axiosClient.post('/payment/create-order', orderData);
       
       if (response.data.checkoutUrl) {
-        // Store session info for guest users
+
         if (isGuest) {
           sessionStorage.setItem('dodo_session_id', response.data.sessionId);
           sessionStorage.setItem('dodo_plan_type', planType);
@@ -164,14 +153,13 @@ function PaymentModal({ isOpen, onClose, planType: initialPlanType = 'monthly' }
           }));
         }
         
-        // Redirect to DodoPay checkout
         window.location.href = response.data.checkoutUrl;
       } else {
         setError('Failed to create checkout session');
       }
     } catch (err) {
       console.error('Payment error:', err);
-      // Show more detailed error message
+
       const errorMsg = err.response?.data?.error 
         || err.response?.data?.message 
         || err.message 
@@ -209,7 +197,7 @@ function PaymentModal({ isOpen, onClose, planType: initialPlanType = 'monthly' }
             </div>
           )}
 
-          {/* Plan Selection */}
+          {}
           <div className="mb-6">
             <div className="grid grid-cols-2 gap-3">
               {Object.entries(plans).map(([key, plan]) => (
@@ -235,7 +223,7 @@ function PaymentModal({ isOpen, onClose, planType: initialPlanType = 'monthly' }
             </div>
           </div>
 
-          {/* Guest Checkout Form - Always show for guests */}
+          {}
           {isGuest ? (
             <div className="mb-6 space-y-4">
               <div className="text-sm text-yellow-400 mb-2 font-semibold">
@@ -250,7 +238,7 @@ function PaymentModal({ isOpen, onClose, planType: initialPlanType = 'monthly' }
                   value={guestInfo.email}
                   onChange={(e) => {
                     setGuestInfo({ ...guestInfo, email: e.target.value });
-                    setError(''); // Clear error when user types
+                    setError('');
                   }}
                   placeholder="your@email.com"
                   required
@@ -266,7 +254,7 @@ function PaymentModal({ isOpen, onClose, planType: initialPlanType = 'monthly' }
                   value={guestInfo.name}
                   onChange={(e) => {
                     setGuestInfo({ ...guestInfo, name: e.target.value });
-                    setError(''); // Clear error when user types
+                    setError('');
                   }}
                   placeholder="Your Name"
                   required
@@ -282,7 +270,7 @@ function PaymentModal({ isOpen, onClose, planType: initialPlanType = 'monthly' }
                   value={guestInfo.password}
                   onChange={(e) => {
                     setGuestInfo({ ...guestInfo, password: e.target.value });
-                    setError(''); // Clear error when user types
+                    setError('');
                   }}
                   placeholder="Create password (min 6 characters)"
                   required
@@ -298,7 +286,7 @@ function PaymentModal({ isOpen, onClose, planType: initialPlanType = 'monthly' }
                   value={guestInfo.confirmPassword}
                   onChange={(e) => {
                     setGuestInfo({ ...guestInfo, confirmPassword: e.target.value });
-                    setError(''); // Clear error when user types
+                    setError('');
                   }}
                   placeholder="Confirm password"
                   required
@@ -308,7 +296,7 @@ function PaymentModal({ isOpen, onClose, planType: initialPlanType = 'monthly' }
             </div>
           ) : null}
 
-          {/* Features */}
+          {}
           <div className="mb-6">
             <div className="text-gray-300 text-sm space-y-2">
               <div className="flex items-center gap-2">
@@ -322,7 +310,7 @@ function PaymentModal({ isOpen, onClose, planType: initialPlanType = 'monthly' }
             </div>
           </div>
 
-          {/* Payment Button */}
+          {}
           <button
             onClick={handlePayment}
             disabled={loading || (isGuest && !isGuestFormValid)}
@@ -347,4 +335,3 @@ function PaymentModal({ isOpen, onClose, planType: initialPlanType = 'monthly' }
 }
 
 export default PaymentModal;
-

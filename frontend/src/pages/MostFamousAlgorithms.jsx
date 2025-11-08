@@ -96,7 +96,7 @@ function MostFamousAlgorithms() {
   return (
     <div className="min-h-screen" style={{ backgroundColor: COLORS.bg, color: COLORS.text }}>
       <div className="max-w-7xl mx-auto px-6 py-8">
-        {/* Header */}
+        {}
         <button
           onClick={() => navigate('/algo-visualization')}
           className="flex items-center gap-2 mb-6 text-white/80 hover:text-white transition"
@@ -105,13 +105,13 @@ function MostFamousAlgorithms() {
           <span>Back to Algorithms</span>
         </button>
 
-        {/* Title */}
+        {}
         <h1 className="text-4xl font-bold mb-2">Most Famous Algorithms</h1>
         <p className="text-lg mb-8" style={{ color: COLORS.textSecondary }}>
           Topic-wise most famous array problems and techniques
         </p>
 
-        {/* Top 10 Must Solve Problems */}
+        {}
         <div className="mb-12">
           <div className="rounded-2xl border p-6 mb-6" style={{ backgroundColor: COLORS.card, borderColor: COLORS.border }}>
             <div className="flex items-center gap-3 mb-6">
@@ -129,7 +129,7 @@ function MostFamousAlgorithms() {
                     borderColor: COLORS.border,
                   }}
                 >
-                  {/* Gradient overlay on hover */}
+                  {}
                   <div
                     className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity"
                     style={{
@@ -151,7 +151,7 @@ function MostFamousAlgorithms() {
           </div>
         </div>
 
-        {/* Algorithm Categories */}
+        {}
         <div className="space-y-6">
           {algorithmCategories.map((category) => (
             <div
@@ -177,7 +177,7 @@ function MostFamousAlgorithms() {
                       borderColor: COLORS.border,
                     }}
                   >
-                    {/* Gradient overlay on hover */}
+                    {}
                     <div
                       className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity"
                       style={{
@@ -203,4 +203,3 @@ function MostFamousAlgorithms() {
 }
 
 export default MostFamousAlgorithms
-

@@ -10,7 +10,7 @@ function ContestList(){
   const [page, setPage] = useState(1)
   const [total, setTotal] = useState(0)
   const [statusFilter, setStatusFilter] = useState('all')
-  const [viewMode, setViewMode] = useState('all') // 'all' or 'my'
+  const [viewMode, setViewMode] = useState('all')
   const [loading, setLoading] = useState(false)
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [availableProblems, setAvailableProblems] = useState([])
@@ -36,7 +36,7 @@ function ContestList(){
       setTotal(data.total || 0)
     } catch (e) {
       console.error('Failed to load contests:', e)
-      // If it's a 404, the backend route might not be registered or server isn't running
+
       if (e.response?.status === 404) {
         console.error('Contest endpoint not found. Please ensure the backend server is running and the route is registered.')
       }
@@ -85,7 +85,7 @@ function ContestList(){
     setLoadingProblems(true)
     try {
       const { data } = await api.problems.list({ limit: 1000 })
-      // Backend returns 'items', but handle both 'items' and 'problems' for compatibility
+
       setAvailableProblems(
         Array.isArray(data.items) 
           ? data.items 
@@ -100,7 +100,7 @@ function ContestList(){
   }
 
   const handleOpenModal = async () => {
-    // Check creation limits before opening modal
+
     try {
       const { data: countData } = await api.contests.creationCount()
       setCreationCount(countData)
@@ -115,7 +115,7 @@ function ContestList(){
           `You have created ${countData.count} contests this month. To create more contests (up to ${countData.maxContests} per month), you need a premium subscription.\n\nWould you like to proceed to subscription?`
         )
         if (shouldProceed) {
-          // Show payment instructions
+
           alert('Please use the payment option in your profile or contact support to subscribe to create more contests.')
           return
         }
@@ -123,7 +123,7 @@ function ContestList(){
       }
     } catch (e) {
       console.error('Failed to check creation count:', e)
-      // Continue anyway if check fails
+
     }
     
     setShowCreateModal(true)
@@ -169,9 +169,8 @@ function ContestList(){
       handleCloseModal()
       loadContests()
       loadMyContests()
-      loadCreationCount() // Refresh creation count
+      loadCreationCount()
       
-      // Open contest solving page in new window
       if (data.contest && data.contest._id) {
         const contestId = data.contest._id
         const firstProblemId = formData.problems[0]
@@ -195,14 +194,12 @@ function ContestList(){
       const errorData = e.response?.data
       const errorMessage = errorData?.message || e.message || 'Failed to create contest'
       
-      // Handle subscription requirement
       if (errorData?.requiresSubscription) {
         const shouldSubscribe = confirm(
           `${errorMessage}\n\nWould you like to subscribe now?`
         )
         if (shouldSubscribe) {
-          // Try to open payment modal or navigate to payment
-          // For now, just show an alert with instructions
+
           alert('Please use the payment option in your profile or contact support to subscribe.')
         }
       } else if (errorData?.limitReached) {
@@ -211,7 +208,6 @@ function ContestList(){
         alert(`Error: ${errorMessage}`)
       }
       
-      // Refresh creation count on error
       loadCreationCount()
     } finally {
       setSubmitting(false)
@@ -274,7 +270,7 @@ function ContestList(){
 
   return (
     <div className="text-white space-y-6">
-      {/* Header */}
+      {}
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold mb-2 flex items-center gap-2">
@@ -303,7 +299,7 @@ function ContestList(){
         </div>
       </div>
 
-      {/* Stats Cards */}
+      {}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="rounded-xl border border-white/10 bg-black/40 p-4 hover:bg-black/60 transition relative overflow-hidden group">
           <div className="absolute top-3 left-3">
@@ -347,7 +343,7 @@ function ContestList(){
         </div>
       </div>
 
-      {/* Filters */}
+      {}
       <div className="flex flex-wrap items-center gap-3">
         <div className="flex gap-2">
           <button
@@ -416,7 +412,7 @@ function ContestList(){
         </div>
       </div>
 
-      {/* Contests Grid */}
+      {}
       {loading ? (
         <div className="text-center py-12 text-white/60">
           <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
@@ -435,11 +431,11 @@ function ContestList(){
               key={contest._id}
               className="group rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 hover:border-white/20 transition p-5 cursor-pointer relative overflow-hidden"
             >
-              {/* Gradient Background Effect */}
+              {}
               <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-emerald-500/10 to-blue-500/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
               
               <div className="relative z-10">
-                {/* Header */}
+                {}
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex-1 min-w-0">
                     <h3 className="font-semibold text-lg mb-1 group-hover:text-emerald-400 transition truncate">
@@ -451,12 +447,12 @@ function ContestList(){
                   </div>
                 </div>
 
-                {/* Description */}
+                {}
                 <p className="text-white/70 text-sm mb-4 line-clamp-2">
                   {contest.description}
                 </p>
 
-                {/* Info */}
+                {}
                 <div className="space-y-2 mb-4">
                   <div className="flex items-center gap-2 text-xs text-white/60">
                     <Calendar className="w-4 h-4" />
@@ -476,7 +472,7 @@ function ContestList(){
                   </div>
                 </div>
 
-                {/* Actions */}
+                {}
                 <div className="flex items-center gap-2 pt-3 border-t border-white/10">
                   {contest.status === 'upcoming' && !contest.isParticipant && (
                     <button
@@ -519,7 +515,7 @@ function ContestList(){
         </div>
       )}
 
-      {/* Pagination */}
+      {}
       {viewMode === 'all' && total > limit && (
         <div className="flex items-center justify-end gap-2">
           <button
@@ -540,7 +536,7 @@ function ContestList(){
         </div>
       )}
 
-      {/* Create Contest Modal */}
+      {}
       {showCreateModal && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-black/90 border border-white/10 rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
@@ -555,7 +551,7 @@ function ContestList(){
             </div>
 
             <div className="p-6 space-y-6">
-              {/* Contest Info */}
+              {}
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-white/80 mb-2">
@@ -592,7 +588,7 @@ function ContestList(){
                 </div>
               </div>
 
-              {/* Problem Selection */}
+              {}
               <div>
                 <label className="block text-sm font-medium text-white/80 mb-2">
                   Select Problems * (Exactly 4 required)

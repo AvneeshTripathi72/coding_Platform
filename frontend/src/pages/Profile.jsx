@@ -35,7 +35,7 @@ function Profile(){
     const map = new Map()
     subs.forEach(s => { const day=new Date(s.createdAt).toISOString().slice(0,10); map.set(day, (map.get(day)||0)+1) })
     const list = []
-    for(let i=0;i<7*20;i++){ // ~20 weeks
+    for(let i=0;i<7*20;i++){
       const d = new Date(); d.setDate(d.getDate()-i)
       const key = d.toISOString().slice(0,10)
       list.push({ day:key, count: map.get(key)||0 })
@@ -46,7 +46,7 @@ function Profile(){
   return (
     <div className="text-white">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        {/* Left card: profile */}
+        {}
         <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
           <div className="flex items-center gap-3">
             <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-emerald-400 to-cyan-400 border border-white/15 flex items-center justify-center text-2xl font-bold text-black">
@@ -61,7 +61,7 @@ function Profile(){
           <button className="mt-4 w-full px-4 py-2 rounded-xl bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 text-sm">Edit Profile</button>
         </div>
 
-        {/* Center: rating / solved & difficulty */}
+        {}
         <div className="lg:col-span-2 rounded-2xl border border-white/10 bg-white/5 p-4">
           <div className="grid grid-cols-3 gap-3">
             <Stat label="Solved" value={stats.solvedCount} />
@@ -76,7 +76,7 @@ function Profile(){
         </div>
       </div>
 
-      {/* Activity heatmap */}
+      {}
       <div className="mt-5 rounded-2xl border border-white/10 bg-white/5 p-4">
         <div className="text-sm text-white/60">Submissions in the past weeks</div>
         <div className="mt-3 grid grid-cols-20 gap-1">
@@ -86,7 +86,7 @@ function Profile(){
         </div>
       </div>
 
-      {/* Settings removed as requested */}
+      {}
     </div>
   )
 }

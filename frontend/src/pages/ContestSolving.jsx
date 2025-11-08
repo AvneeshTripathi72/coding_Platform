@@ -10,12 +10,11 @@ function ContestSolving() {
   const [contest, setContest] = useState(null)
   const [problem, setProblem] = useState(null)
   const [selectedProblemIndex, setSelectedProblemIndex] = useState(0)
-  const [timeRemaining, setTimeRemaining] = useState(0) // in seconds
+  const [timeRemaining, setTimeRemaining] = useState(0)
   const [isContestEnded, setIsContestEnded] = useState(false)
   const [isLocked, setIsLocked] = useState(false)
   const [loading, setLoading] = useState(true)
   
-  // Editor state
   const [language, setLanguage] = useState('python')
   const [code, setCode] = useState('')
   const [customInput, setCustomInput] = useState('')
@@ -23,7 +22,6 @@ function ContestSolving() {
   const [verdict, setVerdict] = useState('')
   const [loadingSubmission, setLoadingSubmission] = useState(false)
 
-  // Load contest and problem data
   useEffect(() => {
     const loadData = async () => {
       try {
@@ -31,7 +29,6 @@ function ContestSolving() {
         const contestData = data.contest
         setContest(contestData)
 
-        // Find problem index
         if (problemId && contestData.problems) {
           const index = contestData.problems.findIndex(p => p._id === problemId)
           if (index >= 0) {
@@ -44,7 +41,6 @@ function ContestSolving() {
           loadProblem(contestData.problems[0]._id)
         }
 
-        // Calculate initial time remaining
         const now = new Date()
         const end = new Date(contestData.endTime)
         const remaining = Math.max(0, Math.floor((end - now) / 1000))
@@ -69,7 +65,6 @@ function ContestSolving() {
       const p = data.problem
       setProblem(p)
 
-      // Load starter code
       if (p.starterCode && Array.isArray(p.starterCode) && p.starterCode.length > 0) {
         const starter = p.starterCode.find(sc => 
           sc.language?.toLowerCase() === language.toLowerCase()
@@ -89,7 +84,6 @@ function ContestSolving() {
     }
   }
 
-  // Countdown timer
   useEffect(() => {
     if (isContestEnded || !contest) return
 
@@ -111,7 +105,6 @@ function ContestSolving() {
     return () => clearInterval(interval)
   }, [contest, isContestEnded])
 
-  // Prevent window closing during contest
   useEffect(() => {
     if (isContestEnded || !contest || !contest.isParticipant) return
 
@@ -125,7 +118,6 @@ function ContestSolving() {
     return () => window.removeEventListener('beforeunload', handleBeforeUnload)
   }, [contest, isContestEnded])
 
-  // Format time remaining
   const formatTime = (seconds) => {
     const hours = Math.floor(seconds / 3600)
     const minutes = Math.floor((seconds % 3600) / 60)
@@ -133,7 +125,6 @@ function ContestSolving() {
     return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`
   }
 
-  // Handle code run
   const handleRun = async () => {
     if (!problem || !code.trim()) return
     
@@ -144,7 +135,7 @@ function ContestSolving() {
     try {
       let data
       if (customInput && customInput.trim()) {
-        // Use custom input endpoint
+
         const response = await api.solve.runCustom({
           code,
           language,
@@ -153,31 +144,29 @@ function ContestSolving() {
         data = response.data
         console.log('Custom input response:', data)
         
-        // Parse the result from custom input endpoint
         if (data.result) {
           console.log('Result object:', data.result)
           const result = data.result
           let outputText = ''
           
-          // Check stdout first (main output) - handle empty string as valid output
           if (result.stdout !== null && result.stdout !== undefined) {
             outputText = result.stdout.trim()
           } 
-          // Check stderr (runtime errors)
+
           else if (result.stderr !== null && result.stderr !== undefined && result.stderr !== '') {
             outputText = `Error: ${result.stderr.trim()}`
           } 
-          // Check compile_output (compilation errors)
+
           else if (result.compile_output !== null && result.compile_output !== undefined && result.compile_output !== '') {
             outputText = `Compilation Error: ${result.compile_output.trim()}`
           } 
-          // Check message field
+
           else if (result.message !== null && result.message !== undefined && result.message !== '') {
             outputText = result.message.trim()
           }
-          // If still no output, check status
+
           else {
-            // Check if it's still processing
+
             if (result.status_id === 1 || result.status_id === 2) {
               outputText = 'Processing... Please wait.'
             } else if (result.status_id === 3) {
@@ -187,10 +176,8 @@ function ContestSolving() {
             }
           }
           
-          // Always set output, even if empty string
           setOutput(outputText)
           
-          // Set verdict based on status_id
           const statusMap = {
             1: 'In Queue',
             2: 'Processing',
@@ -216,20 +203,19 @@ function ContestSolving() {
             setVerdict(statusMap[result.status_id] || `Status: ${result.status_id}`)
           }
         } else {
-          // Log the full response for debugging
+
           console.log('No result in response, full data:', data)
           setOutput(data.message || JSON.stringify(data) || 'No result returned from server')
           setVerdict('Error')
         }
       } else {
-        // Use test cases endpoint
+
         const response = await api.solve.run(problem._id, {
           code,
           language
         })
         data = response.data
         
-        // Parse the result from test cases endpoint
         if (data.finalsubmissionResults && data.finalsubmissionResults.submissions) {
           const submissions = data.finalsubmissionResults.submissions
           let outputText = ''
@@ -268,7 +254,6 @@ function ContestSolving() {
     }
   }
 
-  // Handle code submit
   const handleSubmit = async () => {
     if (!problem || !code.trim() || isLocked) return
     
@@ -298,7 +283,6 @@ function ContestSolving() {
     }
   }
 
-  // Switch problem
   const switchProblem = (index) => {
     if (isLocked) return
     setSelectedProblemIndex(index)
@@ -334,7 +318,7 @@ function ContestSolving() {
 
   return (
     <div className="h-screen bg-black text-white flex flex-col overflow-hidden">
-      {/* Top Bar - Timer and Contest Info */}
+      {}
       <div className="border-b border-white/10 bg-black/80 backdrop-blur-sm z-50">
         <div className="flex items-center justify-between px-6 py-3">
           <div className="flex items-center gap-4">
@@ -367,7 +351,7 @@ function ContestSolving() {
           </div>
         </div>
 
-        {/* Problem Tabs */}
+        {}
         {contest.problems && contest.problems.length > 0 && (
           <div className="flex gap-2 px-6 pb-3 overflow-x-auto">
             {contest.problems.map((p, index) => (
@@ -388,9 +372,9 @@ function ContestSolving() {
         )}
       </div>
 
-      {/* Main Content */}
+      {}
       <div className="flex-1 flex overflow-hidden">
-        {/* Left Panel - Problem Description */}
+        {}
         <div className="w-1/2 border-r border-white/10 overflow-y-auto p-6">
           {problem ? (
             <div className="space-y-6">
@@ -419,7 +403,7 @@ function ContestSolving() {
                 </ReactMarkdown>
               </div>
 
-              {/* Test Cases - SECOND */}
+              {}
               {problem.visibleTestCases && problem.visibleTestCases.length > 0 && (
                 <div>
                   <h3 className="font-semibold mb-2">Example:</h3>
@@ -443,7 +427,7 @@ function ContestSolving() {
                 </div>
               )}
 
-              {/* Constraints - THIRD */}
+              {}
               {problem.constraints && problem.constraints.length > 0 && (
                 <div>
                   <h3 className="font-semibold mb-2">Constraints:</h3>
@@ -462,9 +446,9 @@ function ContestSolving() {
           )}
         </div>
 
-        {/* Right Panel - Code Editor */}
+        {}
         <div className="w-1/2 flex flex-col">
-          {/* Language Selector */}
+          {}
           <div className="border-b border-white/10 p-3 flex items-center justify-between">
             <select
               value={language}
@@ -497,7 +481,7 @@ function ContestSolving() {
             </div>
           </div>
 
-          {/* Code Editor */}
+          {}
           <div className="flex-1">
             <CodeEditor
               language={language}
@@ -513,7 +497,7 @@ function ContestSolving() {
             />
           </div>
 
-          {/* Output Panel */}
+          {}
           <div className="border-t border-white/10 p-4 bg-black/40">
             <div className="mb-2">
               <label className="text-sm text-white/70 mb-1 block">Custom Input (for testing):</label>
@@ -551,4 +535,3 @@ function ContestSolving() {
 }
 
 export default ContestSolving
-

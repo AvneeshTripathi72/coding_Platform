@@ -49,7 +49,7 @@ function ProblemList(){
   }
 
   useEffect(()=>{ load() }, [page])
-  // Auto-apply when difficulty or tag changes
+
   useEffect(()=>{ setPage(1); load() }, [difficulty, tag])
 
   const onSearch = (e) => { e.preventDefault(); setPage(1); load() }
@@ -109,7 +109,7 @@ function ProblemList(){
               className="flex items-center gap-4 px-4 py-3 border-b border-white/10 hover:bg-white/5 cursor-pointer transition"
               onClick={()=>navigate(`/problem/${p._id}`)}
             >
-              {/* Problem Number & Title */}
+              {}
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
                   <span className="text-white/60 text-sm">{problemNum}.</span>
@@ -117,19 +117,19 @@ function ProblemList(){
                 </div>
               </div>
 
-              {/* Acceptance Rate */}
+              {}
               <div className="text-white text-sm whitespace-nowrap">
                 {acceptance.toFixed(1)}%
               </div>
 
-              {/* Difficulty Score */}
+              {}
               {diffScore && (
                 <div className={`text-sm font-medium whitespace-nowrap ${diffScore.color}`}>
                   {diffScore.score}
                 </div>
               )}
 
-              {/* Progress Bar */}
+              {}
               <div className="flex items-center gap-0.5">
                 {getProgressBars(acceptance)}
               </div>

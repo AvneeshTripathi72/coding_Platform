@@ -18,9 +18,9 @@ function ProblemPage() {
   const [language, setLanguage] = useState("python");
   const [code, setCode] = useState("");
   const [editorTheme, setEditorTheme] = useState(() => {
-    // Load editor theme from localStorage or default to vs-dark
+
     const storedTheme = localStorage.getItem('monacoEditorTheme');
-    // Validate that the stored theme exists in MONACO_THEMES
+
     const isValidTheme = MONACO_THEMES.some(theme => theme.value === storedTheme);
     return isValidTheme ? storedTheme : 'vs-dark';
   });
@@ -28,32 +28,31 @@ function ProblemPage() {
   const [output, setOutput] = useState("");
   const [expectedOutput, setExpectedOutput] = useState("");
   const [verdict, setVerdict] = useState("");
-  const [activeTab, setActiveTab] = useState("description"); // description | submissions | editorial | solutions
+  const [activeTab, setActiveTab] = useState("description");
   const [recentSubs, setRecentSubs] = useState([]);
   const [solutions, setSolutions] = useState([]);
   const [testCaseTab, setTestCaseTab] = useState(0);
   const [loadingSubmission, setLoadingSubmission] = useState(false);
   const [loadingRun, setLoadingRun] = useState(false);
-  const [testCaseResults, setTestCaseResults] = useState([]); // Store results for all test cases
-  const [customTestCases, setCustomTestCases] = useState([]); // Store user-added custom test cases
-  const [isCustomTestCase, setIsCustomTestCase] = useState(false); // Track if current tab is custom
+  const [testCaseResults, setTestCaseResults] = useState([]);
+  const [customTestCases, setCustomTestCases] = useState([]);
+  const [isCustomTestCase, setIsCustomTestCase] = useState(false);
   
-  // Layout customization state
   const [layoutConfig, setLayoutConfig] = useState(() => {
     const saved = localStorage.getItem('problemPageLayout');
     if (saved) {
       try {
         return JSON.parse(saved);
       } catch (e) {
-        // If parsing fails, use defaults
+
       }
     }
     return {
       showDescription: true,
       showEditor: true,
       showTestCases: true,
-      descriptionWidth: 45, // percentage
-      editorHeight: 65, // percentage
+      descriptionWidth: 45,
+      editorHeight: 65,
     };
   });
   
@@ -63,10 +62,8 @@ function ProblemPage() {
   const editorContainerRef = useRef(null);
   const editorElementRef = useRef(null);
 
-  // Use SUPPORTED_LANGUAGES from CodeEditor
   const languageMap = SUPPORTED_LANGUAGES;
 
-  // Normalize language to ensure it exists in languageMap
   const normalizeLanguage = (lang) => {
     if (!lang) return "python";
     const normalized = lang.toLowerCase();
@@ -76,21 +73,19 @@ function ProblemPage() {
     return found || "python";
   };
 
-  // Clean code: remove trailing whitespace and extra empty lines
   const cleanCode = (code) => {
     if (!code) return '';
     return code
       .split('\n')
-      .map(line => line.trimEnd()) // Remove trailing spaces from each line
+      .map(line => line.trimEnd())
       .join('\n')
-      .replace(/\n{3,}/g, '\n\n') // Replace 3+ consecutive newlines with 2
-      .trimEnd(); // Remove trailing newlines
+      .replace(/\n{3,}/g, '\n\n')
+      .trimEnd();
   };
 
-  // Handle editor theme change
   const handleThemeChange = (newTheme) => {
     console.log('Theme changing to:', newTheme);
-    // Validate theme exists
+
     const isValidTheme = MONACO_THEMES.some(theme => theme.value === newTheme);
     if (!isValidTheme) {
       console.warn('Invalid theme selected:', newTheme, 'Falling back to vs-dark');
@@ -101,7 +96,6 @@ function ProblemPage() {
     console.log('Theme changed to:', newTheme);
   };
 
-  /** Fetch Problem */
   useEffect(() => {
     const fetchProblem = async () => {
       try {
@@ -134,8 +128,6 @@ function ProblemPage() {
         
         setProblem(p);
         
-        // Always load reference solutions if they exist, regardless of active tab
-        // Ensure referenceSolutions is an array (backend should always return an array now)
         const refSolutionsArray = Array.isArray(p.referenceSolutions) ? p.referenceSolutions : (p.referenceSolutions ? [p.referenceSolutions] : []);
         console.log('Reference solutions array after normalization:', refSolutionsArray);
         console.log('Reference solutions array length:', refSolutionsArray.length);
@@ -172,17 +164,16 @@ function ProblemPage() {
             console.log('✓ Reference solutions set in state:', refSolutions.length);
           } else {
             console.warn('✗ No valid reference solutions found after filtering on initial load');
-            setSolutions([]); // Ensure solutions is set to empty array
+            setSolutions([]);
           }
         } else {
           console.log('✗ No reference solutions found in problem (empty array or undefined)');
-          setSolutions([]); // Ensure solutions is set to empty array
+          setSolutions([]);
         }
         console.log('=== END PROBLEM FETCH ===');
 
-        // Load starter code based on selected language
         if (p.starterCode && Array.isArray(p.starterCode) && p.starterCode.length > 0) {
-          // Try to load user's last successful submission first
+
           try {
             const subData = await axiosClient.get(`/solve/submissions/problem/${id}?user=me&limit=1&status=accepted`);
             if (subData.data.submissions && subData.data.submissions.length > 0) {
@@ -192,18 +183,17 @@ function ProblemPage() {
               const lang = lastSubmission.language || "python";
               const mappedLang = normalizeLanguage(lang);
               setLanguage(mappedLang);
-              return; // Use last successful submission
+              return;
             }
             }
           } catch (e) {
             console.log("No previous submission found, using starter code");
           }
 
-          // Use first available starter code if no previous submission
           const starter = p.starterCode[0];
           if (starter && starter.initialCode) {
             setCode(cleanCode(starter.initialCode));
-            // Update language to match the starter code language
+
             const mappedLang = normalizeLanguage(starter.language);
             setLanguage(mappedLang);
           }
@@ -215,23 +205,21 @@ function ProblemPage() {
     fetchProblem();
   }, [id]);
 
-  // Update code when language changes
   useEffect(() => {
     if (!problem || !problem.starterCode) return;
-    // Normalize language key (handle case sensitivity)
+
     const normalizedLang = language.toLowerCase();
     const langKey = Object.keys(languageMap).find(
       key => key.toLowerCase() === normalizedLang
     ) || language;
     const langConfig = languageMap[langKey];
     if (!langConfig) {
-      // If language not found, default to python
+
       const defaultLang = Object.keys(languageMap).find(key => key.toLowerCase() === 'python') || 'python';
       setLanguage(defaultLang);
       return;
     }
     
-    // Try to find starter code for this language
     const starter = problem.starterCode.find(sc => {
       const scLang = sc.language?.toLowerCase();
       const targetLang = langConfig.monaco.toLowerCase();
@@ -245,7 +233,7 @@ function ProblemPage() {
     if (starter && starter.initialCode) {
       setCode(cleanCode(starter.initialCode));
     } else {
-      // If no starter code, set empty with comment
+
       const comment = langConfig.monaco === 'python' ? '#' : 
                      langConfig.monaco === 'javascript' || langConfig.monaco === 'typescript' ? '//' :
                      langConfig.monaco === 'java' || langConfig.monaco === 'cpp' ? '//' : '//';
@@ -266,29 +254,26 @@ function ProblemPage() {
     if (activeTab === "submissions") fetchSubs();
   }, [id, activeTab]);
 
-  // Fetch solutions when solutions tab is active
   useEffect(() => {
     const fetchSolutions = async () => {
       if (!id) return;
       
-      if (!problem) return; // Wait for problem to load
+      if (!problem) return;
       
-      // Only fetch/update solutions when solutions tab is active
       if (activeTab !== "solutions") {
         return;
       }
       
       try {
-        // First, try to get reference solutions from the problem
-        // Ensure referenceSolutions is an array
+
         const refSolutionsArray = Array.isArray(problem.referenceSolutions) ? problem.referenceSolutions : [];
         
         if (refSolutionsArray.length > 0) {
           console.log('Loading reference solutions in solutions tab:', refSolutionsArray.length);
           console.log('Reference solutions data:', refSolutionsArray);
-          // Convert reference solutions to the format expected by the UI
+
           const refSolutions = refSolutionsArray
-            .filter(ref => ref && ref.completeCode && ref.language) // Filter out invalid entries
+            .filter(ref => ref && ref.completeCode && ref.language)
             .map((ref, idx) => ({
               _id: ref._id || `ref-${idx}`,
               language: ref.language,
@@ -308,7 +293,6 @@ function ProblemPage() {
           return;
         }
 
-        // If no reference solutions, try to fetch accepted solutions from other users
         try {
           const { data } = await axiosClient.get(`/solve/submissions/problem/${id}?status=accepted&limit=10`);
           setSolutions(Array.isArray(data.submissions) ? data.submissions : []);
@@ -324,7 +308,6 @@ function ProblemPage() {
     fetchSolutions();
   }, [id, activeTab, problem]);
 
-  // Load code from a submission
   const loadSubmissionCode = async (submissionId) => {
     setLoadingSubmission(true);
     try {
@@ -334,7 +317,7 @@ function ProblemPage() {
         const lang = data.submission.language || "python";
         const mappedLang = normalizeLanguage(lang);
         setLanguage(mappedLang);
-        setActiveTab("description"); // Switch to description tab to see the code
+        setActiveTab("description");
       }
     } catch (e) {
       console.error("Error loading submission:", e);
@@ -343,14 +326,12 @@ function ProblemPage() {
     }
   };
 
-  // Copy code to clipboard
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text).then(() => {
       alert("Code copied to clipboard!");
     });
   };
 
-  /** Run Code (visible testcases) */
   const runCode = async () => {
     if (!problem || !problem._id) {
       console.error("Problem not loaded");
@@ -385,18 +366,16 @@ function ProblemPage() {
 
       console.log("Run response:", data);
 
-      // For run route, backend returns finalsubmissionResults with all test case results
       const allResults = data.finalsubmissionResults?.submissions || [];
       
       if (allResults && allResults.length > 0) {
-        // Process all test case results
+
         const processedResults = allResults.map((res, index) => {
         const output = (res.stdout?.trim() || res.output?.trim() || "").replace(/\r\n/g, '\n').replace(/\r/g, '\n');
         const expected = (res.expected_output?.trim() || "").replace(/\r\n/g, '\n').replace(/\r/g, '\n');
         const statusId = res.status_id || res.status?.id;
         const statusDesc = res.status?.description || res.status || "Unknown";
         
-          // Determine verdict
           let verdict = "";
         if (output === expected && output !== "") {
             verdict = "Accepted ✅";
@@ -430,7 +409,6 @@ function ProblemPage() {
         
         setTestCaseResults(processedResults);
         
-        // Show first test case result by default
         if (processedResults.length > 0) {
           const firstResult = processedResults[0];
           setOutput(firstResult.output);
@@ -456,7 +434,6 @@ function ProblemPage() {
     }
   };
 
-  /** Submit Code (Evaluates hidden testcases + Saves result) */
   const submitCode = async () => {
     if (!problem || !problem._id) {
       setVerdict("Error: Problem not loaded ❌");
@@ -492,14 +469,12 @@ function ProblemPage() {
         return;
       }
 
-      // Process all test case results
       const processedResults = allResults.map((result, index) => {
       const output = (result.stdout?.trim() || result.output?.trim() || "").replace(/\r\n/g, '\n').replace(/\r/g, '\n');
       const expected = (result.expected_output?.trim() || "").replace(/\r\n/g, '\n').replace(/\r/g, '\n');
       const statusId = result.status_id || result.status?.id;
       const statusDesc = result.status?.description || result.status || "Unknown";
       
-        // Determine verdict
         let verdict = "";
       if (statusId === 3) {
           verdict = "Accepted ✅";
@@ -531,7 +506,6 @@ function ProblemPage() {
       
       setTestCaseResults(processedResults);
       
-      // Show first test case result by default
       if (processedResults.length > 0) {
         const firstResult = processedResults[0];
         setOutput(firstResult.output);
@@ -550,12 +524,10 @@ function ProblemPage() {
     }
   };
 
-  // Save layout config to localStorage when it changes
   useEffect(() => {
     localStorage.setItem('problemPageLayout', JSON.stringify(layoutConfig));
   }, [layoutConfig]);
 
-  // Define functions with useCallback to avoid dependency issues
   const updateDescriptionWidth = useCallback((width) => {
     const clampedWidth = Math.max(30, Math.min(70, width));
     setLayoutConfig(prev => ({
@@ -572,7 +544,6 @@ function ProblemPage() {
     }));
   }, []);
 
-  // Add event listeners for resizing
   useEffect(() => {
     if (isResizing) {
       const handleMove = (e) => {
@@ -624,19 +595,16 @@ function ProblemPage() {
     }));
   };
 
-  // Handle mouse drag for resizing description panel
   const handleMouseDown = (e) => {
     e.preventDefault();
     setIsResizing(true);
   };
 
-  // Handle mouse drag for resizing editor height
   const handleEditorMouseDown = (e) => {
     e.preventDefault();
     setIsResizingEditor(true);
   };
 
-  // Layout presets
   const applyLayoutPreset = (preset) => {
     switch(preset) {
       case 'balanced':
@@ -689,7 +657,7 @@ function ProblemPage() {
 
   return (
     <div className="h-screen bg-black text-white flex overflow-hidden relative">
-      {/* Layout Settings Panel - Right Corner */}
+      {}
       {showLayoutSettings && (
           <div 
             className="fixed top-4 right-4 z-[101] bg-black border border-white/20 rounded-lg p-4 shadow-2xl w-[90%] max-w-[320px]"
@@ -706,7 +674,7 @@ function ProblemPage() {
           </div>
           
           <div className="space-y-4 max-h-[70vh] overflow-y-auto pr-1">
-            {/* Show Sections */}
+            {}
             <div>
               <label className="text-sm text-white/70 font-medium block mb-3">Show Sections:</label>
               <div className="space-y-2.5">
@@ -740,7 +708,7 @@ function ProblemPage() {
               </div>
             </div>
 
-            {/* Description Width */}
+            {}
             {layoutConfig.showDescription && layoutConfig.showEditor && (
               <div className="pt-2 border-t border-white/10">
                 <label className="text-sm text-white/70 font-medium block mb-2">
@@ -762,7 +730,7 @@ function ProblemPage() {
               </div>
             )}
 
-            {/* Editor Height */}
+            {}
             {layoutConfig.showEditor && layoutConfig.showTestCases && (
               <div className="pt-2 border-t border-white/10">
                 <label className="text-sm text-white/70 font-medium block mb-2">
@@ -784,7 +752,7 @@ function ProblemPage() {
               </div>
             )}
 
-            {/* Quick Layouts */}
+            {}
             <div className="pt-2 border-t border-white/10">
               <label className="text-sm text-white/70 font-medium block mb-3">Quick Layouts:</label>
               <div className="grid grid-cols-2 gap-2">
@@ -815,7 +783,7 @@ function ProblemPage() {
               </div>
             </div>
 
-            {/* Reset Button */}
+            {}
             <button
               onClick={() => applyLayoutPreset('balanced')}
               className="w-full px-3 py-2 text-sm bg-white/5 hover:bg-white/10 rounded border border-white/10 transition-all text-white"
@@ -826,7 +794,7 @@ function ProblemPage() {
         </div>
       )}
 
-      {/* Left Panel - Problem Description */}
+      {}
       {layoutConfig.showDescription && (
         <>
           <div 
@@ -840,7 +808,7 @@ function ProblemPage() {
             }}
           >
         <div className="p-6 overflow-y-auto flex-1 min-h-0">
-          {/* Title & Difficulty */}
+          {}
           <div className="flex items-center gap-3 mb-4">
             <h1 className="text-2xl font-bold">{problem.title}</h1>
             <span className={`px-3 py-1 rounded text-sm font-medium ${difficultyColor(problem.difficulty)}`}>
@@ -848,7 +816,7 @@ function ProblemPage() {
             </span>
           </div>
 
-          {/* Tabs */}
+          {}
           <div className="flex gap-4 text-base border-b border-white/10 mb-4">
             {[
               { key: "description", label: "Description" },
@@ -862,7 +830,7 @@ function ProblemPage() {
                 className={`px-2 py-3 -mb-px border-b-2 ${activeTab === t.key ? "border-emerald-400 text-white" : "border-transparent text-white/60 hover:text-white"}`}
                 onClick={() => {
                   setActiveTab(t.key);
-                  // If clicking solutions tab, immediately check for reference solutions
+
                   const refSolutionsArray = Array.isArray(problem?.referenceSolutions) ? problem.referenceSolutions : [];
                   if (t.key === "solutions" && problem && refSolutionsArray.length > 0) {
                     console.log('Tab clicked - loading reference solutions:', refSolutionsArray.length);
@@ -889,10 +857,10 @@ function ProblemPage() {
             ))}
           </div>
 
-          {/* Tab Content */}
+          {}
           {activeTab === "description" && (
             <div className="space-y-4">
-              {/* Tags */}
+              {}
               <div className="flex gap-2 flex-wrap">
                 {(problem.tags || []).map((tag, i) => (
                   <button key={i} className="px-3 py-1.5 text-sm bg-white/5 border border-white/10 rounded hover:bg-white/10">
@@ -901,7 +869,7 @@ function ProblemPage() {
                 ))}
               </div>
 
-              {/* Description with Markdown - FIRST */}
+              {}
               <div className="text-base text-white/80 leading-relaxed prose prose-invert max-w-none">
                 <ReactMarkdown
                   components={{
@@ -920,7 +888,7 @@ function ProblemPage() {
                 </ReactMarkdown>
               </div>
 
-              {/* Test Cases/Examples - SECOND */}
+              {}
               {(problem.visibleTestCases && problem.visibleTestCases.length > 0) && (
                 <>
                   <h3 className="text-base font-semibold text-white mt-6">Example</h3>
@@ -943,7 +911,7 @@ function ProblemPage() {
                 </>
               )}
 
-              {/* Constraints - THIRD */}
+              {}
               {(problem.constraints || []).length > 0 && (
                 <>
                   <h3 className="text-base font-semibold text-white mt-6">Constraints</h3>
@@ -1104,7 +1072,7 @@ function ProblemPage() {
           )}
         </div>
       </div>
-        {/* Draggable Resizer - Vertical divider between description and editor */}
+        {}
         {layoutConfig.showEditor && (
           <div
             onMouseDown={handleMouseDown}
@@ -1119,10 +1087,10 @@ function ProblemPage() {
 
       )}
 
-      {/* Right Panel - Code Editor */}
+      {}
       {layoutConfig.showEditor && (
         <div ref={editorContainerRef} className="flex-1 min-w-[400px] max-w-full border-l border-white/10 flex flex-col overflow-hidden">
-        {/* Code Editor Header */}
+        {}
         <div className="border-b border-white/10 bg-white/5 px-4 py-2 flex items-center justify-between flex-shrink-0 flex-wrap gap-2">
           <div className="flex items-center gap-3 flex-shrink-0">
             <span className="text-base text-white/80">&lt;/&gt; Code</span>
@@ -1136,14 +1104,14 @@ function ProblemPage() {
                 color: 'white',
               }}
             >
-              {/* Show all supported languages (14 languages) - prefer lowercase keys to avoid duplicates */}
+              {}
               {Object.entries(languageMap)
                 .filter(([key]) => {
-                  // Keep only lowercase keys to avoid duplicates (python vs Python)
+
                   return key === key.toLowerCase();
                 })
                 .sort(([aKey, aConfig], [bKey, bConfig]) => {
-                  // Sort by label alphabetically
+
                   return aConfig.label.localeCompare(bConfig.label);
                 })
                 .map(([key, config]) => (
@@ -1158,7 +1126,7 @@ function ProblemPage() {
             </select>
           </div>
           <div className="flex items-center gap-2 flex-wrap">
-            {/* Theme Selector - First */}
+            {}
             <span className="text-sm text-white/60 hidden sm:inline">Theme:</span>
             <select
               value={editorTheme}
@@ -1211,7 +1179,7 @@ function ProblemPage() {
               </optgroup>
             </select>
             
-            {/* Run Button - Second */}
+            {}
             <button 
               onClick={(e) => {
                 e.preventDefault();
@@ -1227,7 +1195,7 @@ function ProblemPage() {
               {loadingRun ? "Running..." : "Run"}
             </button>
             
-            {/* Submit Button - Third */}
+            {}
             <button 
               onClick={(e) => {
                 e.preventDefault();
@@ -1244,7 +1212,7 @@ function ProblemPage() {
           </div>
         </div>
 
-        {/* Enhanced Monaco Editor */}
+        {}
         <div 
           ref={editorElementRef}
           className={`min-h-0 bg-black/20 relative overflow-hidden ${
@@ -1254,7 +1222,7 @@ function ProblemPage() {
             height: layoutConfig.showTestCases ? `${layoutConfig.editorHeight}%` : '100%'
           }}
         >
-          {/* Draggable Resizer for Editor Height - Horizontal divider between editor and test cases */}
+          {}
           {layoutConfig.showTestCases && (
             <div
               onMouseDown={handleEditorMouseDown}
@@ -1271,7 +1239,7 @@ function ProblemPage() {
             theme={editorTheme}
             value={code}
             onChange={(value) => {
-              // Code cleaning is handled in CodeEditor component
+
               setCode(value || "");
             }}
             options={{
@@ -1282,7 +1250,7 @@ function ProblemPage() {
           />
         </div>
 
-        {/* Testcase Editor */}
+        {}
         {layoutConfig.showTestCases && (
           <div 
             className={`border-t border-white/10 bg-white/5 flex-shrink-0 flex flex-col overflow-hidden relative ${
@@ -1294,7 +1262,7 @@ function ProblemPage() {
               maxHeight: '400px'
             }}
           >
-            {/* Visual indicator for resizer area */}
+            {}
             <div className="absolute -top-1 left-0 right-0 h-1 hover:bg-emerald-400/30 transition-colors" />
           <div className="flex items-center gap-2 px-4 py-2.5 border-b border-white/10 flex-shrink-0">
             <span className="text-base text-emerald-400">✓</span>
@@ -1303,9 +1271,9 @@ function ProblemPage() {
             <span className="text-base text-white/80 font-medium">&gt;_ Test Result</span>
           </div>
           
-          {/* Testcase Tabs */}
+          {}
           <div className="flex items-center gap-1 px-4 py-2.5 border-b border-white/10 overflow-x-auto flex-shrink-0">
-            {/* Problem Test Cases */}
+            {}
             {(problem.visibleTestCases || []).map((_, idx) => {
               const result = testCaseResults[idx];
               const isPassed = result?.verdict?.includes("Accepted");
@@ -1342,11 +1310,11 @@ function ProblemPage() {
               );
             })}
             
-            {/* Custom Test Cases */}
+            {}
             {customTestCases.map((_, idx) => {
               const customIdx = (problem.visibleTestCases?.length || 0) + idx;
               const result = testCaseResults[customIdx];
-              // Check if passed - either verdict includes "Accepted" or output matches expected
+
               const isPassed = result?.verdict?.includes("Accepted") || 
                                (result?.output && result?.expected && 
                                 result.output.trim() === result.expected.trim() && 
@@ -1381,7 +1349,7 @@ function ProblemPage() {
                       ) : null}
                     </span>
                   )}
-                  {/* Delete button in top-right corner - visible on hover */}
+                  {}
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
@@ -1406,7 +1374,7 @@ function ProblemPage() {
               );
             })}
             
-            {/* Add Custom Test Case Button */}
+            {}
             <button
               onClick={() => {
                 const newCustom = { input: '', expected: '' };
@@ -1426,12 +1394,12 @@ function ProblemPage() {
             )}
           </div>
 
-          {/* Side-by-side layout: Testcase Input on left, Test Result on right */}
+          {}
           <div className="grid grid-cols-2 gap-0 flex-1 min-h-0 overflow-hidden">
-            {/* Left Side: Testcase Input Fields */}
+            {}
             <div className="border-r border-white/10 p-4 space-y-3 overflow-y-auto min-h-0">
               {isCustomTestCase ? (
-                // Custom Test Case Editor
+
                 (() => {
                   const customIdx = testCaseTab - (problem.visibleTestCases?.length || 0);
                   const customCase = customTestCases[customIdx];
@@ -1440,7 +1408,7 @@ function ProblemPage() {
                       <div className="flex items-center justify-between mb-2">
                         <label className="text-base text-white/70 font-semibold">Custom Test Case {customIdx + 1}:</label>
                         <div className="flex items-center gap-2">
-                          {/* Delete button - next to Run button, visible on hover */}
+                          {}
                           <button
                             onClick={() => {
                               const newCustom = customTestCases.filter((_, i) => i !== customIdx);
@@ -1487,7 +1455,6 @@ function ProblemPage() {
                               const statusId = result.status_id || result.status?.id;
                               const statusDesc = result.status?.description || result.status || "Unknown";
                               
-                              // Determine verdict - check if output matches expected
                               let verdict = "Custom Test Executed";
                               if (statusId === 6) {
                                 verdict = "Compilation Error ❌";
@@ -1505,7 +1472,6 @@ function ProblemPage() {
                                 verdict = "Custom Test Executed ✅";
                               }
                               
-                              // Store result
                               const newResults = [...testCaseResults];
                               newResults[testCaseTab] = {
                                 output,
@@ -1568,7 +1534,7 @@ function ProblemPage() {
                   ) : null;
                 })()
               ) : (
-                // Problem Test Cases
+
                 problem.visibleTestCases && problem.visibleTestCases.length > 0 ? (
               <>
                 {problem.visibleTestCases[testCaseTab]?.input && (
@@ -1607,7 +1573,7 @@ function ProblemPage() {
             )}
           </div>
 
-            {/* Right Side: Test Result */}
+            {}
             <div className="p-4 overflow-y-auto min-h-0">
               <div className="flex items-center justify-between mb-4">
                 <div className="text-base text-white/70 font-semibold">Test Result</div>
@@ -1694,7 +1660,6 @@ function ProblemPage() {
   );
 }
 
-/** Difficulty Badge Colors */
 function difficultyColor(level) {
   level = (level || "").toLowerCase();
   if (level === "easy") return "bg-emerald-600/20 text-emerald-300 border border-emerald-500/30";
@@ -1703,7 +1668,6 @@ function difficultyColor(level) {
   return "bg-white/10 text-white/60";
 }
 
-/** Verdict Colors */
 function verdictColor(v) {
   if (!v) return "text-white/60";
   const status = v.toLowerCase();
@@ -1716,7 +1680,6 @@ function verdictColor(v) {
   return "text-white/60";
 }
 
-/** Editorial Section with Payment Protection */
 function EditorialSectionWithPayment({ problemId }) {
   const { hasAccess, loading: subscriptionLoading } = useSubscription();
   const [showPaymentModal, setShowPaymentModal] = useState(false);
@@ -1757,12 +1720,11 @@ function EditorialSectionWithPayment({ problemId }) {
   return <EditorialSection problemId={problemId} />;
 }
 
-/** Editorial Section Component */
 function EditorialSection({ problemId }) {
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [viewedVideos, setViewedVideos] = useState(new Set()); // Track which videos have been viewed
+  const [viewedVideos, setViewedVideos] = useState(new Set());
 
   useEffect(() => {
     const fetchVideos = async () => {
@@ -1783,12 +1745,12 @@ function EditorialSection({ problemId }) {
   }, [problemId]);
 
   const handleVideoPlay = async (videoId) => {
-    // Only increment views once per video per session
+
     if (viewedVideos.has(videoId)) return;
     
     try {
       const { data } = await axiosClient.post(`/videos/${videoId}/increment-views`);
-      // Update the view count in the local state
+
       setVideos(prevVideos =>
         prevVideos.map(video =>
           video._id === videoId
@@ -1796,11 +1758,11 @@ function EditorialSection({ problemId }) {
             : video
         )
       );
-      // Mark this video as viewed
+
       setViewedVideos(prev => new Set(prev).add(videoId));
     } catch (err) {
       console.error('Error incrementing video views:', err);
-      // Don't show error to user, just log it
+
     }
   };
 

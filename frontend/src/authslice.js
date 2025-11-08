@@ -1,17 +1,16 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axiosClient from "./api/axiosClient.js";
 
-// REGISTER
 export const registerUser = createAsyncThunk(
   "auth/register",
   async (userData, { rejectWithValue }) => {
     try {
       const response = await axiosClient.post("/auth/register", userData);
-      // Ensure user object is returned
+
       if (response.data.user) {
         return response.data.user;
       }
-      // Fallback: if user object is missing, return error
+
       return rejectWithValue({ message: "Registration successful but user data not received" });
     } catch (error) {
       console.error("Registration error:", error);
@@ -20,7 +19,6 @@ export const registerUser = createAsyncThunk(
   }
 );
 
-// LOGIN
 export const loginUser = createAsyncThunk(
   "auth/loginUser",
   async (credentials, { rejectWithValue }) => {
@@ -33,7 +31,6 @@ export const loginUser = createAsyncThunk(
   }
 );
 
-// CHECK AUTH
 export const checkAuth = createAsyncThunk(
   "auth/check",
   async (_, { rejectWithValue }) => {
@@ -46,7 +43,6 @@ export const checkAuth = createAsyncThunk(
   }
 );
 
-// LOGOUT
 export const logoutUser = createAsyncThunk(
   "auth/logout",
   async (_, { rejectWithValue }) => {
@@ -64,13 +60,13 @@ const authSlice = createSlice({
   initialState: {
     user: null,
     isAuthenticated: false,
-    loading: true, // Start with true to wait for initial auth check
+    loading: true,
     error: null,
   },
   reducers: {},
   extraReducers: (builder) => {
     builder
-      // REGISTER
+
       .addCase(registerUser.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -85,7 +81,6 @@ const authSlice = createSlice({
         state.error = action.payload?.message;
       })
 
-      // LOGIN
       .addCase(loginUser.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -100,7 +95,6 @@ const authSlice = createSlice({
         state.error = action.payload?.message;
       })
 
-      // CHECK AUTH
       .addCase(checkAuth.pending, (state) => {
         state.loading = true;
       })
@@ -115,7 +109,6 @@ const authSlice = createSlice({
         state.isAuthenticated = false;
       })
 
-      // LOGOUT
       .addCase(logoutUser.pending, (state) => {
         state.loading = true;
       })
@@ -128,7 +121,7 @@ const authSlice = createSlice({
       .addCase(logoutUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload?.message || 'Logout failed';
-        // Still clear user state even if logout request failed
+
         state.user = null;
         state.isAuthenticated = false;
       });

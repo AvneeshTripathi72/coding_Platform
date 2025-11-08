@@ -18,7 +18,6 @@ export const useSubscription = () => {
         return;
       }
 
-      // Admin users automatically have access to all features
       if (user.role === 'admin') {
         setSubscription({ isActive: true, planType: 'admin' });
         setLoading(false);
@@ -39,7 +38,6 @@ export const useSubscription = () => {
     fetchSubscription();
   }, [isAuthenticated, user]);
 
-  // Admin users or users with active subscription have access
   const hasAccess = user?.role === 'admin' || subscription.isActive === true;
 
   return {
@@ -48,4 +46,3 @@ export const useSubscription = () => {
     loading,
   };
 };
-

@@ -28,12 +28,12 @@ function AlgorithmPage() {
 }
 
 const router = createBrowserRouter([
-  // Public routes
+
   { path: '/login', element: <Login /> },
   { path: '/signup', element: <Signup /> },
   { path: '/payment/success', element: <PaymentSuccess /> },
   { path: '/payment/cancel', element: <PaymentCancel /> },
-  // Protected app
+
   {
     element: <RequireAuth />,
     children: [
@@ -50,7 +50,7 @@ const router = createBrowserRouter([
           { path: 'contest/:id', element: <ContestProblem /> },
         ]
       },
-      // Contest solving page (fullscreen, no layout)
+
       { path: 'contest/:contestId/solve/:problemId', element: <ContestSolving /> },
       { path: 'contest/:contestId/solve', element: <ContestSolving /> },
     ]

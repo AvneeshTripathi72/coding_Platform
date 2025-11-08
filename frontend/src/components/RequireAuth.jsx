@@ -5,7 +5,6 @@ function RequireAuth(){
   const { isAuthenticated, loading } = useSelector((s)=>s.auth)
   const location = useLocation()
   
-  // Wait for auth check to complete before redirecting
   if (loading) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
@@ -25,5 +24,3 @@ function RequireAuth(){
 }
 
 export default RequireAuth
-
-

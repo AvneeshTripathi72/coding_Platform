@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 function PaymentCancel() {
   const navigate = useNavigate();
 
-  // Clear stored session data
   if (typeof window !== 'undefined') {
     sessionStorage.removeItem('dodo_session_id');
     sessionStorage.removeItem('dodo_plan_type');
@@ -31,4 +30,3 @@ function PaymentCancel() {
 }
 
 export default PaymentCancel;
-

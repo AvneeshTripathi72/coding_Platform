@@ -22,16 +22,15 @@ function UserAvatarMenu(){
       navigate('/login')
     } catch (error) {
       console.error('Logout error:', error)
-      // Navigate anyway even if logout fails
+
       navigate('/login')
     }
   }
 
-  // Get user display name - prioritize firstName, then name, fallback to email or 'User'
   const getUserDisplayName = () => {
     if (user?.firstName) return user.firstName;
     if (user?.name) return user.name;
-    if (user?.emailId) return user.emailId.split('@')[0]; // Use email prefix as fallback
+    if (user?.emailId) return user.emailId.split('@')[0];
     return 'User';
   };
 
@@ -41,7 +40,7 @@ function UserAvatarMenu(){
   return (
     <div className="relative" ref={ref}>
       <button onClick={()=>setOpen(v=>!v)} className="flex items-center gap-2 text-sm text-white/80">
-        {/* User Initial Avatar */}
+        {}
         <span className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-400 to-cyan-400 border border-white/15 flex items-center justify-center text-sm font-bold text-black">
           {initial}
         </span>

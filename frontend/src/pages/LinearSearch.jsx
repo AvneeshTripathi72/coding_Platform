@@ -30,22 +30,22 @@ function LinearSearch() {
   const [highlightedLine, setHighlightedLine] = useState(-1)
   const [currentStep, setCurrentStep] = useState('')
   const [comparisons, setComparisons] = useState(0)
-  const [viewMode, setViewMode] = useState('iterative') // 'iterative' or 'recursive'
+  const [viewMode, setViewMode] = useState('iterative')
   const [recursionStack, setRecursionStack] = useState([])
   const [currentRecursionIndex, setCurrentRecursionIndex] = useState(-1)
 
   const updateArraySize = (newSize) => {
-    const size = Math.max(3, Math.min(15, newSize)) // Limit between 3 and 15
+    const size = Math.max(3, Math.min(15, newSize))
     setArraySize(size)
     if (size > arrayElements.length) {
-      // Add random elements
+
       const newElements = [...arrayElements]
       while (newElements.length < size) {
         newElements.push(Math.floor(Math.random() * 10) + 1)
       }
       setArrayElements(newElements)
     } else if (size < arrayElements.length) {
-      // Remove elements
+
       setArrayElements(arrayElements.slice(0, size))
     }
     setCurrentIndex(-1)
@@ -80,19 +80,19 @@ function LinearSearch() {
     
     const interval = setInterval(() => {
       if (index < arrayElements.length) {
-        // Highlight: for loop line
+
         setHighlightedLine(2)
         setCurrentIndex(index)
         setCurrentStep(`Checking index ${index}...`)
         
         setTimeout(() => {
-          // Highlight: comparison line
+
           setHighlightedLine(3)
           setComparisons(prev => prev + 1)
           
           if (arrayElements[index] === targetElement) {
             setFoundIndex(index)
-            setHighlightedLine(4) // return statement
+            setHighlightedLine(4)
             setCurrentStep(`Found! Element ${targetElement} is at index ${index}`)
             clearInterval(interval)
             setTimeout(() => {
@@ -104,7 +104,7 @@ function LinearSearch() {
             index++
             setTimeout(() => {
               if (index >= arrayElements.length) {
-                setHighlightedLine(6) // return -1
+                setHighlightedLine(6)
                 setCurrentStep('Element not found in array')
                 clearInterval(interval)
                 setTimeout(() => {
@@ -150,7 +150,7 @@ function LinearSearch() {
 
     const simulateRecursion = (index, stackDepth) => {
       if (index >= arrayElements.length) {
-        setHighlightedLine(6) // return -1
+        setHighlightedLine(6)
         setCurrentStep('Element not found - reached end of array')
         setIsSearching(false)
         setRecursionStack([])
@@ -158,24 +158,22 @@ function LinearSearch() {
         return
       }
 
-      // Add to recursion stack
       const newStack = [...recursionStack, { index, stackDepth, checking: true }]
       setRecursionStack(newStack)
       setCurrentRecursionIndex(newStack.length - 1)
       setCurrentIndex(index)
-      setHighlightedLine(2) // recursive call line
+      setHighlightedLine(2)
       setCurrentStep(`Recursive call: Checking index ${index} (Stack depth: ${stackDepth})`)
 
       setTimeout(() => {
-        setHighlightedLine(3) // comparison line
+        setHighlightedLine(3)
         setComparisons(prev => prev + 1)
 
         if (arrayElements[index] === targetElement) {
           setFoundIndex(index)
-          setHighlightedLine(4) // return index
+          setHighlightedLine(4)
           setCurrentStep(`Found! Element ${targetElement} at index ${index}`)
           
-          // Update stack to show found
           const updatedStack = newStack.map((item, i) => 
             i === newStack.length - 1 ? { ...item, checking: false, found: true } : item
           )
@@ -191,13 +189,12 @@ function LinearSearch() {
           setCurrentStep(`Element ${arrayElements[index]} ≠ ${targetElement}, recursing to next index...`)
           
           setTimeout(() => {
-            // Update current stack item
+
             const updatedStack = newStack.map((item, i) => 
               i === newStack.length - 1 ? { ...item, checking: false, notFound: true } : item
             )
             setRecursionStack(updatedStack)
             
-            // Recursive call
             simulateRecursion(index + 1, stackDepth + 1)
           }, 1000)
         }
@@ -214,17 +211,16 @@ function LinearSearch() {
   }
 
   const codeExamples = {
-    javascript: `// Linear Search in JavaScript
+    javascript: `
 function linearSearch(arr, target) {
   for (let i = 0; i < arr.length; i++) {
     if (arr[i] === target) {
-      return i; // Return index if found
+      return i;
     }
   }
-  return -1; // Return -1 if not found
+  return -1;
 }
 
-// Usage example
 const numbers = [10, 20, 30, 40, 50];
 const target = 30;
 const result = linearSearch(numbers, target);
@@ -248,15 +244,15 @@ if result != -1:
     print(f"Element found at index: {result}")
 else:
     print("Element not found")`,
-    java: `// Linear Search in Java
+    java: `
 public class LinearSearch {
     public static int linearSearch(int[] arr, int target) {
         for (int i = 0; i < arr.length; i++) {
             if (arr[i] == target) {
-                return i; // Return index if found
+                return i;
             }
         }
-        return -1; // Return -1 if not found
+        return -1;
     }
     
     public static void main(String[] args) {
@@ -270,16 +266,16 @@ public class LinearSearch {
         }
     }
 }`,
-    c: `// Linear Search in C
+    c: `
 #include <stdio.h>
 
 int linearSearch(int arr[], int n, int target) {
     for (int i = 0; i < n; i++) {
         if (arr[i] == target) {
-            return i; // Return index if found
+            return i;
         }
     }
-    return -1; // Return -1 if not found
+    return -1;
 }
 
 int main() {
@@ -294,17 +290,17 @@ int main() {
     }
     return 0;
 }`,
-    cpp: `// Linear Search in C++
+    cpp: `
 #include <iostream>
 using namespace std;
 
 int linearSearch(int arr[], int n, int target) {
     for (int i = 0; i < n; i++) {
         if (arr[i] == target) {
-            return i; // Return index if found
+            return i;
         }
     }
-    return -1; // Return -1 if not found
+    return -1;
 }
 
 int main() {
@@ -324,7 +320,7 @@ int main() {
   return (
     <div className="min-h-screen" style={{ backgroundColor: COLORS.bg, color: COLORS.text }}>
       <div className="max-w-7xl mx-auto px-6 py-8">
-        {/* Header */}
+        {}
         <button
           onClick={() => navigate('/algo-visualization')}
           className="flex items-center gap-2 mb-6 text-white/80 hover:text-white transition"
@@ -333,15 +329,15 @@ int main() {
           <span>Back to Algorithms</span>
         </button>
 
-        {/* Title */}
+        {}
         <h1 className="text-4xl font-bold mb-2">Linear Search</h1>
         <p className="text-lg mb-8" style={{ color: COLORS.textSecondary }}>
           Learn how Linear Search works step by step
         </p>
 
-        {/* Info Sections - Collapsible */}
+        {}
         <div className="grid md:grid-cols-2 gap-4 mb-6">
-          {/* What is Linear Search */}
+          {}
           <div className="rounded-xl border p-4" style={{ backgroundColor: COLORS.card, borderColor: COLORS.border }}>
             <h2 className="text-xl font-bold mb-3">What is Linear Search?</h2>
             <p className="text-sm" style={{ color: COLORS.textSecondary }}>
@@ -349,7 +345,7 @@ int main() {
             </p>
           </div>
 
-          {/* Time Complexity */}
+          {}
           <div className="rounded-xl border p-4" style={{ backgroundColor: COLORS.card, borderColor: COLORS.border }}>
             <h2 className="text-xl font-bold mb-3">Time Complexity</h2>
             <div className="space-y-2 text-sm">
@@ -369,17 +365,17 @@ int main() {
           </div>
         </div>
 
-        {/* Visualization */}
+        {}
         <section className="mb-8">
           <div className="rounded-2xl border p-6" style={{ backgroundColor: COLORS.card, borderColor: COLORS.border }}>
             <h2 className="text-2xl font-bold mb-6">Visualize how Linear Search works</h2>
             
             <div className="grid lg:grid-cols-2 gap-6">
-              {/* Left: Bar Chart Visualization */}
+              {}
               <div>
                 <label className="block mb-4 font-semibold">Array Visualization (Bar Chart)</label>
                 
-                {/* Array Size Control */}
+                {}
                 <div className="mb-4 p-3 rounded-lg" style={{ backgroundColor: COLORS.cardHover, border: `1px solid ${COLORS.border}` }}>
                   <label className="block mb-2 text-sm font-semibold">Array Size</label>
                   <div className="flex items-center gap-3">
@@ -405,7 +401,7 @@ int main() {
                   </div>
                 </div>
 
-                {/* Bar Chart */}
+                {}
                 <div className="mb-4 p-4 rounded-lg overflow-x-auto" style={{ backgroundColor: COLORS.bg, minHeight: '250px' }}>
                   <div className="flex items-end justify-center gap-2 min-w-max">
                     {arrayElements.map((element, index) => {
@@ -456,7 +452,7 @@ int main() {
                     })}
                   </div>
                   
-                  {/* Target Element Indicator */}
+                  {}
                   <div className="mt-3 flex items-center justify-center gap-2">
                     <span className="text-sm" style={{ color: COLORS.textSecondary }}>Target:</span>
                     <div
@@ -472,7 +468,7 @@ int main() {
                   </div>
                 </div>
 
-                {/* Array Elements Input */}
+                {}
                 <div className="mb-4">
                   <label className="block mb-2 font-semibold text-sm">Array Elements</label>
                   <div className="flex gap-2 flex-wrap mb-2 max-h-24 overflow-y-auto p-2">
@@ -502,7 +498,7 @@ int main() {
                   </button>
                 </div>
 
-                {/* Target Element Input */}
+                {}
                 <div className="mb-4">
                   <label className="block mb-2 font-semibold text-sm">Target Element</label>
                   <input
@@ -514,7 +510,7 @@ int main() {
                   />
                 </div>
 
-                {/* Control Buttons */}
+                {}
                 <div className="flex gap-3 mb-4">
                   <button
                     onClick={viewMode === 'iterative' ? startSearch : startRecursiveSearch}
@@ -535,7 +531,7 @@ int main() {
                   </button>
                 </div>
 
-                {/* Recursion Stack Visualization */}
+                {}
                 {viewMode === 'recursive' && recursionStack.length > 0 && (
                   <div className="mb-4 p-4 rounded-lg" style={{ backgroundColor: COLORS.bg, border: `1px solid ${COLORS.border}` }}>
                     <label className="block mb-3 font-semibold text-sm">Recursion Stack</label>
@@ -596,7 +592,7 @@ int main() {
                   </div>
                 )}
 
-                {/* Status */}
+                {}
                 {currentStep && (
                   <div className="p-4 rounded-lg mb-4" style={{ backgroundColor: COLORS.primary + '20', border: `1px solid ${COLORS.primary}` }}>
                     <p className="font-semibold text-sm" style={{ color: COLORS.primary }}>
@@ -619,7 +615,7 @@ int main() {
                 )}
               </div>
 
-              {/* Right: Code Execution */}
+              {}
               <div>
                 <label className="block mb-4 font-semibold">Code Execution</label>
                 <div className="p-4 rounded-lg" style={{ backgroundColor: '#0D1117', border: `1px solid ${COLORS.border}` }}>
@@ -647,7 +643,7 @@ int main() {
                             <span style={{ color: '#C9D1D9' }}>++)</span> {'{'}
                             {currentIndex >= 0 && (
                               <span className="ml-2 text-xs" style={{ color: COLORS.primary }}>
-                                // i = {currentIndex}
+
                               </span>
                             )}
                           </div>
@@ -659,7 +655,7 @@ int main() {
                             <span style={{ color: '#C9D1D9' }}>] === target)</span> {'{'}
                             {currentIndex >= 0 && (
                               <span className="ml-2 text-xs" style={{ color: COLORS.accent }}>
-                                // arr[{currentIndex}] = {arrayElements[currentIndex]} === {targetElement}?
+
                               </span>
                             )}
                           </div>
@@ -669,7 +665,7 @@ int main() {
                             <span style={{ color: '#FF7B72' }}>i</span>
                             <span style={{ color: '#C9D1D9' }}>;</span>
                             <span className="ml-2 text-xs" style={{ color: '#7EE787' }}>
-                              // Found!
+
                             </span>
                           </div>
                           <div>
@@ -686,7 +682,7 @@ int main() {
                             <span style={{ color: '#A5D6FF' }}>-1</span>
                             <span style={{ color: '#C9D1D9' }}>;</span>
                             <span className="ml-2 text-xs" style={{ color: '#FF7B72' }}>
-                              // Not found
+
                             </span>
                           </div>
                           <div>
@@ -706,7 +702,7 @@ int main() {
                             <span style={{ color: '#C9D1D9' }}> (index {'>='} arr.length)</span> {'{'}
                             {currentIndex >= 0 && (
                               <span className="ml-2 text-xs" style={{ color: COLORS.primary }}>
-                                // index = {currentIndex}
+
                               </span>
                             )}
                           </div>
@@ -716,7 +712,7 @@ int main() {
                             <span style={{ color: '#A5D6FF' }}>-1</span>
                             <span style={{ color: '#C9D1D9' }}>;</span>
                             <span className="ml-2 text-xs" style={{ color: '#FF7B72' }}>
-                              // Base case: not found
+
                             </span>
                           </div>
                           <div>
@@ -729,7 +725,7 @@ int main() {
                             <span style={{ color: '#C9D1D9' }}> (arr[index] === target)</span> {'{'}
                             {currentIndex >= 0 && (
                               <span className="ml-2 text-xs" style={{ color: COLORS.accent }}>
-                                // arr[{currentIndex}] = {arrayElements[currentIndex]} === {targetElement}?
+
                               </span>
                             )}
                           </div>
@@ -739,7 +735,7 @@ int main() {
                             <span style={{ color: '#FF7B72' }}>index</span>
                             <span style={{ color: '#C9D1D9' }}>;</span>
                             <span className="ml-2 text-xs" style={{ color: '#7EE787' }}>
-                              // Found!
+
                             </span>
                           </div>
                           <div>
@@ -752,7 +748,7 @@ int main() {
                             <span style={{ color: '#D2A8FF' }}>linearSearch</span>
                             <span style={{ color: '#C9D1D9' }}>(arr, target, index + 1);</span>
                             <span className="ml-2 text-xs" style={{ color: '#D2A8FF' }}>
-                              // Recursive call
+
                             </span>
                           </div>
                           <div>
@@ -768,7 +764,7 @@ int main() {
           </div>
         </section>
 
-        {/* Implementation */}
+        {}
         <section className="mb-8">
           <div className="rounded-2xl border p-6" style={{ backgroundColor: COLORS.card, borderColor: COLORS.border }}>
             <div className="flex items-center justify-between mb-4">
@@ -804,12 +800,12 @@ int main() {
           </div>
         </section>
 
-        {/* Detailed Explanation */}
+        {}
         <section className="mb-8">
           <div className="rounded-2xl border p-6" style={{ backgroundColor: COLORS.card, borderColor: COLORS.border }}>
             <h2 className="text-2xl font-bold mb-6">Detailed Explanation of Linear Search Algorithm</h2>
             
-            {/* How Does It Work */}
+            {}
             <div className="mb-6">
               <h3 className="text-xl font-semibold mb-3" style={{ color: COLORS.primary }}>How Does It Work?</h3>
               <p className="mb-4" style={{ color: COLORS.textSecondary }}>
@@ -828,7 +824,7 @@ int main() {
               </div>
             </div>
 
-            {/* Algorithm Steps */}
+            {}
             <div className="mb-6">
               <h3 className="text-xl font-semibold mb-3" style={{ color: COLORS.primary }}>Step-by-Step Algorithm</h3>
               <div className="space-y-3">
@@ -880,7 +876,7 @@ int main() {
               </div>
             </div>
 
-            {/* Time & Space Complexity */}
+            {}
             <div className="mb-6">
               <h3 className="text-xl font-semibold mb-3" style={{ color: COLORS.primary }}>Time & Space Complexity</h3>
               <div className="grid md:grid-cols-3 gap-4">
@@ -903,7 +899,7 @@ int main() {
               </div>
             </div>
 
-            {/* Advantages & Disadvantages */}
+            {}
             <div className="mb-6">
               <h3 className="text-xl font-semibold mb-3" style={{ color: COLORS.primary }}>Advantages & Disadvantages</h3>
               <div className="grid md:grid-cols-2 gap-4">
@@ -956,7 +952,7 @@ int main() {
               </div>
             </div>
 
-            {/* When to Use */}
+            {}
             <div className="mb-6">
               <h3 className="text-xl font-semibold mb-3" style={{ color: COLORS.primary }}>When to Use Linear Search?</h3>
               <div className="p-4 rounded-lg" style={{ backgroundColor: COLORS.cardHover, border: `1px solid ${COLORS.border}` }}>
@@ -985,7 +981,7 @@ int main() {
               </div>
             </div>
 
-            {/* Real-World Applications */}
+            {}
             <div>
               <h3 className="text-xl font-semibold mb-3" style={{ color: COLORS.primary }}>Real-World Applications</h3>
               <div className="p-4 rounded-lg" style={{ backgroundColor: COLORS.cardHover, border: `1px solid ${COLORS.border}` }}>
@@ -1021,4 +1017,3 @@ int main() {
 }
 
 export default LinearSearch
-

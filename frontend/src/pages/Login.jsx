@@ -21,7 +21,6 @@ function Login() {
     if (!loading && isAuthenticated) navigate("/");
   }, [isAuthenticated, loading, navigate]);
 
-  // Show loading while checking auth
   if (loading) {
     return (
       <div className="min-h-screen flex justify-center items-center bg-black">

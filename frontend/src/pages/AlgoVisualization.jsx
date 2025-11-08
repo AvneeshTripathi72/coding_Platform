@@ -4,17 +4,16 @@ import { useNavigate } from 'react-router-dom'
 import PaymentModal from '../components/PaymentModal.jsx'
 import { useSubscription } from '../hooks/useSubscription.js'
 
-// Color scheme: Dark theme with Blue, Yellow accents
 const COLORS = {
-  bg: '#000000', // Black background
-  card: '#1A1A1A', // Dark gray cards
-  cardHover: '#262626', // Darker gray hover
-  text: '#FFFFFF', // White text
-  textSecondary: '#A3A3A3', // Light gray secondary text
-  primary: '#3B82F6', // Blue
-  accent: '#FCD34D', // Yellow
-  accentDark: '#F59E0B', // Dark yellow
-  border: '#2A2A2A', // Dark gray border
+  bg: '#000000',
+  card: '#1A1A1A',
+  cardHover: '#262626',
+  text: '#FFFFFF',
+  textSecondary: '#A3A3A3',
+  primary: '#3B82F6',
+  accent: '#FCD34D',
+  accentDark: '#F59E0B',
+  border: '#2A2A2A',
   gradient1: 'linear-gradient(135deg, #667EEA 0%, #764BA2 100%)',
   gradient2: 'linear-gradient(135deg, #F093FB 0%, #F5576C 100%)',
   gradient3: 'linear-gradient(135deg, #4FACFE 0%, #00F2FE 100%)',
@@ -185,7 +184,6 @@ function AlgoVisualization() {
     navigate(`/algo-visualization/${categoryId}/${algorithmId}`)
   }
 
-  // Filter categories based on search
   const filteredCategories = algorithmCategories.filter(cat =>
     cat.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     cat.items?.some(item => item.title.toLowerCase().includes(searchQuery.toLowerCase()))
@@ -228,7 +226,7 @@ function AlgoVisualization() {
 
   return (
     <div className="min-h-screen">
-      {/* Hero Section */}
+      {}
       <div className="max-w-7xl mx-auto px-6 py-16">
         <div className="text-center mb-16">
           <h2 className="text-5xl font-bold mb-4" style={{ color: COLORS.text }}>
@@ -238,7 +236,7 @@ function AlgoVisualization() {
             Visualize and learn algorithms step by step
           </p>
           
-          {/* Search Bar */}
+          {}
           <div className="max-w-2xl mx-auto relative">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5" style={{ color: COLORS.textSecondary }} />
             <input
@@ -252,11 +250,11 @@ function AlgoVisualization() {
           </div>
         </div>
 
-        {/* Algorithm Categories */}
+        {}
         <div className="space-y-8">
           {filteredCategories.map((category) => (
             <div key={category.id} className="space-y-4">
-              {/* Category Header Card */}
+              {}
               <div className="rounded-2xl border p-6 shadow-lg hover:shadow-xl transition-all duration-300" style={{ backgroundColor: COLORS.card, borderColor: COLORS.border }}>
                 <div className="flex items-center gap-4 mb-2">
                   <div className="p-3 rounded-xl" style={{ backgroundColor: category.color + '20' }}>
@@ -269,7 +267,7 @@ function AlgoVisualization() {
                 </div>
               </div>
 
-              {/* Topics Grid */}
+              {}
               {category.items && (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {category.items.map((item) => (
@@ -282,7 +280,7 @@ function AlgoVisualization() {
                         borderColor: COLORS.border 
                       }}
                     >
-                      {/* Gradient overlay on hover */}
+                      {}
                       <div className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity" style={{ background: `linear-gradient(135deg, ${category.color} 0%, ${COLORS.accent} 100%)` }}></div>
                       
                       <div className="relative z-10">

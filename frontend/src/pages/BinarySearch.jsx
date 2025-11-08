@@ -219,7 +219,7 @@ function BinarySearch() {
   }
 
   const codeExamples = {
-    javascript: `// Binary Search in JavaScript (Iterative)
+    javascript: `
 function binarySearch(arr, target) {
   let left = 0;
   let right = arr.length - 1;
@@ -228,17 +228,16 @@ function binarySearch(arr, target) {
     let mid = Math.floor((left + right) / 2);
     
     if (arr[mid] === target) {
-      return mid; // Found!
+      return mid;
     } else if (arr[mid] > target) {
-      right = mid - 1; // Search left half
+      right = mid - 1;
     } else {
-      left = mid + 1; // Search right half
+      left = mid + 1;
     }
   }
-  return -1; // Not found
+  return -1;
 }
 
-// Usage
 const numbers = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19];
 const target = 11;
 const result = binarySearch(numbers, target);
@@ -249,7 +248,7 @@ def binary_search(arr, target):
     right = len(arr) - 1
     
     while left <= right:
-        mid = (left + right) // 2
+        mid = (left + right)
         
         if arr[mid] == target:
             return mid  # Found!
@@ -265,7 +264,7 @@ numbers = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19]
 target = 11
 result = binary_search(numbers, target)
 print(f"Found at index: {result}" if result != -1 else "Not found")`,
-    java: `// Binary Search in Java (Iterative)
+    java: `
 public class BinarySearch {
     public static int binarySearch(int[] arr, int target) {
         int left = 0;
@@ -275,14 +274,14 @@ public class BinarySearch {
             int mid = left + (right - left) / 2;
             
             if (arr[mid] == target) {
-                return mid; // Found!
+                return mid;
             } else if (arr[mid] > target) {
-                right = mid - 1; // Search left half
+                right = mid - 1;
             } else {
-                left = mid + 1; // Search right half
+                left = mid + 1;
             }
         }
-        return -1; // Not found
+        return -1;
     }
     
     public static void main(String[] args) {
@@ -292,7 +291,7 @@ public class BinarySearch {
         System.out.println(result != -1 ? "Found at index: " + result : "Not found");
     }
 }`,
-    c: `// Binary Search in C (Iterative)
+    c: `
 #include <stdio.h>
 
 int binarySearch(int arr[], int n, int target) {
@@ -303,14 +302,14 @@ int binarySearch(int arr[], int n, int target) {
         int mid = left + (right - left) / 2;
         
         if (arr[mid] == target) {
-            return mid; // Found!
+            return mid;
         } else if (arr[mid] > target) {
-            right = mid - 1; // Search left half
+            right = mid - 1;
         } else {
-            left = mid + 1; // Search right half
+            left = mid + 1;
         }
     }
-    return -1; // Not found
+    return -1;
 }
 
 int main() {
@@ -321,7 +320,7 @@ int main() {
     printf(result != -1 ? "Found at index: %d\\n" : "Not found\\n", result);
     return 0;
 }`,
-    cpp: `// Binary Search in C++ (Iterative)
+    cpp: `
 #include <iostream>
 using namespace std;
 
@@ -333,14 +332,14 @@ int binarySearch(int arr[], int n, int target) {
         int mid = left + (right - left) / 2;
         
         if (arr[mid] == target) {
-            return mid; // Found!
+            return mid;
         } else if (arr[mid] > target) {
-            right = mid - 1; // Search left half
+            right = mid - 1;
         } else {
-            left = mid + 1; // Search right half
+            left = mid + 1;
         }
     }
-    return -1; // Not found
+    return -1;
 }
 
 int main() {
@@ -356,7 +355,7 @@ int main() {
   return (
     <div className="min-h-screen" style={{ backgroundColor: COLORS.bg, color: COLORS.text }}>
       <div className="max-w-7xl mx-auto px-6 py-8">
-        {/* Header */}
+        {}
         <button
           onClick={() => navigate('/algo-visualization')}
           className="flex items-center gap-2 mb-6 text-white/80 hover:text-white transition"
@@ -365,13 +364,13 @@ int main() {
           <span>Back to Algorithms</span>
         </button>
 
-        {/* Title */}
+        {}
         <h1 className="text-4xl font-bold mb-2">Binary Search</h1>
         <p className="text-lg mb-8" style={{ color: COLORS.textSecondary }}>
           Learn how Binary Search works step by step (Array must be sorted!)
         </p>
 
-        {/* Info Sections */}
+        {}
         <div className="grid md:grid-cols-2 gap-4 mb-6">
           <div className="rounded-xl border p-4" style={{ backgroundColor: COLORS.card, borderColor: COLORS.border }}>
             <h2 className="text-xl font-bold mb-3">What is Binary Search?</h2>
@@ -399,7 +398,7 @@ int main() {
           </div>
         </div>
 
-        {/* Visualization */}
+        {}
         <section className="mb-8">
           <div className="rounded-2xl border p-6" style={{ backgroundColor: COLORS.card, borderColor: COLORS.border }}>
             <div className="flex items-center justify-between mb-6">
@@ -439,11 +438,11 @@ int main() {
             </div>
 
             <div className="grid lg:grid-cols-2 gap-6">
-              {/* Left: Bar Chart Visualization */}
+              {}
               <div>
                 <label className="block mb-4 font-semibold">Array Visualization (Bar Chart)</label>
 
-                {/* Array Size Control */}
+                {}
                 <div className="mb-4 p-3 rounded-lg" style={{ backgroundColor: COLORS.cardHover, border: `1px solid ${COLORS.border}` }}>
                   <label className="block mb-2 text-sm font-semibold">Array Size</label>
                   <div className="flex items-center gap-3">
@@ -469,7 +468,7 @@ int main() {
                   </div>
                 </div>
 
-                {/* Bar Chart */}
+                {}
                 <div className="mb-4 p-4 rounded-lg overflow-x-auto" style={{ backgroundColor: COLORS.bg, minHeight: '250px' }}>
                   <div className="flex items-end justify-center gap-2 min-w-max">
                     {arrayElements.map((element, index) => {
@@ -483,7 +482,6 @@ int main() {
                       const outOfRange = left >= 0 && right >= 0 && (index < left || index > right)
                       const barWidth = arraySize <= 10 ? 50 : arraySize <= 15 ? 40 : 35
                       
-                      // Determine if this element is eliminated
                       let eliminated = false
                       let eliminatedReason = ''
                       if (mid >= 0 && left >= 0 && right >= 0) {
@@ -498,7 +496,7 @@ int main() {
 
                       return (
                         <div key={index} className="flex flex-col items-center gap-1 relative">
-                          {/* Eliminated overlay */}
+                          {}
                           {eliminated && (
                             <div 
                               className="absolute inset-0 rounded-lg flex items-center justify-center z-10"
@@ -568,7 +566,7 @@ int main() {
                     })}
                   </div>
                   
-                  {/* Search Space Indicator */}
+                  {}
                   {left >= 0 && right >= 0 && (
                     <div className="mt-4 p-3 rounded-lg" style={{ backgroundColor: COLORS.cardHover, border: `1px solid ${COLORS.border}` }}>
                       <div className="flex items-center justify-between text-sm">
@@ -596,7 +594,7 @@ int main() {
                     </div>
                   )}
 
-                  {/* Target Element Indicator */}
+                  {}
                   <div className="mt-3 flex items-center justify-center gap-2">
                     <span className="text-sm" style={{ color: COLORS.textSecondary }}>Target:</span>
                     <div
@@ -612,7 +610,7 @@ int main() {
                   </div>
                 </div>
 
-                {/* Array Elements Input */}
+                {}
                 <div className="mb-4">
                   <label className="block mb-2 font-semibold text-sm">Array Elements (Must be sorted!)</label>
                   <div className="flex gap-2 flex-wrap mb-2 max-h-24 overflow-y-auto p-2">
@@ -642,7 +640,7 @@ int main() {
                   </button>
                 </div>
 
-                {/* Target Element Input */}
+                {}
                 <div className="mb-4">
                   <label className="block mb-2 font-semibold text-sm">Target Element</label>
                   <input
@@ -654,7 +652,7 @@ int main() {
                   />
                 </div>
 
-                {/* Control Buttons */}
+                {}
                 <div className="flex gap-3 mb-4">
                   <button
                     onClick={viewMode === 'iterative' ? startSearch : startRecursiveSearch}
@@ -675,7 +673,7 @@ int main() {
                   </button>
                 </div>
 
-                {/* Recursion Stack Visualization */}
+                {}
                 {viewMode === 'recursive' && recursionStack.length > 0 && (
                   <div className="mb-4 p-4 rounded-lg" style={{ backgroundColor: COLORS.bg, border: `1px solid ${COLORS.border}` }}>
                     <label className="block mb-3 font-semibold text-sm">Recursion Stack & Search Space</label>
@@ -728,7 +726,7 @@ int main() {
                                 )}
                               </div>
                               
-                              {/* Search Space Visualization */}
+                              {}
                               <div className="mt-2 mb-2">
                                 <div className="flex items-center gap-1 text-xs mb-1">
                                   <span style={{ color: COLORS.textSecondary }}>Search Space:</span>
@@ -795,7 +793,7 @@ int main() {
                               </div>
                             </div>
                             
-                            {/* Connection line to next level */}
+                            {}
                             {idx < recursionStack.length - 1 && (
                               <div className="flex justify-center my-1" style={{ marginLeft: `${frame.stackDepth * 20}px` }}>
                                 <div className="w-0.5 h-4" style={{ backgroundColor: COLORS.primary }}></div>
@@ -808,7 +806,7 @@ int main() {
                   </div>
                 )}
 
-                {/* Status */}
+                {}
                 {currentStep && (
                   <div className="p-4 rounded-lg mb-4" style={{ backgroundColor: COLORS.primary + '20', border: `1px solid ${COLORS.primary}` }}>
                     <p className="font-semibold text-sm" style={{ color: COLORS.primary }}>
@@ -831,7 +829,7 @@ int main() {
                 )}
               </div>
 
-              {/* Right: Code Execution */}
+              {}
               <div>
                 <label className="block mb-4 font-semibold">Code Execution</label>
                 <div className="p-4 rounded-lg" style={{ backgroundColor: '#0D1117', border: `1px solid ${COLORS.border}` }}>
@@ -866,7 +864,7 @@ int main() {
                             <span style={{ color: '#C9D1D9' }}> (left {'<='} right)</span> {'{'}
                             {left >= 0 && right >= 0 && (
                               <span className="ml-2 text-xs" style={{ color: COLORS.primary }}>
-                                // left={left}, right={right}
+
                               </span>
                             )}
                           </div>
@@ -879,7 +877,7 @@ int main() {
                             <span style={{ color: '#C9D1D9' }}>);</span>
                             {mid >= 0 && (
                               <span className="ml-2 text-xs" style={{ color: COLORS.primary }}>
-                                // mid = {mid}
+
                               </span>
                             )}
                           </div>
@@ -894,7 +892,7 @@ int main() {
                             <span style={{ color: '#FF7B72' }}>mid</span>
                             <span style={{ color: '#C9D1D9' }}>;</span>
                             <span className="ml-2 text-xs" style={{ color: '#7EE787' }}>
-                              // Found!
+
                             </span>
                           </div>
                           <div>
@@ -942,7 +940,7 @@ int main() {
                             <span style={{ color: '#A5D6FF' }}>-1</span>
                             <span style={{ color: '#C9D1D9' }}>;</span>
                             <span className="ml-2 text-xs" style={{ color: '#FF7B72' }}>
-                              // Not found
+
                             </span>
                           </div>
                           <div>
@@ -961,7 +959,7 @@ int main() {
                             <span style={{ color: '#79C0FF' }}>if</span>
                             <span style={{ color: '#C9D1D9' }}> (left {'>'} right)</span> {'{'}
                             <span className="ml-2 text-xs" style={{ color: '#FF7B72' }}>
-                              // Base case
+
                             </span>
                           </div>
                           <div className={highlightedLine === 6 ? 'bg-red-500/30 px-2 py-1 rounded' : ''}>
@@ -993,7 +991,7 @@ int main() {
                             <span style={{ color: '#FF7B72' }}>mid</span>
                             <span style={{ color: '#C9D1D9' }}>;</span>
                             <span className="ml-2 text-xs" style={{ color: '#7EE787' }}>
-                              // Found!
+
                             </span>
                           </div>
                           <div>
@@ -1011,7 +1009,7 @@ int main() {
                             <span style={{ color: '#D2A8FF' }}>binarySearch</span>
                             <span style={{ color: '#C9D1D9' }}>(arr, target, left, mid - 1);</span>
                             <span className="ml-2 text-xs" style={{ color: '#D2A8FF' }}>
-                              // Recursive left
+
                             </span>
                           </div>
                           <div>
@@ -1024,7 +1022,7 @@ int main() {
                             <span style={{ color: '#D2A8FF' }}>binarySearch</span>
                             <span style={{ color: '#C9D1D9' }}>(arr, target, mid + 1, right);</span>
                             <span className="ml-2 text-xs" style={{ color: '#D2A8FF' }}>
-                              // Recursive right
+
                             </span>
                           </div>
                           <div>
@@ -1040,7 +1038,7 @@ int main() {
           </div>
         </section>
 
-        {/* Implementation */}
+        {}
         <section className="mb-8">
           <div className="rounded-2xl border p-6" style={{ backgroundColor: COLORS.card, borderColor: COLORS.border }}>
             <div className="flex items-center justify-between mb-4">
@@ -1076,12 +1074,12 @@ int main() {
           </div>
         </section>
 
-        {/* Detailed Explanation */}
+        {}
         <section className="mb-8">
           <div className="rounded-2xl border p-6" style={{ backgroundColor: COLORS.card, borderColor: COLORS.border }}>
             <h2 className="text-2xl font-bold mb-6">Detailed Explanation of Binary Search Algorithm</h2>
 
-            {/* How Does It Work */}
+            {}
             <div className="mb-6">
               <h3 className="text-xl font-semibold mb-3" style={{ color: COLORS.primary }}>How Does It Work?</h3>
               <p className="mb-4" style={{ color: COLORS.textSecondary }}>
@@ -1100,7 +1098,7 @@ int main() {
               </div>
             </div>
 
-            {/* Algorithm Steps */}
+            {}
             <div className="mb-6">
               <h3 className="text-xl font-semibold mb-3" style={{ color: COLORS.primary }}>Step-by-Step Algorithm</h3>
               <div className="space-y-3">
@@ -1152,7 +1150,7 @@ int main() {
               </div>
             </div>
 
-            {/* Time & Space Complexity */}
+            {}
             <div className="mb-6">
               <h3 className="text-xl font-semibold mb-3" style={{ color: COLORS.primary }}>Time & Space Complexity</h3>
               <div className="grid md:grid-cols-3 gap-4">
@@ -1171,7 +1169,7 @@ int main() {
               </div>
             </div>
 
-            {/* Advantages & Disadvantages */}
+            {}
             <div className="mb-6">
               <h3 className="text-xl font-semibold mb-3" style={{ color: COLORS.primary }}>Advantages & Disadvantages</h3>
               <div className="grid md:grid-cols-2 gap-4">
@@ -1220,7 +1218,7 @@ int main() {
               </div>
             </div>
 
-            {/* When to Use */}
+            {}
             <div className="mb-6">
               <h3 className="text-xl font-semibold mb-3" style={{ color: COLORS.primary }}>When to Use Binary Search?</h3>
               <div className="p-4 rounded-lg" style={{ backgroundColor: COLORS.cardHover, border: `1px solid ${COLORS.border}` }}>
@@ -1245,7 +1243,7 @@ int main() {
               </div>
             </div>
 
-            {/* Real-World Applications */}
+            {}
             <div>
               <h3 className="text-xl font-semibold mb-3" style={{ color: COLORS.primary }}>Real-World Applications</h3>
               <div className="p-4 rounded-lg" style={{ backgroundColor: COLORS.cardHover, border: `1px solid ${COLORS.border}` }}>
@@ -1277,4 +1275,3 @@ int main() {
 }
 
 export default BinarySearch
-

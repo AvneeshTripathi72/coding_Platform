@@ -116,7 +116,7 @@ function Sorting() {
   return (
     <div className="min-h-screen" style={{ backgroundColor: COLORS.bg, color: COLORS.text }}>
       <div className="max-w-7xl mx-auto px-6 py-8">
-        {/* Header */}
+        {}
         <button
           onClick={() => navigate('/algo-visualization')}
           className="flex items-center gap-2 mb-6 text-white/80 hover:text-white transition"
@@ -125,10 +125,10 @@ function Sorting() {
           <span>Back to Algorithms</span>
         </button>
 
-        {/* Title */}
+        {}
         <h1 className="text-4xl font-bold mb-8">Sorting</h1>
 
-        {/* Sorting Algorithms Grid */}
+        {}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {sortingAlgorithms.map((algorithm) => (
             <button
@@ -140,7 +140,7 @@ function Sorting() {
                 borderColor: COLORS.border,
               }}
             >
-              {/* Gradient overlay on hover */}
+              {}
               <div
                 className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity"
                 style={{
@@ -163,4 +163,3 @@ function Sorting() {
 }
 
 export default Sorting
-

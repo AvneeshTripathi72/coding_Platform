@@ -15,7 +15,7 @@ function PaymentSuccess() {
 
   useEffect(() => {
     const verifyPayment = async () => {
-      // Prefer session_id from URL; fallback to sessionStorage if missing
+
       const sessionId =
         searchParams.get('session_id') ||
         sessionStorage.getItem('dodo_session_id');
@@ -27,7 +27,7 @@ function PaymentSuccess() {
       }
 
       try {
-        // Get stored guest info if available
+
         const storedSessionId = sessionStorage.getItem('dodo_session_id');
         const storedPlanType = sessionStorage.getItem('dodo_plan_type');
         const storedGuestInfo = sessionStorage.getItem('dodo_guest_info');
@@ -42,11 +42,10 @@ function PaymentSuccess() {
 
         if (response.data.wasNewUser) {
           setWasNewUser(true);
-          // Refresh auth state for new user
+
           await dispatch(checkAuth());
         }
 
-        // Clear stored session data
         sessionStorage.removeItem('dodo_session_id');
         sessionStorage.removeItem('dodo_plan_type');
         sessionStorage.removeItem('dodo_guest_info');
@@ -54,7 +53,6 @@ function PaymentSuccess() {
         setStatus('success');
         setMessage('Payment successful! Your subscription is now active.');
 
-        // Redirect after 3 seconds
         setTimeout(() => {
           navigate('/');
         }, 3000);
@@ -113,4 +111,3 @@ function PaymentSuccess() {
 }
 
 export default PaymentSuccess;
-

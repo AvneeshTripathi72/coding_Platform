@@ -182,14 +182,14 @@ function SortingAlgorithm() {
         setSortedIndices(prev => [...prev, n - 1 - i])
         i++
         j = 0
-        setHighlightedLine(2) // outer loop
+        setHighlightedLine(2)
         setCurrentStep(`Pass ${i + 1}: Starting new pass`)
         setTimeout(sortStep, 1000)
         return
       }
 
       setHighlightedIndices([j, j + 1])
-      setHighlightedLine(3) // comparison
+      setHighlightedLine(3)
       setComparisons(prev => prev + 1)
       setCurrentStep(`Comparing arr[${j}] = ${arr[j]} and arr[${j + 1}] = ${arr[j + 1]}`)
 
@@ -198,7 +198,7 @@ function SortingAlgorithm() {
           [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]]
           setArrayElements([...arr])
           setSwaps(prev => prev + 1)
-          setHighlightedLine(4) // swap
+          setHighlightedLine(4)
           setCurrentStep(`Swapping ${arr[j + 1]} and ${arr[j]}`)
         } else {
           setHighlightedLine(3)
@@ -226,7 +226,7 @@ function SortingAlgorithm() {
 
     const simulateRecursion = (size, stackDepth) => {
       if (size <= 1) {
-        setHighlightedLine(2) // base case
+        setHighlightedLine(2)
         setCurrentStep('Base case: n <= 1, returning')
         setIsSorting(false)
         setRecursionStack([])
@@ -238,7 +238,7 @@ function SortingAlgorithm() {
       const newStack = [...recursionStack, { n: size, stackDepth, checking: true }]
       setRecursionStack(newStack)
       setCurrentRecursionIndex(newStack.length - 1)
-      setHighlightedLine(3) // for loop
+      setHighlightedLine(3)
       setCurrentStep(`Recursive call: bubbleSort(arr, n=${size}) - Stack depth: ${stackDepth}`)
 
       let swapped = false
@@ -250,7 +250,7 @@ function SortingAlgorithm() {
             i === newStack.length - 1 ? { ...item, checking: false, completed: true } : item
           )
           setRecursionStack(updatedStack)
-          setHighlightedLine(4) // recursive call
+          setHighlightedLine(4)
           setCurrentStep(`Pass completed, recursing with n=${size - 1}`)
           setTimeout(() => {
             simulateRecursion(size - 1, stackDepth + 1)
@@ -306,7 +306,7 @@ function SortingAlgorithm() {
 
       let minIdx = i
       setHighlightedIndices([i])
-      setHighlightedLine(2) // finding minimum
+      setHighlightedLine(2)
       setCurrentStep(`Finding minimum in unsorted portion starting from index ${i}`)
 
       setTimeout(() => {
@@ -316,7 +316,7 @@ function SortingAlgorithm() {
               [arr[i], arr[minIdx]] = [arr[minIdx], arr[i]]
               setArrayElements([...arr])
               setSwaps(prev => prev + 1)
-              setHighlightedLine(3) // swap
+              setHighlightedLine(3)
               setCurrentStep(`Swapping ${arr[i]} (min) with ${arr[minIdx]} at position ${i}`)
             } else {
               setCurrentStep(`Element at ${i} is already in correct position`)
@@ -371,7 +371,7 @@ function SortingAlgorithm() {
       const key = arr[i]
       let j = i - 1
       setHighlightedIndices([i])
-      setHighlightedLine(2) // key selection
+      setHighlightedLine(2)
       setCurrentStep(`Selecting key element: ${key} at index ${i}`)
 
       setTimeout(() => {
@@ -380,7 +380,7 @@ function SortingAlgorithm() {
             setHighlightedIndices([i, j])
             setComparisons(prev => prev + 1)
             setCurrentStep(`Comparing ${arr[j]} > ${key}, shifting ${arr[j]} to the right`)
-            setHighlightedLine(3) // shift
+            setHighlightedLine(3)
 
             setTimeout(() => {
               arr[j + 1] = arr[j]
@@ -392,7 +392,7 @@ function SortingAlgorithm() {
           } else {
             arr[j + 1] = key
             setArrayElements([...arr])
-            setHighlightedLine(4) // insert
+            setHighlightedLine(4)
             setCurrentStep(`Inserting ${key} at position ${j + 1}`)
             setSortedIndices(prev => [...prev, j + 1])
             i++
@@ -473,7 +473,7 @@ function SortingAlgorithm() {
       const newStack = [...recursionStack, { left, mid, right, stackDepth, checking: true }]
       setRecursionStack(newStack)
       setCurrentRecursionIndex(newStack.length - 1)
-      setHighlightedLine(2) // divide
+      setHighlightedLine(2)
       setCurrentStep(`Dividing array [${left}...${right}] at mid = ${mid}`)
 
       await new Promise(resolve => setTimeout(resolve, 1000))
@@ -485,7 +485,7 @@ function SortingAlgorithm() {
         i === newStack.length - 1 ? { ...item, checking: false, completed: true } : item
       )
       setRecursionStack(updatedStack)
-      setHighlightedLine(3) // merge
+      setHighlightedLine(3)
       await merge(arr, left, mid, right)
     }
 
@@ -560,7 +560,7 @@ function SortingAlgorithm() {
         }]
         setRecursionStack(newStack)
         setCurrentRecursionIndex(newStack.length - 1)
-        setHighlightedLine(2) // partition call
+        setHighlightedLine(2)
         setCurrentStep(`Processing subarray from index ${low} to ${high}`)
         await sleep(1000)
         
@@ -671,13 +671,11 @@ function SortingAlgorithm() {
       }
     }
 
-    // Build max heap
     for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
       setCurrentStep(`Building max heap: heapifying node at index ${i}`)
       await heapify(arr, n, i, 0)
     }
 
-    // Extract elements from heap
     for (let i = n - 1; i > 0; i--) {
       [arr[0], arr[i]] = [arr[i], arr[0]]
       setArrayElements([...arr])
@@ -713,14 +711,14 @@ function SortingAlgorithm() {
 
     const sortStep = () => {
       if (step === 0) {
-        setHighlightedLine(1) // count phase
+        setHighlightedLine(1)
         setCurrentStep(`Finding maximum element: ${max}`)
         setTimeout(() => {
           step++
           sortStep()
         }, 1000)
       } else if (step === 1) {
-        setHighlightedLine(2) // counting
+        setHighlightedLine(2)
         setCurrentStep('Counting occurrences of each element')
         arr.forEach((val, idx) => {
           count[val]++
@@ -732,7 +730,7 @@ function SortingAlgorithm() {
           sortStep()
         }, 2000)
       } else if (step === 2) {
-        setHighlightedLine(3) // cumulative
+        setHighlightedLine(3)
         setCurrentStep('Building cumulative count array')
         for (let i = 1; i <= max; i++) {
           count[i] += count[i - 1]
@@ -742,7 +740,7 @@ function SortingAlgorithm() {
           sortStep()
         }, 2000)
       } else if (step === 3) {
-        setHighlightedLine(4) // place elements
+        setHighlightedLine(4)
         let idx = 0
         const placeElements = () => {
           if (idx >= n) {
@@ -790,7 +788,7 @@ function SortingAlgorithm() {
       const count = Array(10).fill(0)
 
       setCurrentStep(`Sorting by digit at position ${exp === 1 ? 'ones' : exp === 10 ? 'tens' : exp === 100 ? 'hundreds' : 'position ' + exp}`)
-      setHighlightedLine(2) // counting by digit
+      setHighlightedLine(2)
 
       for (let i = 0; i < n; i++) {
         const digit = Math.floor(arr[i] / exp) % 10
@@ -819,7 +817,7 @@ function SortingAlgorithm() {
     }
 
     for (let exp = 1; Math.floor(max / exp) > 0; exp *= 10) {
-      setHighlightedLine(1) // outer loop
+      setHighlightedLine(1)
       await countingSortByDigit(arr, exp)
       await sleep(1000)
     }
@@ -859,13 +857,13 @@ function SortingAlgorithm() {
   const getCodeExamples = () => {
     const codes = {
       'bubble-sort': {
-        javascript: `// Bubble Sort in JavaScript
+        javascript: `
 function bubbleSort(arr) {
   const n = arr.length;
   for (let i = 0; i < n - 1; i++) {
     for (let j = 0; j < n - i - 1; j++) {
       if (arr[j] > arr[j + 1]) {
-        // Swap elements
+
         [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
       }
     }
@@ -873,7 +871,6 @@ function bubbleSort(arr) {
   return arr;
 }
 
-// Usage
 const numbers = [64, 34, 25, 12, 22, 11, 90];
 const sorted = bubbleSort(numbers);
 console.log("Sorted array:", sorted);`,
@@ -891,7 +888,7 @@ def bubble_sort(arr):
 numbers = [64, 34, 25, 12, 22, 11, 90]
 sorted_arr = bubble_sort(numbers)
 print("Sorted array:", sorted_arr)`,
-        java: `// Bubble Sort in Java
+        java: `
 import java.util.Arrays;
 
 public class BubbleSort {
@@ -900,7 +897,7 @@ public class BubbleSort {
         for (int i = 0; i < n - 1; i++) {
             for (int j = 0; j < n - i - 1; j++) {
                 if (arr[j] > arr[j + 1]) {
-                    // Swap elements
+
                     int temp = arr[j];
                     arr[j] = arr[j + 1];
                     arr[j + 1] = temp;
@@ -915,14 +912,14 @@ public class BubbleSort {
         System.out.println("Sorted array: " + Arrays.toString(numbers));
     }
 }`,
-        c: `// Bubble Sort in C
+        c: `
 #include <stdio.h>
 
 void bubble_sort(int arr[], int n) {
     for (int i = 0; i < n - 1; i++) {
         for (int j = 0; j < n - i - 1; j++) {
             if (arr[j] > arr[j + 1]) {
-                // Swap elements
+
                 int temp = arr[j];
                 arr[j] = arr[j + 1];
                 arr[j + 1] = temp;
@@ -941,7 +938,7 @@ int main() {
     }
     return 0;
 }`,
-        cpp: `// Bubble Sort in C++
+        cpp: `
 #include <iostream>
 using namespace std;
 
@@ -949,7 +946,7 @@ void bubbleSort(int arr[], int n) {
     for (int i = 0; i < n - 1; i++) {
         for (int j = 0; j < n - i - 1; j++) {
             if (arr[j] > arr[j + 1]) {
-                // Swap elements
+
                 swap(arr[j], arr[j + 1]);
             }
         }
@@ -968,7 +965,7 @@ int main() {
 }`
       },
       'selection-sort': {
-        javascript: `// Selection Sort in JavaScript
+        javascript: `
 function selectionSort(arr) {
   const n = arr.length;
   for (let i = 0; i < n - 1; i++) {
@@ -978,13 +975,12 @@ function selectionSort(arr) {
         minIdx = j;
       }
     }
-    // Swap minimum with current
+
     [arr[i], arr[minIdx]] = [arr[minIdx], arr[i]];
   }
   return arr;
 }
 
-// Usage
 const numbers = [64, 34, 25, 12, 22, 11, 90];
 const sorted = selectionSort(numbers);
 console.log("Sorted array:", sorted);`,
@@ -1004,7 +1000,7 @@ def selection_sort(arr):
 numbers = [64, 34, 25, 12, 22, 11, 90]
 sorted_arr = selection_sort(numbers)
 print("Sorted array:", sorted_arr)`,
-        java: `// Selection Sort in Java
+        java: `
 import java.util.Arrays;
 
 public class SelectionSort {
@@ -1017,7 +1013,7 @@ public class SelectionSort {
                     minIdx = j;
                 }
             }
-            // Swap minimum with current
+
             int temp = arr[i];
             arr[i] = arr[minIdx];
             arr[minIdx] = temp;
@@ -1030,7 +1026,7 @@ public class SelectionSort {
         System.out.println("Sorted array: " + Arrays.toString(numbers));
     }
 }`,
-        c: `// Selection Sort in C
+        c: `
 #include <stdio.h>
 
 void selection_sort(int arr[], int n) {
@@ -1041,7 +1037,7 @@ void selection_sort(int arr[], int n) {
                 min_idx = j;
             }
         }
-        // Swap minimum with current
+
         int temp = arr[i];
         arr[i] = arr[min_idx];
         arr[min_idx] = temp;
@@ -1058,7 +1054,7 @@ int main() {
     }
     return 0;
 }`,
-        cpp: `// Selection Sort in C++
+        cpp: `
 #include <iostream>
 using namespace std;
 
@@ -1070,7 +1066,7 @@ void selectionSort(int arr[], int n) {
                 minIdx = j;
             }
         }
-        // Swap minimum with current
+
         swap(arr[i], arr[minIdx]);
     }
 }
@@ -1087,7 +1083,7 @@ int main() {
 }`
       },
       'insertion-sort': {
-        javascript: `// Insertion Sort in JavaScript
+        javascript: `
 function insertionSort(arr) {
   const n = arr.length;
   for (let i = 1; i < n; i++) {
@@ -1102,7 +1098,6 @@ function insertionSort(arr) {
   return arr;
 }
 
-// Usage
 const numbers = [64, 34, 25, 12, 22, 11, 90];
 const sorted = insertionSort(numbers);
 console.log("Sorted array:", sorted);`,
@@ -1122,7 +1117,7 @@ def insertion_sort(arr):
 numbers = [64, 34, 25, 12, 22, 11, 90]
 sorted_arr = insertion_sort(numbers)
 print("Sorted array:", sorted_arr)`,
-        java: `// Insertion Sort in Java
+        java: `
 import java.util.Arrays;
 
 public class InsertionSort {
@@ -1145,7 +1140,7 @@ public class InsertionSort {
         System.out.println("Sorted array: " + Arrays.toString(numbers));
     }
 }`,
-        c: `// Insertion Sort in C
+        c: `
 #include <stdio.h>
 
 void insertion_sort(int arr[], int n) {
@@ -1170,7 +1165,7 @@ int main() {
     }
     return 0;
 }`,
-        cpp: `// Insertion Sort in C++
+        cpp: `
 #include <iostream>
 using namespace std;
 
@@ -1198,7 +1193,7 @@ int main() {
 }`
       },
       'merge-sort': {
-        javascript: `// Merge Sort in JavaScript
+        javascript: `
 function mergeSort(arr) {
   if (arr.length <= 1) return arr;
   
@@ -1224,7 +1219,6 @@ function merge(left, right) {
   return result.concat(left.slice(i)).concat(right.slice(j));
 }
 
-// Usage
 const numbers = [64, 34, 25, 12, 22, 11, 90];
 const sorted = mergeSort(numbers);
 console.log("Sorted array:", sorted);`,
@@ -1233,7 +1227,7 @@ def merge_sort(arr):
     if len(arr) <= 1:
         return arr
     
-    mid = len(arr) // 2
+    mid = len(arr)
     left = merge_sort(arr[:mid])
     right = merge_sort(arr[mid:])
     
@@ -1259,7 +1253,7 @@ def merge(left, right):
 numbers = [64, 34, 25, 12, 22, 11, 90]
 sorted_arr = merge_sort(numbers)
 print("Sorted array:", sorted_arr)`,
-        java: `// Merge Sort in Java
+        java: `
 import java.util.Arrays;
 
 public class MergeSort {
@@ -1295,7 +1289,7 @@ public class MergeSort {
         System.out.println("Sorted array: " + Arrays.toString(numbers));
     }
 }`,
-        c: `// Merge Sort in C
+        c: `
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -1344,7 +1338,7 @@ int main() {
     }
     return 0;
 }`,
-        cpp: `// Merge Sort in C++
+        cpp: `
 #include <iostream>
 #include <vector>
 using namespace std;
@@ -1386,7 +1380,7 @@ int main() {
 }`
       },
       'quick-sort': {
-        javascript: `// Quick Sort in JavaScript
+        javascript: `
 function quickSort(arr, low = 0, high = arr.length - 1) {
   if (low < high) {
     const pivotIndex = partition(arr, low, high);
@@ -1410,7 +1404,6 @@ function partition(arr, low, high) {
   return i + 1;
 }
 
-// Usage
 const numbers = [64, 34, 25, 12, 22, 11, 90];
 quickSort(numbers);
 console.log("Sorted array:", numbers);`,
@@ -1440,7 +1433,7 @@ def partition(arr, low, high):
 numbers = [64, 34, 25, 12, 22, 11, 90]
 quick_sort(numbers)
 print("Sorted array:", numbers)`,
-        java: `// Quick Sort in Java
+        java: `
 import java.util.Arrays;
 
 public class QuickSort {
@@ -1477,7 +1470,7 @@ public class QuickSort {
         System.out.println("Sorted array: " + Arrays.toString(numbers));
     }
 }`,
-        c: `// Quick Sort in C
+        c: `
 #include <stdio.h>
 
 int partition(int arr[], int low, int high) {
@@ -1517,7 +1510,7 @@ int main() {
     }
     return 0;
 }`,
-        cpp: `// Quick Sort in C++
+        cpp: `
 #include <iostream>
 using namespace std;
 
@@ -1555,16 +1548,14 @@ int main() {
 }`
       },
       'heap-sort': {
-        javascript: `// Heap Sort in JavaScript
+        javascript: `
 function heapSort(arr) {
   const n = arr.length;
   
-  // Build max heap
   for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
     heapify(arr, n, i);
   }
   
-  // Extract elements from heap
   for (let i = n - 1; i > 0; i--) {
     [arr[0], arr[i]] = [arr[i], arr[0]];
     heapify(arr, i, 0);
@@ -1592,7 +1583,6 @@ function heapify(arr, n, i) {
   }
 }
 
-// Usage
 const numbers = [64, 34, 25, 12, 22, 11, 90];
 heapSort(numbers);
 console.log("Sorted array:", numbers);`,
@@ -1601,7 +1591,7 @@ def heap_sort(arr):
     n = len(arr)
     
     # Build max heap
-    for i in range(n // 2 - 1, -1, -1):
+    for i in range(n
         heapify(arr, n, i)
     
     # Extract elements from heap
@@ -1630,19 +1620,17 @@ def heapify(arr, n, i):
 numbers = [64, 34, 25, 12, 22, 11, 90]
 heap_sort(numbers)
 print("Sorted array:", numbers)`,
-        java: `// Heap Sort in Java
+        java: `
 import java.util.Arrays;
 
 public class HeapSort {
     public static void heapSort(int[] arr) {
         int n = arr.length;
         
-        // Build max heap
         for (int i = n / 2 - 1; i >= 0; i--) {
             heapify(arr, n, i);
         }
         
-        // Extract elements from heap
         for (int i = n - 1; i > 0; i--) {
             int temp = arr[0];
             arr[0] = arr[i];
@@ -1678,7 +1666,7 @@ public class HeapSort {
         System.out.println("Sorted array: " + Arrays.toString(numbers));
     }
 }`,
-        c: `// Heap Sort in C
+        c: `
 #include <stdio.h>
 
 void heapify(int arr[], int n, int i) {
@@ -1703,12 +1691,11 @@ void heapify(int arr[], int n, int i) {
 }
 
 void heap_sort(int arr[], int n) {
-    // Build max heap
+
     for (int i = n / 2 - 1; i >= 0; i--) {
         heapify(arr, n, i);
     }
     
-    // Extract elements from heap
     for (int i = n - 1; i > 0; i--) {
         int temp = arr[0];
         arr[0] = arr[i];
@@ -1727,7 +1714,7 @@ int main() {
     }
     return 0;
 }`,
-        cpp: `// Heap Sort in C++
+        cpp: `
 #include <iostream>
 using namespace std;
 
@@ -1751,12 +1738,11 @@ void heapify(int arr[], int n, int i) {
 }
 
 void heapSort(int arr[], int n) {
-    // Build max heap
+
     for (int i = n / 2 - 1; i >= 0; i--) {
         heapify(arr, n, i);
     }
     
-    // Extract elements from heap
     for (int i = n - 1; i > 0; i--) {
         swap(arr[0], arr[i]);
         heapify(arr, i, 0);
@@ -1775,23 +1761,20 @@ int main() {
 }`
       },
       'counting-sort': {
-        javascript: `// Counting Sort in JavaScript
+        javascript: `
 function countingSort(arr) {
   const max = Math.max(...arr);
   const count = Array(max + 1).fill(0);
   const output = Array(arr.length).fill(0);
   
-  // Count occurrences
   for (let i = 0; i < arr.length; i++) {
     count[arr[i]]++;
   }
   
-  // Build cumulative count
   for (let i = 1; i <= max; i++) {
     count[i] += count[i - 1];
   }
   
-  // Place elements in sorted order
   for (let i = arr.length - 1; i >= 0; i--) {
     output[count[arr[i]] - 1] = arr[i];
     count[arr[i]]--;
@@ -1800,7 +1783,6 @@ function countingSort(arr) {
   return output;
 }
 
-// Usage
 const numbers = [4, 2, 2, 8, 3, 3, 1];
 const sorted = countingSort(numbers);
 console.log("Sorted array:", sorted);`,
@@ -1829,7 +1811,7 @@ def counting_sort(arr):
 numbers = [4, 2, 2, 8, 3, 3, 1]
 sorted_arr = counting_sort(numbers)
 print("Sorted array:", sorted_arr)`,
-        java: `// Counting Sort in Java
+        java: `
 import java.util.Arrays;
 
 public class CountingSort {
@@ -1838,17 +1820,14 @@ public class CountingSort {
         int[] count = new int[max + 1];
         int[] output = new int[arr.length];
         
-        // Count occurrences
         for (int num : arr) {
             count[num]++;
         }
         
-        // Build cumulative count
         for (int i = 1; i <= max; i++) {
             count[i] += count[i - 1];
         }
         
-        // Place elements in sorted order
         for (int i = arr.length - 1; i >= 0; i--) {
             output[count[arr[i]] - 1] = arr[i];
             count[arr[i]]--;
@@ -1863,7 +1842,7 @@ public class CountingSort {
         System.out.println("Sorted array: " + Arrays.toString(sorted));
     }
 }`,
-        c: `// Counting Sort in C
+        c: `
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -1876,17 +1855,14 @@ int* counting_sort(int arr[], int n) {
     int* count = (int*)calloc(max + 1, sizeof(int));
     int* output = (int*)malloc(n * sizeof(int));
     
-    // Count occurrences
     for (int i = 0; i < n; i++) {
         count[arr[i]]++;
     }
     
-    // Build cumulative count
     for (int i = 1; i <= max; i++) {
         count[i] += count[i - 1];
     }
     
-    // Place elements in sorted order
     for (int i = n - 1; i >= 0; i--) {
         output[count[arr[i]] - 1] = arr[i];
         count[arr[i]]--;
@@ -1907,7 +1883,7 @@ int main() {
     free(sorted);
     return 0;
 }`,
-        cpp: `// Counting Sort in C++
+        cpp: `
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -1918,17 +1894,14 @@ vector<int> countingSort(vector<int>& arr) {
     vector<int> count(max + 1, 0);
     vector<int> output(arr.size());
     
-    // Count occurrences
     for (int num : arr) {
         count[num]++;
     }
     
-    // Build cumulative count
     for (int i = 1; i <= max; i++) {
         count[i] += count[i - 1];
     }
     
-    // Place elements in sorted order
     for (int i = arr.size() - 1; i >= 0; i--) {
         output[count[arr[i]] - 1] = arr[i];
         count[arr[i]]--;
@@ -1948,7 +1921,7 @@ int main() {
 }`
       },
       'radix-sort': {
-        javascript: `// Radix Sort in JavaScript
+        javascript: `
 function radixSort(arr) {
   const max = Math.max(...arr);
   
@@ -1964,30 +1937,25 @@ function countingSortByDigit(arr, exp) {
   const output = Array(n).fill(0);
   const count = Array(10).fill(0);
   
-  // Count occurrences of each digit
   for (let i = 0; i < n; i++) {
     count[Math.floor(arr[i] / exp) % 10]++;
   }
   
-  // Build cumulative count
   for (let i = 1; i < 10; i++) {
     count[i] += count[i - 1];
   }
   
-  // Place elements in sorted order
   for (let i = n - 1; i >= 0; i--) {
     const digit = Math.floor(arr[i] / exp) % 10;
     output[count[digit] - 1] = arr[i];
     count[digit]--;
   }
   
-  // Copy output back to arr
   for (let i = 0; i < n; i++) {
     arr[i] = output[i];
   }
 }
 
-// Usage
 const numbers = [170, 45, 75, 90, 802, 24, 2, 66];
 radixSort(numbers);
 console.log("Sorted array:", numbers);`,
@@ -1996,7 +1964,7 @@ def radix_sort(arr):
     max_val = max(arr)
     
     exp = 1
-    while max_val // exp > 0:
+    while max_val
         counting_sort_by_digit(arr, exp)
         exp *= 10
     
@@ -2009,7 +1977,7 @@ def counting_sort_by_digit(arr, exp):
     
     # Count occurrences of each digit
     for num in arr:
-        count[(num // exp) % 10] += 1
+        count[(num
     
     # Build cumulative count
     for i in range(1, 10):
@@ -2017,7 +1985,7 @@ def counting_sort_by_digit(arr, exp):
     
     # Place elements in sorted order
     for i in range(n - 1, -1, -1):
-        digit = (arr[i] // exp) % 10
+        digit = (arr[i]
         output[count[digit] - 1] = arr[i]
         count[digit] -= 1
     
@@ -2029,7 +1997,7 @@ def counting_sort_by_digit(arr, exp):
 numbers = [170, 45, 75, 90, 802, 24, 2, 66]
 radix_sort(numbers)
 print("Sorted array:", numbers)`,
-        java: `// Radix Sort in Java
+        java: `
 import java.util.Arrays;
 
 public class RadixSort {
@@ -2046,24 +2014,20 @@ public class RadixSort {
         int[] output = new int[n];
         int[] count = new int[10];
         
-        // Count occurrences of each digit
         for (int num : arr) {
             count[(num / exp) % 10]++;
         }
         
-        // Build cumulative count
         for (int i = 1; i < 10; i++) {
             count[i] += count[i - 1];
         }
         
-        // Place elements in sorted order
         for (int i = n - 1; i >= 0; i--) {
             int digit = (arr[i] / exp) % 10;
             output[count[digit] - 1] = arr[i];
             count[digit]--;
         }
         
-        // Copy output back to arr
         System.arraycopy(output, 0, arr, 0, n);
     }
     
@@ -2073,31 +2037,27 @@ public class RadixSort {
         System.out.println("Sorted array: " + Arrays.toString(numbers));
     }
 }`,
-        c: `// Radix Sort in C
+        c: `
 #include <stdio.h>
 
 void countingSortByDigit(int arr[], int n, int exp) {
     int output[n];
     int count[10] = {0};
     
-    // Count occurrences of each digit
     for (int i = 0; i < n; i++) {
         count[(arr[i] / exp) % 10]++;
     }
     
-    // Build cumulative count
     for (int i = 1; i < 10; i++) {
         count[i] += count[i - 1];
     }
     
-    // Place elements in sorted order
     for (int i = n - 1; i >= 0; i--) {
         int digit = (arr[i] / exp) % 10;
         output[count[digit] - 1] = arr[i];
         count[digit]--;
     }
     
-    // Copy output back to arr
     for (int i = 0; i < n; i++) {
         arr[i] = output[i];
     }
@@ -2124,7 +2084,7 @@ int main() {
     }
     return 0;
 }`,
-        cpp: `// Radix Sort in C++
+        cpp: `
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -2135,24 +2095,20 @@ void countingSortByDigit(vector<int>& arr, int exp) {
     vector<int> output(n);
     vector<int> count(10, 0);
     
-    // Count occurrences of each digit
     for (int num : arr) {
         count[(num / exp) % 10]++;
     }
     
-    // Build cumulative count
     for (int i = 1; i < 10; i++) {
         count[i] += count[i - 1];
     }
     
-    // Place elements in sorted order
     for (int i = n - 1; i >= 0; i--) {
         int digit = (arr[i] / exp) % 10;
         output[count[digit] - 1] = arr[i];
         count[digit]--;
     }
     
-    // Copy output back to arr
     arr = output;
 }
 
@@ -2184,7 +2140,7 @@ int main() {
   return (
     <div className="min-h-screen" style={{ backgroundColor: COLORS.bg, color: COLORS.text }}>
       <div className="max-w-7xl mx-auto px-6 py-8">
-        {/* Header */}
+        {}
         <button
           onClick={() => navigate('/algo-visualization/array/sorting')}
           className="flex items-center gap-2 mb-6 text-white/80 hover:text-white transition"
@@ -2193,7 +2149,7 @@ int main() {
           <span>Back to Sorting</span>
         </button>
 
-        {/* Title */}
+        {}
         <div className="flex items-center gap-4 mb-6">
           <span className="text-5xl">{algorithm.icon}</span>
           <div>
@@ -2210,11 +2166,11 @@ int main() {
           </div>
         </div>
 
-        {/* Info Cards */}
+        {}
         <div className="grid md:grid-cols-3 gap-6 mb-8">
-          {/* Time Complexity Card */}
+          {}
           <div className="rounded-2xl border-2 p-6 relative overflow-hidden" style={{ backgroundColor: COLORS.card, borderColor: COLORS.border }}>
-            {/* Decorative gradient */}
+            {}
             <div className="absolute top-0 right-0 w-32 h-32 rounded-full opacity-10" style={{ background: `radial-gradient(circle, ${COLORS.accent} 0%, transparent 70%)` }}></div>
             
             <div className="relative z-10">
@@ -2252,9 +2208,9 @@ int main() {
             </div>
           </div>
 
-          {/* Space Complexity Card */}
+          {}
           <div className="rounded-2xl border-2 p-6 relative overflow-hidden" style={{ backgroundColor: COLORS.card, borderColor: COLORS.border }}>
-            {/* Decorative gradient */}
+            {}
             <div className="absolute top-0 right-0 w-32 h-32 rounded-full opacity-10" style={{ background: `radial-gradient(circle, ${COLORS.primary} 0%, transparent 70%)` }}></div>
             
             <div className="relative z-10">
@@ -2293,9 +2249,9 @@ int main() {
             </div>
           </div>
 
-          {/* Best Use Case Card */}
+          {}
           <div className="rounded-2xl border-2 p-6 relative overflow-hidden" style={{ backgroundColor: COLORS.card, borderColor: COLORS.border }}>
-            {/* Decorative gradient */}
+            {}
             <div className="absolute top-0 right-0 w-32 h-32 rounded-full opacity-10" style={{ background: `radial-gradient(circle, ${COLORS.primary} 0%, transparent 70%)` }}></div>
             
             <div className="relative z-10">
@@ -2310,7 +2266,7 @@ int main() {
           </div>
         </div>
 
-        {/* Description */}
+        {}
         <div className="rounded-2xl border p-6 mb-8" style={{ backgroundColor: COLORS.card, borderColor: COLORS.border }}>
           <h2 className="text-2xl font-bold mb-4">What is {algorithm.title}?</h2>
           <p className="text-lg leading-relaxed" style={{ color: COLORS.textSecondary }}>
@@ -2318,7 +2274,7 @@ int main() {
           </p>
         </div>
 
-        {/* Visualization */}
+        {}
         <section className="mb-8">
           <div className="rounded-2xl border p-6" style={{ backgroundColor: COLORS.card, borderColor: COLORS.border }}>
             <div className="flex items-center justify-between mb-6">
@@ -2358,11 +2314,11 @@ int main() {
             </div>
 
             <div className="grid lg:grid-cols-2 gap-6">
-              {/* Left: Bar Chart Visualization */}
+              {}
               <div>
                 <label className="block mb-4 font-semibold">Array Visualization (Bar Chart)</label>
 
-                {/* Array Size Control */}
+                {}
                 <div className="mb-4 p-3 rounded-lg" style={{ backgroundColor: COLORS.cardHover, border: `1px solid ${COLORS.border}` }}>
                   <label className="block mb-2 text-sm font-semibold">Array Size</label>
                   <div className="flex items-center gap-3">
@@ -2388,7 +2344,7 @@ int main() {
                   </div>
                 </div>
 
-                {/* Bar Chart */}
+                {}
                 <div className="mb-4 p-4 rounded-lg overflow-x-auto" style={{ backgroundColor: COLORS.bg, minHeight: '300px' }}>
                   <div className="flex items-end justify-center gap-2 min-w-max">
                     {arrayElements.map((element, index) => {
@@ -2437,7 +2393,7 @@ int main() {
                   </div>
                 </div>
 
-                {/* Array Elements Input */}
+                {}
                 <div className="mb-4">
                   <label className="block mb-2 font-semibold text-sm">Array Elements</label>
                   <div className="flex gap-2 flex-wrap mb-2 max-h-24 overflow-y-auto p-2">
@@ -2467,7 +2423,7 @@ int main() {
                   </button>
                 </div>
 
-                {/* Control Buttons */}
+                {}
                 <div className="flex gap-3 mb-4">
                   <button
                     onClick={startSorting}
@@ -2488,7 +2444,7 @@ int main() {
                   </button>
                 </div>
 
-                {/* Status */}
+                {}
                 {currentStep && (
                   <div className="p-4 rounded-lg mb-4" style={{ backgroundColor: COLORS.primary + '20', border: `1px solid ${COLORS.primary}` }}>
                     <p className="font-semibold text-sm" style={{ color: COLORS.primary }}>
@@ -2509,7 +2465,7 @@ int main() {
                   </div>
                 )}
 
-                {/* Recursion Stack Visualization */}
+                {}
                 {(algorithmId === 'bubble-sort' || algorithmId === 'merge-sort' || algorithmId === 'quick-sort' || algorithmId === 'heap-sort') && recursionStack.length > 0 && (
                   <div className="mb-4 p-4 rounded-lg" style={{ backgroundColor: COLORS.bg, border: `1px solid ${COLORS.border}` }}>
                     <label className="block mb-3 font-semibold text-sm">
@@ -2618,7 +2574,7 @@ int main() {
                 )}
               </div>
 
-              {/* Right: Code Execution */}
+              {}
               <div>
                 <label className="block mb-4 font-semibold">Code Execution</label>
                 <div className="p-4 rounded-lg" style={{ backgroundColor: '#0D1117', border: `1px solid ${COLORS.border}` }}>
@@ -2739,7 +2695,7 @@ int main() {
                             <span style={{ color: '#C9D1D9' }}> (n {'<='} </span>
                             <span style={{ color: '#A5D6FF' }}>1</span>
                             <span style={{ color: '#C9D1D9' }}>)</span> {'{'}
-                            <span className="ml-2 text-xs" style={{ color: '#FF7B72' }}>// Base case</span>
+                            <span className="ml-2 text-xs" style={{ color: '#FF7B72' }}>
                           </div>
                           <div>
                             {'    '}
@@ -2808,7 +2764,7 @@ int main() {
                             <span style={{ color: '#C9D1D9' }}>(arr, n - </span>
                             <span style={{ color: '#A5D6FF' }}>1</span>
                             <span style={{ color: '#C9D1D9' }}>);</span>
-                            <span className="ml-2 text-xs" style={{ color: '#D2A8FF' }}>// Recursive call</span>
+                            <span className="ml-2 text-xs" style={{ color: '#D2A8FF' }}>
                           </div>
                           <div>
                             <span style={{ color: '#C9D1D9' }}>{'}'}</span>
@@ -2823,7 +2779,7 @@ int main() {
           </div>
         </section>
 
-        {/* Implementation */}
+        {}
         <div className="rounded-2xl border p-6 mb-8" style={{ backgroundColor: COLORS.card, borderColor: COLORS.border }}>
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-2xl font-bold">{algorithm.title} Implementation</h2>
@@ -2857,7 +2813,7 @@ int main() {
           </pre>
         </div>
 
-        {/* Theory Section */}
+        {}
         <section className="space-y-6">
           <div className="rounded-2xl border p-6" style={{ backgroundColor: COLORS.card, borderColor: COLORS.border }}>
             <h2 className="text-2xl font-bold mb-4">How Does {algorithm.title} Work?</h2>
@@ -3348,4 +3304,3 @@ int main() {
 }
 
 export default SortingAlgorithm
-
