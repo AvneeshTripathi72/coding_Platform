@@ -8,7 +8,7 @@ function Users(){
   const [total, setTotal] = useState(0)
   const [search, setSearch] = useState('')
   const [showModal, setShowModal] = useState(false)
-  const [modalMode, setModalMode] = useState('create') // create | edit | view
+  const [modalMode, setModalMode] = useState('create')
   const [selectedUser, setSelectedUser] = useState(null)
   const [loading, setLoading] = useState(false)
   const limit = 20
@@ -188,7 +188,7 @@ function Users(){
   const onSearch = (e) => {
     e.preventDefault()
     setPage(1)
-    // Load will be triggered by the page change in useEffect
+
     setTimeout(() => load(), 0)
   }
 
@@ -293,7 +293,7 @@ function Users(){
         </button>
       </div>
 
-      {/* Modal */}
+      {}
       {showModal && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
           <div className="bg-black border border-white/20 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -469,7 +469,3 @@ function Users(){
 }
 
 export default Users
-
-
-
-

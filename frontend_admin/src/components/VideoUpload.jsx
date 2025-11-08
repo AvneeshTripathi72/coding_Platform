@@ -26,13 +26,11 @@ function VideoUpload({ problemId, onVideoSaved }) {
     const file = e.target.files[0];
     if (!file) return;
 
-    // Validate file type
     if (!file.type.startsWith('video/')) {
       setError('Please select a valid video file');
       return;
     }
 
-    // Validate file size (max 500MB)
     if (file.size > 500 * 1024 * 1024) {
       setError('Video file size must be less than 500MB');
       return;
@@ -59,7 +57,6 @@ function VideoUpload({ problemId, onVideoSaved }) {
       console.log('Problem ID:', problemId);
       console.log('Form data:', formData);
 
-      // Step 1: Get upload token from backend
       console.log('[Step 1] Requesting upload token from backend...');
       const tokenResponse = await axiosClient.post('/videos/upload-token', {
         problemId,
@@ -73,7 +70,6 @@ function VideoUpload({ problemId, onVideoSaved }) {
         throw new Error('Upload preset not configured. Please set CLOUDINARY_UPLOAD_PRESET in backend .env');
       }
 
-      // Get cloud name from backend response or env
       const finalCloudName = cloudName || import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
       const envCloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
       
@@ -90,7 +86,6 @@ function VideoUpload({ problemId, onVideoSaved }) {
         throw new Error('Cloudinary cloud name not configured. Please set CLOUDINARY_CLOUD_NAME in backend .env or VITE_CLOUDINARY_CLOUD_NAME in frontend_admin/.env');
       }
       
-      // Validate cloud name format
       if (finalCloudName === 'configured' || finalCloudName === 'undefined' || finalCloudName === 'null') {
         console.error('[Error] Invalid cloud name value:', finalCloudName);
         throw new Error(`Invalid cloud name: "${finalCloudName}". Please set a valid CLOUDINARY_CLOUD_NAME in backend .env (should be your actual cloud name like "dt2qgf2y7")`);
@@ -103,7 +98,6 @@ function VideoUpload({ problemId, onVideoSaved }) {
         resourceType: 'video'
       });
 
-      // Step 2: Upload directly to Cloudinary
       console.log('[Step 2] Preparing FormData for Cloudinary upload...');
       const cloudinaryFormData = new FormData();
       cloudinaryFormData.append('file', file);
@@ -114,7 +108,7 @@ function VideoUpload({ problemId, onVideoSaved }) {
       cloudinaryFormData.append('resource_type', 'video');
 
       console.log('[Step 2] Uploading to Cloudinary...');
-      console.log('Upload URL:', `https://api.cloudinary.com/v1_1/${finalCloudName}/video/upload`);
+      console.log('Upload URL:', `https:
       console.log('FormData entries:', {
         file: file.name,
         upload_preset: uploadPreset,
@@ -122,10 +116,8 @@ function VideoUpload({ problemId, onVideoSaved }) {
         resource_type: 'video'
       });
 
-      // Create XMLHttpRequest for progress tracking
       const xhr = new XMLHttpRequest();
       
-      // Track upload progress
       xhr.upload.addEventListener('progress', (event) => {
         if (event.lengthComputable) {
           const percentComplete = Math.round((event.loaded / event.total) * 100);
@@ -165,7 +157,7 @@ function VideoUpload({ problemId, onVideoSaved }) {
           });
         });
 
-        xhr.open('POST', `https://api.cloudinary.com/v1_1/${finalCloudName}/video/upload`);
+        xhr.open('POST', `https:
         xhr.send(cloudinaryFormData);
       });
 
@@ -180,12 +172,10 @@ function VideoUpload({ problemId, onVideoSaved }) {
           errorData: errorData
         });
         
-        // Provide helpful error messages for common issues
         let errorMessage = errorData.error?.message || `Cloudinary upload failed: ${cloudinaryResponse.status} ${cloudinaryResponse.statusText}`;
         const errorMessageLower = errorMessage.toLowerCase();
         const errorDataStr = JSON.stringify(errorData).toLowerCase();
         
-        // Check for missing signature/api_key - indicates preset is set to "Signed" instead of "Unsigned"
         if (errorMessageLower.includes('signature') || errorMessageLower.includes('api_key') || 
             errorMessageLower.includes('api key') || errorDataStr.includes('signature') || 
             errorDataStr.includes('api_key') || errorDataStr.includes('authentication')) {
@@ -231,7 +221,6 @@ function VideoUpload({ problemId, onVideoSaved }) {
         bytes: cloudinaryData.bytes
       });
 
-      // Step 3: Save video metadata to backend
       console.log('[Step 3] Saving video metadata to backend...');
       const savePayload = {
         problemId,
@@ -249,7 +238,7 @@ function VideoUpload({ problemId, onVideoSaved }) {
 
       setSuccess('Video uploaded successfully!');
       setFormData({ title: '', description: '' });
-      // Reset file input
+
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
       }
@@ -273,7 +262,7 @@ function VideoUpload({ problemId, onVideoSaved }) {
         console.error('Error response headers:', err.response.headers);
       }
       setError(err.response?.data?.message || err.message || 'Failed to upload video');
-      // Reset file input on error so user can try again
+
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
       }
@@ -292,7 +281,7 @@ function VideoUpload({ problemId, onVideoSaved }) {
     setSuccess('');
     setUploadProgress(0);
     setFormData({ title: '', description: '' });
-    // Reset file input
+
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
@@ -342,53 +331,7 @@ function VideoUpload({ problemId, onVideoSaved }) {
             <input
               ref={fileInputRef}
               type="file"
-              accept="video/*"
-              onChange={handleFileSelect}
-              disabled={uploading}
-              className="hidden"
-            />
-            <div className="text-center">
-              <Upload className={`w-6 h-6 mx-auto mb-2 ${uploading ? 'text-blue-400 animate-bounce' : 'text-white/60'}`} />
-              <span className="text-sm text-white/70">
-                {uploading ? `Uploading... ${uploadProgress}%` : 'Click to select video file'}
-              </span>
-              <p className="text-xs text-white/50 mt-1">Max 500MB</p>
-            </div>
-          </label>
-        </div>
-
-        {uploading && (
-          <div className="space-y-2">
-            <div className="w-full bg-white/5 rounded-full h-2.5 overflow-hidden border border-white/10">
-              <div
-                className="bg-gradient-to-r from-blue-500 to-emerald-500 h-2.5 rounded-full transition-all duration-300 ease-out flex items-center justify-end pr-1"
-                style={{ width: `${uploadProgress}%` }}
-              >
-                {uploadProgress > 10 && (
-                  <span className="text-[8px] text-white font-medium">{uploadProgress}%</span>
-                )}
-              </div>
-            </div>
-            <div className="flex items-center justify-between text-xs text-white/60">
-              <span>Uploading video...</span>
-              <span>{uploadProgress}%</span>
-            </div>
-          </div>
-        )}
-
-        {error && (
-          <div className="p-2 bg-rose-500/10 border border-rose-500/30 rounded text-xs text-rose-300">
-            {error}
-          </div>
-        )}
-
-        {success && (
-          <div className="p-2 bg-emerald-500/10 border border-emerald-500/30 rounded text-xs text-emerald-300">
-            {success}
-          </div>
-        )}
-
-        {/* Reset/Clear button - show when there's an error or when form has data */}
+              accept="video}
         {(error || formData.title || formData.description) && !uploading && (
           <button
             type="button"
@@ -404,4 +347,3 @@ function VideoUpload({ problemId, onVideoSaved }) {
 }
 
 export default VideoUpload;
-

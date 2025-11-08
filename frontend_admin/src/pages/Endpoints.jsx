@@ -149,7 +149,7 @@ function Endpoints(){
       const res = await axiosClient({ 
         method: endpoint.method.toLowerCase(), 
         url,
-        validateStatus: () => true // Don't throw on any status
+        validateStatus: () => true
       })
       const responseTime = Date.now() - startTime
       setResults(prev => ({ 
@@ -208,7 +208,7 @@ function Endpoints(){
 
   return (
     <div className="space-y-6">
-      {/* Header */}
+      {}
       <div>
         <h2 className="text-2xl font-bold mb-2 flex items-center gap-2">
           <Server className="w-6 h-6 text-emerald-400" />
@@ -217,7 +217,7 @@ function Endpoints(){
         <p className="text-white/60 text-sm">Test and monitor all available API endpoints</p>
       </div>
 
-      {/* Stats Cards */}
+      {}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="rounded-xl border border-white/10 bg-black/40 p-4 hover:bg-black/60 transition">
           <div className="text-xs text-white/70 mb-2 font-medium">Total Endpoints</div>
@@ -241,7 +241,7 @@ function Endpoints(){
         </div>
       </div>
 
-      {/* Search and Filter */}
+      {}
       <div className="flex flex-col md:flex-row gap-4">
         <div className="flex-1 relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
@@ -265,7 +265,7 @@ function Endpoints(){
         </select>
       </div>
 
-      {/* Endpoints by Category */}
+      {}
       <div className="space-y-4">
         {Object.entries(endpointCategories).map(([category, endpoints]) => {
           const categoryEndpoints = selectedCategory === 'all' || selectedCategory === category
@@ -282,7 +282,7 @@ function Endpoints(){
 
           return (
             <div key={category} className="rounded-xl border border-white/10 bg-black/40 overflow-hidden">
-              {/* Category Header */}
+              {}
               <button
                 onClick={() => toggleCategory(category)}
                 className="w-full px-6 py-4 flex items-center justify-between hover:bg-white/5 transition group"
@@ -303,7 +303,7 @@ function Endpoints(){
                 </div>
               </button>
 
-              {/* Category Endpoints */}
+              {}
               {isExpanded && (
                 <div className="border-t border-white/10 divide-y divide-white/10">
                   {categoryEndpoints.map((endpoint, idx) => {
@@ -317,17 +317,17 @@ function Endpoints(){
                         className="px-6 py-4 hover:bg-white/5 transition group"
                       >
                         <div className="flex items-center gap-4">
-                          {/* Method Badge */}
+                          {}
                           <div className={`px-3 py-1.5 rounded-lg border font-semibold text-xs min-w-[70px] text-center ${methodColors[endpoint.method] || methodColors.GET}`}>
                             {endpoint.method}
                           </div>
 
-                          {/* Icon */}
+                          {}
                           <div className="p-2 rounded-lg bg-white/5 border border-white/10 group-hover:bg-white/10 transition">
                             <EndpointIcon className="w-4 h-4 text-white/60" />
                           </div>
 
-                          {/* Path */}
+                          {}
                           <div className="flex-1 min-w-0">
                             <div className="font-mono text-sm text-white truncate">
                               {endpoint.sample || endpoint.path}
@@ -337,7 +337,7 @@ function Endpoints(){
                             )}
                           </div>
 
-                          {/* Status */}
+                          {}
                           <div className="min-w-[120px] text-right">
                             {isLoading ? (
                               <div className="flex items-center justify-end gap-2">
@@ -351,7 +351,7 @@ function Endpoints(){
                             )}
                           </div>
 
-                          {/* Test Button */}
+                          {}
                           <button
                             onClick={() => probe(endpoint)}
                             disabled={isLoading}
@@ -370,7 +370,7 @@ function Endpoints(){
         })}
       </div>
 
-      {/* Empty State */}
+      {}
       {filteredEndpoints.length === 0 && (
         <div className="text-center py-16 text-white/60">
           <Search className="w-16 h-16 mx-auto mb-4 opacity-50" />

@@ -13,17 +13,17 @@ function Login(){
   const { login, user, loading: authLoading } = useAuth()
 
   useEffect(() => {
-    // Check for error from location state (e.g., from AdminLayout redirect)
+
     if (location.state?.error) {
       setError(location.state.error)
-      // Clear the error from state
+
       navigate(location.pathname, { replace: true, state: {} })
     }
   }, [location, navigate])
 
   useEffect(() => {
     if (!authLoading && user) {
-      // Verify user is admin before navigating
+
       if (user.role === 'admin') {
         navigate('/')
       } else {
@@ -38,7 +38,7 @@ function Login(){
     setLoading(true)
     try {
       await login(emailId, password)
-      // If login succeeds, user is admin (AuthContext.login throws error if not admin)
+
       navigate('/')
     } catch (err) {
       setError(err.message || err.response?.data?.message || 'Login failed. Please check your credentials.')

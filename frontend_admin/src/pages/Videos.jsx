@@ -30,7 +30,7 @@ function Videos(){
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
-  const [viewMode, setViewMode] = useState('grid') // 'grid' or 'list'
+  const [viewMode, setViewMode] = useState('grid')
   const [filterDifficulty, setFilterDifficulty] = useState('all')
   const limit = 12
 
@@ -148,7 +148,7 @@ function Videos(){
 
   return (
     <div className="space-y-6">
-      {/* Header */}
+      {}
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold mb-2 flex items-center gap-2">
@@ -171,7 +171,7 @@ function Videos(){
         </button>
       </div>
 
-      {/* Stats Cards */}
+      {}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="rounded-xl border border-white/10 bg-black/40 p-4 hover:bg-black/60 transition relative overflow-hidden group">
           <div className="absolute top-3 left-3">
@@ -226,7 +226,7 @@ function Videos(){
         </div>
       </div>
 
-      {/* Alerts */}
+      {}
       {(error || success) && (
         <div className={`p-4 rounded-xl border text-sm ${
           success 
@@ -244,7 +244,7 @@ function Videos(){
         </div>
       )}
 
-      {/* Search and Filters */}
+      {}
       <div className="flex flex-col md:flex-row gap-4">
         <form onSubmit={onSearch} className="flex-1 relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
@@ -298,7 +298,7 @@ function Videos(){
         </div>
       </div>
 
-      {/* Videos Display */}
+      {}
       {loading && videos.length === 0 ? (
         <div className="text-center py-16 text-white/60">
           <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
@@ -319,11 +319,11 @@ function Videos(){
               key={video._id}
               className="group rounded-xl border border-white/10 bg-black/40 hover:bg-black/60 hover:border-white/20 transition p-5 relative overflow-hidden"
             >
-              {/* Gradient Background Effect */}
+              {}
               <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-emerald-500/10 to-blue-500/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
               
               <div className="relative z-10">
-                {/* Video Thumbnail/Icon */}
+                {}
                 <div className="mb-4 relative">
                   <button
                     onClick={() => window.open(video.cloudinaryUrl, '_blank')}
@@ -337,7 +337,7 @@ function Videos(){
                   </div>
                 </div>
 
-                {/* Video Info */}
+                {}
                 <div className="space-y-3">
                   <div>
                     <button
@@ -358,7 +358,7 @@ function Videos(){
                     </div>
                   </div>
 
-                  {/* Stats */}
+                  {}
                   <div className="flex items-center gap-4 text-sm text-white/60">
                     <div className="flex items-center gap-1.5">
                       <Eye className="w-4 h-4" />
@@ -370,7 +370,7 @@ function Videos(){
                     </div>
                   </div>
 
-                  {/* Actions */}
+                  {}
                   <div className="flex items-center gap-2 pt-3 border-t border-white/10">
                     <button
                       onClick={() => window.open(video.cloudinaryUrl, '_blank')}
@@ -445,7 +445,7 @@ function Videos(){
         </div>
       )}
 
-      {/* Pagination */}
+      {}
       {total > limit && (
         <div className="flex items-center justify-end gap-2">
           <button
@@ -466,7 +466,7 @@ function Videos(){
         </div>
       )}
 
-      {/* Upload Modal */}
+      {}
       {showUploadModal && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-black border border-white/20 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl">

@@ -10,7 +10,7 @@ function Sidebar(){
         <h1 className="font-black text-xl">Admin<span className="text-emerald-400">Panel</span></h1>
       </div>
       
-      {/* Create Problem Panel */}
+      {}
       <div className="p-3 border-b border-white/10">
         <button
           onClick={() => navigate('/problems/create')}

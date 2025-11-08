@@ -113,7 +113,7 @@ function SubscriptionManagement() {
       )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Users List */}
+        {}
         <div className="lg:col-span-2 rounded-2xl border border-white/10 bg-white/5 p-4">
           <div className="flex items-center gap-3 mb-4">
             <div className="relative flex-1">
@@ -180,7 +180,7 @@ function SubscriptionManagement() {
           )}
         </div>
 
-        {/* User Details & Actions */}
+        {}
         <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
           {selectedUser ? (
             <div className="space-y-4">
@@ -266,4 +266,3 @@ function SubscriptionManagement() {
 }
 
 export default SubscriptionManagement
-

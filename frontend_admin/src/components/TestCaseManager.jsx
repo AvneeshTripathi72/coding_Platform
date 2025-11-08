@@ -6,7 +6,7 @@ function TestCaseManager({
   hiddenTestCases = [], 
   onVisibleChange, 
   onHiddenChange,
-  mode = 'both' // 'visible', 'hidden', or 'both'
+  mode = 'both'
 }) {
   const [localVisible, setLocalVisible] = useState([])
   const [localHidden, setLocalHidden] = useState([])
@@ -38,7 +38,6 @@ function TestCaseManager({
     updated[index] = { ...updated[index], [field]: value }
     setLocalVisible(updated)
     
-    // Validate
     const testErrors = validateTestCase(updated[index], 'visible')
     setErrors(prev => ({
       ...prev,
@@ -53,7 +52,6 @@ function TestCaseManager({
     updated[index] = { ...updated[index], [field]: value }
     setLocalHidden(updated)
     
-    // Validate
     const testErrors = validateTestCase(updated[index], 'hidden')
     setErrors(prev => ({
       ...prev,
@@ -82,7 +80,7 @@ function TestCaseManager({
     setErrors(prev => {
       const newErrors = { ...prev.visible }
       delete newErrors[index]
-      // Reindex errors
+
       const reindexed = {}
       Object.keys(newErrors).forEach(key => {
         const keyNum = parseInt(key)
@@ -103,7 +101,7 @@ function TestCaseManager({
     setErrors(prev => {
       const newErrors = { ...prev.hidden }
       delete newErrors[index]
-      // Reindex errors
+
       const reindexed = {}
       Object.keys(newErrors).forEach(key => {
         const keyNum = parseInt(key)
@@ -194,12 +192,12 @@ function TestCaseManager({
           hover:shadow-lg hover:shadow-emerald-500/10
         `}
       >
-        {/* Drag Handle */}
+        {}
         <div className="absolute top-2 right-2 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
           <GripVertical className="w-4 h-4 text-white/30 cursor-move" />
         </div>
 
-        {/* Header with validation status */}
+        {}
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <div className={`
@@ -229,7 +227,7 @@ function TestCaseManager({
           </button>
         </div>
 
-        {/* Input Field */}
+        {}
         <div className="mb-3">
           <label className="block text-xs font-medium text-white/60 mb-1.5 flex items-center gap-1">
             <span className="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
@@ -254,7 +252,7 @@ function TestCaseManager({
           />
         </div>
 
-        {/* Output Field */}
+        {}
         <div className="mb-3">
           <label className="block text-xs font-medium text-white/60 mb-1.5 flex items-center gap-1">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
@@ -279,7 +277,7 @@ function TestCaseManager({
           />
         </div>
 
-        {/* Explanation Field (only for visible test cases) */}
+        {}
         {type === 'visible' && (
           <div>
             <label className="block text-xs font-medium text-white/60 mb-1.5 flex items-center gap-1">
@@ -306,7 +304,7 @@ function TestCaseManager({
           </div>
         )}
 
-        {/* Acceptance Badge */}
+        {}
         {isValid && (
           <div className="mt-3 pt-3 border-t border-white/10 flex items-center gap-2">
             <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
@@ -319,7 +317,7 @@ function TestCaseManager({
 
   return (
     <div className="space-y-6">
-      {/* Visible Test Cases */}
+      {}
       {(mode === 'visible' || mode === 'both') && (
         <div>
           <div className="flex items-center justify-between mb-4">
@@ -371,7 +369,7 @@ function TestCaseManager({
         </div>
       )}
 
-      {/* Hidden Test Cases */}
+      {}
       {(mode === 'hidden' || mode === 'both') && (
         <div>
           <div className="flex items-center justify-between mb-4">
@@ -423,7 +421,7 @@ function TestCaseManager({
         </div>
       )}
 
-      {/* Summary */}
+      {}
       {(mode === 'both') && (
         <div className="mt-6 p-4 rounded-xl bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-white/10">
           <div className="flex items-center justify-between text-sm">
@@ -456,4 +454,3 @@ function TestCaseManager({
 }
 
 export default TestCaseManager
-

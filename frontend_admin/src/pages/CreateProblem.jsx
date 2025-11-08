@@ -95,10 +95,9 @@ function CreateProblem(){
     setLoading(true)
 
     try {
-      // Capitalize difficulty to match schema enum
+
       const difficulty = formData.difficulty.charAt(0).toUpperCase() + formData.difficulty.slice(1).toLowerCase()
       
-      // Filter out empty starter code items
       const starterCode = starterCodeItems
         .filter(item => item.language && item.initialCode.trim())
         .map(item => ({
@@ -106,7 +105,6 @@ function CreateProblem(){
           initialCode: item.initialCode.trim()
         }))
 
-      // Filter out empty reference solution items
       const referenceSolutions = referenceSolutionItems
         .filter(item => item.language && item.completeCode.trim())
         .map(item => ({
@@ -114,14 +112,12 @@ function CreateProblem(){
           completeCode: item.completeCode.trim()
         }))
 
-      // Validate minimum 3 reference solutions
       if (referenceSolutions.length < 3) {
         setError('At least 3 reference solutions are required (each in a different language)')
         setLoading(false)
         return
       }
       
-      // Validate test cases
       if (visibleTestCases.length === 0) {
         setError('At least one visible test case is required')
         setLoading(false)
@@ -136,7 +132,7 @@ function CreateProblem(){
       const payload = {
         title: formData.title.trim(),
         description: formData.description.trim(),
-        difficulty: difficulty, // "Easy", "Medium", or "Hard"
+        difficulty: difficulty,
         tags: formData.tags.split(',').map(t=>t.trim()).filter(Boolean),
         visibleTestCases: visibleTestCases,
         hiddenTestCases: hiddenTestCases,
@@ -253,7 +249,7 @@ function CreateProblem(){
           <p className="text-xs text-white/50 mt-1">Array of constraint strings</p>
         </div>
 
-        {/* Test Cases Section */}
+        {}
         <div>
           <label className="block text-sm text-white/70 mb-4">Test Cases *</label>
           <TestCaseManager
@@ -265,7 +261,7 @@ function CreateProblem(){
           />
         </div>
 
-        {/* Starter Code Section */}
+        {}
         <div>
           <div className="flex items-center justify-between mb-2">
             <label className="block text-sm text-white/70">Starter Code *</label>
@@ -315,7 +311,7 @@ function CreateProblem(){
           <p className="text-xs text-white/50 mt-2">Add starter code for each supported language</p>
         </div>
 
-        {/* Reference Solutions Section */}
+        {}
         <div>
           <div className="flex items-center justify-between mb-2">
             <label className="block text-sm text-white/70">Reference Solutions *</label>
@@ -392,4 +388,3 @@ function CreateProblem(){
 }
 
 export default CreateProblem
-

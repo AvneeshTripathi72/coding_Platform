@@ -12,12 +12,11 @@ function Problems(){
   const [total, setTotal] = useState(0)
   const [search, setSearch] = useState('')
   const [showModal, setShowModal] = useState(false)
-  const [modalMode, setModalMode] = useState('create') // create | edit | view
+  const [modalMode, setModalMode] = useState('create')
   const [selectedProblem, setSelectedProblem] = useState(null)
   const [loading, setLoading] = useState(false)
   const limit = 20
 
-  // Form state
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -65,7 +64,7 @@ function Problems(){
   const onSearch = (e) => {
     e.preventDefault()
     setPage(1)
-    // Load will be triggered by the page change in useEffect
+
     setTimeout(() => load(), 0)
   }
 
@@ -95,7 +94,7 @@ function Problems(){
       setHiddenTestCases([])
       setShowModal(true)
     } else if (problem && problem._id) {
-      // Fetch full problem data for edit/view mode (admin endpoint includes hiddenTestCases)
+
       try {
         const { data } = await axiosClient.get(`/problems/admin/problemById/${problem._id}`)
         const fullProblem = data.problem || data
@@ -138,7 +137,7 @@ function Problems(){
     setLoading(true)
 
     try {
-      // Validate test cases
+
       if (visibleTestCases.length === 0) {
         setError('At least one visible test case is required')
         setLoading(false)
@@ -180,7 +179,7 @@ function Problems(){
     setLoading(true)
 
     try {
-      // Validate test cases
+
       if (visibleTestCases.length === 0) {
         setError('At least one visible test case is required')
         setLoading(false)
@@ -357,7 +356,7 @@ function Problems(){
         </button>
       </div>
 
-      {/* Modal */}
+      {}
       {showModal && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
           <div className="bg-black border border-white/20 rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
@@ -481,7 +480,7 @@ function Problems(){
                     </div>
                   </div>
 
-                  {/* Test Cases Section */}
+                  {}
                   <div>
                     <label className="block text-sm text-white/70 mb-4">Test Cases *</label>
                     <TestCaseManager
@@ -536,7 +535,7 @@ function Problems(){
                     />
                   </div>
 
-                  {/* Video Upload Section - Only show when editing existing problem */}
+                  {}
                   {modalMode === 'edit' && selectedProblem && selectedProblem._id && (
                     <div className="pt-4 border-t border-white/10">
                       <VideoUpload
@@ -576,5 +575,3 @@ function Problems(){
 }
 
 export default Problems
-
-

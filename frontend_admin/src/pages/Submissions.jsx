@@ -45,5 +45,3 @@ function Submissions(){
 }
 
 export default Submissions
-
-

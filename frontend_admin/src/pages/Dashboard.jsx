@@ -31,7 +31,7 @@ function Dashboard(){
         })
       } catch (e) { 
         console.error('Error loading dashboard stats:', e)
-        // Set defaults on error
+
         setStats({ problems: 0, users: 0, submissions: 0 })
       }
     }
@@ -78,7 +78,7 @@ function Dashboard(){
         <DashboardCard title="Your Submissions (recent)" value={stats.submissions} />
       </div>
 
-      {/* Create New Admin Section */}
+      {}
       <div className="mt-6 border border-white/10 rounded-xl p-4 bg-black/40">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-base font-semibold">Create New Admin</h3>

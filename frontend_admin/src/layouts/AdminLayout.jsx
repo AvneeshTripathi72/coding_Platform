@@ -22,7 +22,6 @@ function AdminLayout(){
     return <Navigate to="/login" replace state={{ from: location }} />
   }
 
-  // Check if user is admin - redirect to login if not
   if (user.role !== 'admin') {
     return <Navigate to="/login" replace state={{ from: location, error: 'Access denied. Admin access only.' }} />
   }

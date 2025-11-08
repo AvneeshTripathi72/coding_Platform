@@ -12,12 +12,12 @@ export function AuthProvider({ children }){
       try {
         const { data } = await axiosClient.get('/auth/profile')
         const userData = data?.user || data || null
-        // Only set user if they are an admin
+
         if (userData && userData.role === 'admin') {
           setUser(userData)
         } else {
           setUser(null)
-          // If user is logged in but not admin, logout
+
           if (userData) {
             try {
               await axiosClient.post('/auth/logout')
@@ -37,12 +37,11 @@ export function AuthProvider({ children }){
     const { data } = await axiosClient.get('/auth/profile')
     const userData = data?.user || data || null
     
-    // Only set user if they are an admin
     if (userData && userData.role === 'admin') {
       setUser(userData)
     } else {
       setUser(null)
-      // Logout non-admin user
+
       if (userData) {
         try {
           await axiosClient.post('/auth/logout')

@@ -8,7 +8,7 @@ function Contests(){
   const [total, setTotal] = useState(0)
   const [loading, setLoading] = useState(false)
   const [showModal, setShowModal] = useState(false)
-  const [modalMode, setModalMode] = useState('create') // create | edit | view
+  const [modalMode, setModalMode] = useState('create')
   const [selectedContest, setSelectedContest] = useState(null)
   const [availableProblems, setAvailableProblems] = useState([])
   const [loadingProblems, setLoadingProblems] = useState(false)
@@ -66,8 +66,8 @@ function Contests(){
     
     if (mode === 'create') {
       const now = new Date()
-      const startTime = new Date(now.getTime() + 60 * 60 * 1000) // 1 hour from now
-      const endTime = new Date(startTime.getTime() + 2 * 60 * 60 * 1000) // 2 hours after start
+      const startTime = new Date(now.getTime() + 60 * 60 * 1000)
+      const endTime = new Date(startTime.getTime() + 2 * 60 * 60 * 1000)
       
       setFormData({
         title: '',
@@ -345,7 +345,7 @@ function Contests(){
         </button>
       </div>
 
-      {/* Modal */}
+      {}
       {showModal && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
           <div className="bg-black border border-white/20 rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
@@ -574,4 +574,3 @@ function Contests(){
 }
 
 export default Contests
-
