@@ -23,7 +23,7 @@ export const getApiBaseURL = () => {
 /**
  * Get the full backend URL for direct redirects (like OAuth)
  * In development, uses localhost:3000
- * In production, uses VITE_API_BASE_URL environment variable
+ * In production, uses VITE_API_BASE_URL (which includes /api for Nginx proxy)
  * 
  * @returns {string} The full backend URL
  */
@@ -35,9 +35,10 @@ export const getBackendURL = () => {
       // Fallback to same origin if not set (may not work for OAuth)
       return window.location.origin;
     }
+    // Use the API base URL (includes /api) - Nginx will proxy /api/* to backend
     return apiUrl;
   }
-  // In development, use localhost:3000
+  // In development, use localhost:3000 directly (no proxy needed)
   return 'http://localhost:3000';
 };
 

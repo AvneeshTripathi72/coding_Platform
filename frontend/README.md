@@ -26,9 +26,9 @@ The development server runs on `http://localhost:5173` by default. Vite automati
 ### Production
 - Create a `.env` file in the `frontend` directory with:
   ```
-  VITE_API_BASE_URL=https://api.yourdomain.com
+  VITE_API_BASE_URL=http://3.109.157.144/api
   ```
-- Replace `https://api.yourdomain.com` with your actual backend API URL.
+- **Important**: The base URL must include `/api` at the end because Nginx proxies `/api/*` requests to the backend.
 - The application uses this environment variable for all API calls and OAuth redirects in production.
 - **Important**: Set `VITE_API_BASE_URL` before building for production. The value is embedded at build time.
 
@@ -44,8 +44,9 @@ The development server runs on `http://localhost:5173` by default. Vite automati
 1. **Set Environment Variable**:
    ```bash
    # Create .env file in frontend directory
-   echo "VITE_API_BASE_URL=https://api.yourdomain.com" > .env
+   echo "VITE_API_BASE_URL=http://3.109.157.144/api" > .env
    ```
+   **Note**: The URL must end with `/api` to match the Nginx proxy configuration.
 
 2. **Build for Production**:
    ```bash
