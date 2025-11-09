@@ -1,12 +1,13 @@
 
+import { zodResolver } from '@hookform/resolvers/zod';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, Link } from 'react-router-dom';
-import { registerUser } from '../authslice.js';
 import { FiEye, FiEyeOff } from "react-icons/fi";
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
+import { z } from 'zod';
+import { registerUser } from '../authslice.js';
+import { getBackendURL } from '../utils/config.js';
 
 const signupSchema = z.object({
   firstName: z.string().min(3, "Name should contain at least 3 characters"),
@@ -22,7 +23,7 @@ function Signup() {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { isAuthenticated, loading } = useSelector((state) => state.auth);
+  const { isAuthenticated, loading, error } = useSelector((state) => state.auth);
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPass, setShowConfirmPass] = useState(false);
@@ -32,7 +33,9 @@ function Signup() {
   });
 
   const onSubmit = (data) => {
-    dispatch(registerUser(data));
+    // Remove confirmPassword before sending to backend
+    const { confirmPassword, ...registrationData } = data;
+    dispatch(registerUser(registrationData));
   };
 
   useEffect(() => {
@@ -114,6 +117,13 @@ function Signup() {
           <p className="text-red-400 text-sm">{errors.confirmPassword.message}</p>
         )}
 
+        {/* Display registration error from backend */}
+        {error && (
+          <div className="mt-3 p-3 bg-red-500/10 border border-red-500/20 rounded-md">
+            <p className="text-red-400 text-sm">{error}</p>
+          </div>
+        )}
+
         {}
         <button
           type="submit"
@@ -133,7 +143,7 @@ function Signup() {
         {}
         <button
           type="button"
-          onClick={() => window.location.href = "http://localhost:8080/auth/google"}
+          onClick={() => window.location.href = `${getBackendURL()}/auth/google`}
           className="w-full border border-gray-600 flex items-center justify-center gap-2 py-2 rounded-md hover:bg-gray-800 transition"
         >
           <img src="https://www.svgrepo.com/show/475656/google-color.svg" className="w-5 h-5" />
@@ -143,7 +153,7 @@ function Signup() {
         {}
         <button
           type="button"
-          onClick={() => window.location.href = "http://localhost:8080/auth/github"}
+          onClick={() => window.location.href = `${getBackendURL()}/auth/github`}
           className="w-full border border-gray-600 flex items-center justify-center gap-2 py-2 mt-2 rounded-md hover:bg-gray-800 transition"
         >
           <img src="https://www.svgrepo.com/show/475654/github.svg" className="w-5 h-5 invert" />

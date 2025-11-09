@@ -20,7 +20,7 @@ app.use(express.json());
 app.use(cookieParser());
 const corsOptions = {
     origin: function (origin, callback) {
-        const allowedOrigins = ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175', 'http://localhost:3000'];
+        const allowedOrigins = ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175', 'http://localhost:3000' ,"http://3.109.157.144"];
         if (!origin) return callback(null, true);
         if (allowedOrigins.indexOf(origin) !== -1) {
             callback(null, true);
@@ -88,7 +88,7 @@ app.get('/debug/routes', (req, res) => {
 async function startServer() {
     try {
         await Promise.all([connectDB(), connectRedis()]);
-        const PORT = process.env.PORT || 8080;
+        const PORT = process.env.PORT || 3000;
         app.listen(PORT, () => {
             console.log(`Server running on port ${PORT}`);
         });

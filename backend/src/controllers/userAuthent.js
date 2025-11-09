@@ -14,17 +14,50 @@ const register = async (req, res) => {
 
         const { firstName, lastName, emailId, password, age } = req.body
        console.log("User registration data:", req.body);
+         
+        // Validate required fields
+        if (!firstName || !emailId || !password) {
+            return res.status(400).json({ message: 'First name, email, and password are required' });
+        }
+
+        // Validate firstName length (matches schema minLength: 3)
+        if (firstName.length < 3) {
+            return res.status(400).json({ message: 'First name must be at least 3 characters long' });
+        }
+
+        // Validate lastName if provided (matches schema minLength: 3)
+        if (lastName && lastName.length > 0 && lastName.length < 3) {
+            return res.status(400).json({ message: 'Last name must be at least 3 characters long if provided' });
+        }
+
          req.body.role = 'user'
      console.log("User registration data:", req.body);
 
-         const existingUser = await User.findOne({ emailId })
+         // Find existing user (emailId is lowercased by schema)
+         const existingUser = await User.findOne({ emailId: emailId.toLowerCase().trim() })
 
          if (existingUser) return res.status(400).json({ message: 'User already exists' })
 
          const hashedPassword = await bcrypt.hash(password, 10)
 
       console.log("firstName = " +  firstName + ", lastName = " + lastName + ", email = " + emailId + ", password = " + password + ", age = " + age);
-         const newUser = await User.create({ firstName, lastName, emailId, password: hashedPassword, age })
+         // Only include fields that are provided
+         const userData = {
+            firstName: firstName.trim(),
+            emailId: emailId.toLowerCase().trim(),
+            password: hashedPassword,
+            role: 'user'
+         };
+         
+         // Add optional fields only if provided
+         if (lastName && lastName.trim().length > 0) {
+            userData.lastName = lastName.trim();
+         }
+         if (age) {
+            userData.age = age;
+         }
+         
+         const newUser = await User.create(userData)
 
         const token = jwt.sign(
             { 
@@ -56,8 +89,21 @@ const register = async (req, res) => {
             }
         })
     } catch (err) {
-        console.error("Registration error:", err.message);
-        res.status(400).json({ message: err.message + " from register controller" })
+        console.error("Registration error:", err);
+        
+        // Handle MongoDB validation errors
+        if (err.name === 'ValidationError') {
+            const validationErrors = Object.values(err.errors).map(e => e.message).join(', ');
+            return res.status(400).json({ message: `Validation error: ${validationErrors}` });
+        }
+        
+        // Handle duplicate key errors (unique constraint)
+        if (err.code === 11000) {
+            return res.status(400).json({ message: 'User with this email already exists' });
+        }
+        
+        // Generic error
+        res.status(400).json({ message: err.message || 'Registration failed' });
     }
 }
 

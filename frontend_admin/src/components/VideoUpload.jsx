@@ -108,7 +108,7 @@ function VideoUpload({ problemId, onVideoSaved }) {
       cloudinaryFormData.append('resource_type', 'video');
 
       console.log('[Step 2] Uploading to Cloudinary...');
-      console.log('Upload URL:', `https:
+      console.log('Upload URL:', `https://api.cloudinary.com/v1_1/${finalCloudName}/video/upload`);
       console.log('FormData entries:', {
         file: file.name,
         upload_preset: uploadPreset,
@@ -157,7 +157,7 @@ function VideoUpload({ problemId, onVideoSaved }) {
           });
         });
 
-        xhr.open('POST', `https:
+        xhr.open('POST', `https://api.cloudinary.com/v1_1/${finalCloudName}/video/upload`);
         xhr.send(cloudinaryFormData);
       });
 
@@ -331,7 +331,52 @@ function VideoUpload({ problemId, onVideoSaved }) {
             <input
               ref={fileInputRef}
               type="file"
-              accept="video}
+              accept="video/*"
+              onChange={handleFileSelect}
+              disabled={uploading}
+              className="hidden"
+            />
+            <div className="text-center">
+              {uploading ? (
+                <div className="space-y-2">
+                  <Upload className="w-6 h-6 mx-auto text-blue-500" />
+                  <p className="text-xs text-white/70">Uploading... {uploadProgress}%</p>
+                  <div className="w-full bg-white/10 rounded-full h-1.5">
+                    <div 
+                      className="bg-blue-500 h-1.5 rounded-full transition-all duration-300"
+                      style={{ width: `${uploadProgress}%` }}
+                    />
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-1">
+                  <Upload className="w-6 h-6 mx-auto text-white/50" />
+                  <p className="text-xs text-white/70">Click to select video</p>
+                  <p className="text-xs text-white/50">Max 500MB</p>
+                </div>
+              )}
+            </div>
+          </label>
+        </div>
+
+        {error && (
+          <div className="text-xs text-red-400 bg-red-500/10 border border-red-500/20 rounded-lg p-2">
+            {error}
+          </div>
+        )}
+
+        {success && (
+          <div className="text-xs text-green-400 bg-green-500/10 border border-green-500/20 rounded-lg p-2">
+            {success}
+          </div>
+        )}
+
+        {uploading && (
+          <div className="text-xs text-blue-400 text-center">
+            Uploading... Please wait
+          </div>
+        )}
+
         {(error || formData.title || formData.description) && !uploading && (
           <button
             type="button"

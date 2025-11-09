@@ -19,15 +19,47 @@ The development server runs on `http://localhost:5173` by default. Vite automati
 
 ## Environment
 
-- The API base URL is currently set in `src/api/axiosClient.js`. Update `baseURL` to match your backend host.
-- To externalize configuration, you can create a `.env` file and wire a `VITE_API_BASE_URL` variable into `axiosClient.js` (Vite exposes env values prefixed with `VITE_`).
+### Development
+- The Vite dev server automatically proxies `/api/*` requests to `http://localhost:3000` (configured in `vite.config.js`).
+- No environment variables needed for local development.
+
+### Production
+- Create a `.env` file in the `frontend` directory with:
+  ```
+  VITE_API_BASE_URL=https://api.yourdomain.com
+  ```
+- Replace `https://api.yourdomain.com` with your actual backend API URL.
+- The application uses this environment variable for all API calls and OAuth redirects in production.
+- **Important**: Set `VITE_API_BASE_URL` before building for production. The value is embedded at build time.
 
 ## Available Scripts
 
-- `npm run dev` — start Vite dev server with HMR.
-- `npm run build` — generate a production build in `dist/`.
+- `npm run dev` — start Vite dev server with HMR (uses proxy to backend on port 3000).
+- `npm run build` — generate a production build in `dist/`. **Set `VITE_API_BASE_URL` in `.env` before building.**
 - `npm run preview` — serve the production build locally.
 - `npm run lint` — run ESLint using project rules.
+
+## Production Deployment
+
+1. **Set Environment Variable**:
+   ```bash
+   # Create .env file in frontend directory
+   echo "VITE_API_BASE_URL=https://api.yourdomain.com" > .env
+   ```
+
+2. **Build for Production**:
+   ```bash
+   npm run build
+   ```
+
+3. **Deploy**:
+   - The `dist/` folder contains the production-ready static files.
+   - Deploy to any static hosting service (Vercel, Netlify, AWS S3, etc.).
+   - Ensure your backend API is accessible at the URL specified in `VITE_API_BASE_URL`.
+
+4. **CORS Configuration**:
+   - Make sure your backend CORS settings include your frontend domain.
+   - Update `allowedOrigins` in `backend/src/index.js` to include your production frontend URL.
 
 ## Project Structure
 

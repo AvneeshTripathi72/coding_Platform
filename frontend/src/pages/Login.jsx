@@ -4,6 +4,7 @@ import { FiEye, FiEyeOff } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { loginUser } from "../authslice.js";
+import { getBackendURL } from "../utils/config.js";
 
 function Login() {
   const dispatch = useDispatch();
@@ -79,7 +80,7 @@ function Login() {
 
         <button
           type="button"
-          onClick={() => window.location.href = "http://localhost:8080/auth/google"}
+          onClick={() => window.location.href = `${getBackendURL()}/auth/google`}
           className="w-full border border-gray-600 flex items-center justify-center gap-2 py-2 rounded-md hover:bg-gray-800 transition"
         >
           <img src="https://www.svgrepo.com/show/475656/google-color.svg" className="w-5 h-5" />
@@ -88,7 +89,7 @@ function Login() {
 
         <button
           type="button"
-          onClick={() => window.location.href = "http://localhost:8080/auth/github"}
+          onClick={() => window.location.href = `${getBackendURL()}/auth/github`}
           className="w-full border border-gray-600 flex items-center justify-center gap-2 py-2 mt-3 rounded-md hover:bg-gray-800 transition"
         >
           <img src="https://www.svgrepo.com/show/475654/github.svg" className="w-5 h-5 invert" />

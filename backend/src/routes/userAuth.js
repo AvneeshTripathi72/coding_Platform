@@ -4,6 +4,11 @@ import adminMiddleware from '../middleware/adminMiddleware.js'
 import { userMiddleware } from '../middleware/userMiddleware.js'
 const authRouter = express.Router()
 
+// Health check endpoint
+authRouter.get('/health', (req, res) => {
+  res.json({ status: 'ok', message: 'Auth routes are working' });
+});
+
 authRouter.post('/register', register)
 authRouter.post('/login', login)
 authRouter.post('/logout', userMiddleware, logout)
