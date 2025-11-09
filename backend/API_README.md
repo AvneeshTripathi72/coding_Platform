@@ -4,8 +4,75 @@ Complete API documentation for the Code Verse platform.
 
 ## Base URL
 
-- **Development**: `http://localhost:3000`
-- **Production**: Set via `VITE_API_BASE_URL` environment variable
+The API base URL depends on your environment:
+
+### Development Environment
+- **Base URL**: `http://localhost:3000`
+- **Port**: `3000` (configurable via `PORT` environment variable)
+- **Full Example**: `http://localhost:3000/auth/register`
+
+### Production Environment
+- **Base URL**: Set via `VITE_API_BASE_URL` environment variable
+- **Example**: `https://api.yourdomain.com`
+- **Full Example**: `https://api.yourdomain.com/auth/register`
+
+### Frontend Integration
+
+#### Development (Vite Proxy)
+In development, the frontend uses a Vite proxy configured at `/api`:
+- Frontend makes requests to: `/api/auth/register`
+- Vite proxy rewrites to: `http://localhost:3000/auth/register`
+
+#### Production
+In production, the frontend uses the `VITE_API_BASE_URL` environment variable:
+- Frontend makes requests to: `${VITE_API_BASE_URL}/auth/register`
+- Example: `https://api.yourdomain.com/auth/register`
+
+### Constructing API Requests
+
+All API endpoints follow this pattern:
+```
+{BASE_URL}/{endpoint_path}
+```
+
+**Examples:**
+- Development: `http://localhost:3000/auth/login`
+- Production: `https://api.yourdomain.com/auth/login`
+- With Vite proxy (dev): `/api/auth/login`
+
+### Code Examples
+
+**JavaScript/TypeScript (Axios):**
+```javascript
+// Development
+const API_BASE_URL = 'http://localhost:3000';
+// or with Vite proxy: const API_BASE_URL = '/api';
+
+// Production
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://api.yourdomain.com';
+
+// Example request
+axios.post(`${API_BASE_URL}/auth/register`, {
+  firstName: 'John',
+  emailId: 'john@example.com',
+  password: 'password123'
+}, { withCredentials: true });
+```
+
+**cURL:**
+```bash
+# Development
+curl -X POST http://localhost:3000/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"firstName":"John","emailId":"john@example.com","password":"password123"}'
+
+# Production
+curl -X POST https://api.yourdomain.com/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"firstName":"John","emailId":"john@example.com","password":"password123"}'
+```
+
+---
 
 ## Authentication
 
@@ -13,13 +80,18 @@ Most endpoints require authentication via JWT token stored in HTTP-only cookies.
 
 ```javascript
 // Axios example
-axios.get('/api/endpoint', { withCredentials: true })
+axios.get(`${API_BASE_URL}/auth/profile`, { withCredentials: true })
 ```
+
+**Important:** Always include `withCredentials: true` for authenticated requests to send cookies.
+
+---
 
 ## Response Format
 
 All responses follow this structure:
 
+**Success Response:**
 ```json
 {
   "message": "Success message",
@@ -27,8 +99,7 @@ All responses follow this structure:
 }
 ```
 
-Error responses:
-
+**Error Response:**
 ```json
 {
   "message": "Error message"
@@ -39,30 +110,34 @@ Error responses:
 
 ## Table of Contents
 
-1. [Authentication](#authentication-endpoints)
-2. [Problems](#problems-endpoints)
-3. [Submissions](#submissions-endpoints)
-4. [Contests](#contests-endpoints)
-5. [Stats](#stats-endpoints)
-6. [Leaderboard](#leaderboard-endpoints)
-7. [User Management](#user-management-endpoints)
-8. [AI Chat](#ai-chat-endpoints)
-9. [Videos](#videos-endpoints)
-10. [Payments](#payments-endpoints)
+1. [Authentication Endpoints](#authentication-endpoints)
+2. [Problems Endpoints](#problems-endpoints)
+3. [Submissions Endpoints](#submissions-endpoints)
+4. [Contests Endpoints](#contests-endpoints)
+5. [Stats Endpoints](#stats-endpoints)
+6. [Leaderboard Endpoints](#leaderboard-endpoints)
+7. [User Management Endpoints](#user-management-endpoints)
+8. [AI Chat Endpoints](#ai-chat-endpoints)
+9. [Videos Endpoints](#videos-endpoints)
+10. [Payments Endpoints](#payments-endpoints)
 
 ---
 
 ## Authentication Endpoints
 
-Base path: `/auth`
+**Base Path:** `{BASE_URL}/auth`
 
 ### Health Check
 
-**GET** `/auth/health`
+**GET** `{BASE_URL}/auth/health`
 
 Check if auth routes are working.
 
-**Response:**
+**Full URL Examples:**
+- Development: `http://localhost:3000/auth/health`
+- Production: `https://api.yourdomain.com/auth/health`
+
+**Response (200):**
 ```json
 {
   "status": "ok",
@@ -74,9 +149,13 @@ Check if auth routes are working.
 
 ### Register User
 
-**POST** `/auth/register`
+**POST** `{BASE_URL}/auth/register`
 
 Register a new user account.
+
+**Full URL Examples:**
+- Development: `http://localhost:3000/auth/register`
+- Production: `https://api.yourdomain.com/auth/register`
 
 **Request Body:**
 ```json
@@ -123,9 +202,13 @@ Register a new user account.
 
 ### Login
 
-**POST** `/auth/login`
+**POST** `{BASE_URL}/auth/login`
 
 Authenticate user and receive JWT token.
+
+**Full URL Examples:**
+- Development: `http://localhost:3000/auth/login`
+- Production: `https://api.yourdomain.com/auth/login`
 
 **Request Body:**
 ```json
@@ -162,11 +245,15 @@ Authenticate user and receive JWT token.
 
 ### Logout
 
-**POST** `/auth/logout`
+**POST** `{BASE_URL}/auth/logout`
 
 **Authentication:** Required
 
 Logout user and clear session.
+
+**Full URL Examples:**
+- Development: `http://localhost:3000/auth/logout`
+- Production: `https://api.yourdomain.com/auth/logout`
 
 **Response (200):**
 ```json
@@ -179,11 +266,15 @@ Logout user and clear session.
 
 ### Get User Profile
 
-**GET** `/auth/profile`
+**GET** `{BASE_URL}/auth/profile`
 
 **Authentication:** Required
 
 Get current authenticated user's profile.
+
+**Full URL Examples:**
+- Development: `http://localhost:3000/auth/profile`
+- Production: `https://api.yourdomain.com/auth/profile`
 
 **Response (200):**
 ```json
@@ -209,11 +300,15 @@ Get current authenticated user's profile.
 
 ### Delete User Profile
 
-**DELETE** `/auth/profile/delete`
+**DELETE** `{BASE_URL}/auth/profile/delete`
 
 **Authentication:** Required
 
 Delete current user's account.
+
+**Full URL Examples:**
+- Development: `http://localhost:3000/auth/profile/delete`
+- Production: `https://api.yourdomain.com/auth/profile/delete`
 
 **Response (200):**
 ```json
@@ -226,11 +321,15 @@ Delete current user's account.
 
 ### Check Authentication
 
-**GET** `/auth/checkAuth`
+**GET** `{BASE_URL}/auth/checkAuth`
 
 **Authentication:** Required
 
 Verify if user is authenticated (same as profile endpoint).
+
+**Full URL Examples:**
+- Development: `http://localhost:3000/auth/checkAuth`
+- Production: `https://api.yourdomain.com/auth/checkAuth`
 
 **Response:** Same as `/auth/profile`
 
@@ -238,11 +337,15 @@ Verify if user is authenticated (same as profile endpoint).
 
 ### Admin Register
 
-**POST** `/auth/admin/register`
+**POST** `{BASE_URL}/auth/admin/register`
 
 **Authentication:** Required (Admin only)
 
 Register a new admin user.
+
+**Full URL Examples:**
+- Development: `http://localhost:3000/auth/admin/register`
+- Production: `https://api.yourdomain.com/auth/admin/register`
 
 **Request Body:**
 ```json
@@ -272,15 +375,19 @@ Register a new admin user.
 
 ## Problems Endpoints
 
-Base path: `/problems`
+**Base Path:** `{BASE_URL}/problems`
 
 ### Get All Problems
 
-**GET** `/problems/getAllProblems`
+**GET** `{BASE_URL}/problems/getAllProblems`
 
 **Authentication:** Required
 
 Get paginated list of all problems.
+
+**Full URL Examples:**
+- Development: `http://localhost:3000/problems/getAllProblems?page=1&limit=10`
+- Production: `https://api.yourdomain.com/problems/getAllProblems?page=1&limit=10`
 
 **Query Parameters:**
 - `page` (optional): Page number (default: 1)
@@ -313,11 +420,15 @@ Get paginated list of all problems.
 
 ### Get Problem by ID
 
-**GET** `/problems/problemById/:id`
+**GET** `{BASE_URL}/problems/problemById/:id`
 
 **Authentication:** Required
 
 Get detailed problem information.
+
+**Full URL Examples:**
+- Development: `http://localhost:3000/problems/problemById/507f1f77bcf86cd799439011`
+- Production: `https://api.yourdomain.com/problems/problemById/507f1f77bcf86cd799439011`
 
 **Response (200):**
 ```json
@@ -344,11 +455,15 @@ Get detailed problem information.
 
 ### Get Topics
 
-**GET** `/problems/topics`
+**GET** `{BASE_URL}/problems/topics`
 
 **Authentication:** Required
 
 Get list of all available problem topics.
+
+**Full URL Examples:**
+- Development: `http://localhost:3000/problems/topics`
+- Production: `https://api.yourdomain.com/problems/topics`
 
 **Response (200):**
 ```json
@@ -361,11 +476,15 @@ Get list of all available problem topics.
 
 ### Get Problems Solved by User
 
-**GET** `/problems/problemSolved/user`
+**GET** `{BASE_URL}/problems/problemSolved/user`
 
 **Authentication:** Required
 
 Get list of problems solved by the authenticated user.
+
+**Full URL Examples:**
+- Development: `http://localhost:3000/problems/problemSolved/user`
+- Production: `https://api.yourdomain.com/problems/problemSolved/user`
 
 **Response (200):**
 ```json
@@ -384,11 +503,15 @@ Get list of problems solved by the authenticated user.
 
 ### Get Problem Submission Times
 
-**GET** `/problems/problemSubmit/times`
+**GET** `{BASE_URL}/problems/problemSubmit/times`
 
 **Authentication:** Required
 
 Get submission statistics for user.
+
+**Full URL Examples:**
+- Development: `http://localhost:3000/problems/problemSubmit/times`
+- Production: `https://api.yourdomain.com/problems/problemSubmit/times`
 
 **Response (200):**
 ```json
@@ -407,11 +530,15 @@ Get submission statistics for user.
 
 ### Create Problem (Admin)
 
-**POST** `/problems/create`
+**POST** `{BASE_URL}/problems/create`
 
 **Authentication:** Required (Admin only)
 
 Create a new problem.
+
+**Full URL Examples:**
+- Development: `http://localhost:3000/problems/create`
+- Production: `https://api.yourdomain.com/problems/create`
 
 **Request Body:**
 ```json
@@ -443,11 +570,15 @@ Create a new problem.
 
 ### Update Problem (Admin)
 
-**PATCH** `/problems/update/:id`
+**PATCH** `{BASE_URL}/problems/update/:id`
 
 **Authentication:** Required (Admin only)
 
 Update an existing problem.
+
+**Full URL Examples:**
+- Development: `http://localhost:3000/problems/update/507f1f77bcf86cd799439011`
+- Production: `https://api.yourdomain.com/problems/update/507f1f77bcf86cd799439011`
 
 **Request Body:** Same as create, all fields optional
 
@@ -463,11 +594,15 @@ Update an existing problem.
 
 ### Delete Problem (Admin)
 
-**DELETE** `/problems/delete/:id`
+**DELETE** `{BASE_URL}/problems/delete/:id`
 
 **Authentication:** Required (Admin only)
 
 Delete a problem.
+
+**Full URL Examples:**
+- Development: `http://localhost:3000/problems/delete/507f1f77bcf86cd799439011`
+- Production: `https://api.yourdomain.com/problems/delete/507f1f77bcf86cd799439011`
 
 **Response (200):**
 ```json
@@ -480,11 +615,15 @@ Delete a problem.
 
 ### Get Problem by ID (Admin)
 
-**GET** `/problems/admin/problemById/:id`
+**GET** `{BASE_URL}/problems/admin/problemById/:id`
 
 **Authentication:** Required (Admin only)
 
 Get problem details including all test cases (admin view).
+
+**Full URL Examples:**
+- Development: `http://localhost:3000/problems/admin/problemById/507f1f77bcf86cd799439011`
+- Production: `https://api.yourdomain.com/problems/admin/problemById/507f1f77bcf86cd799439011`
 
 **Response:** Same as regular get by ID but includes all test cases
 
@@ -492,15 +631,19 @@ Get problem details including all test cases (admin view).
 
 ## Submissions Endpoints
 
-Base path: `/solve`
+**Base Path:** `{BASE_URL}/solve`
 
 ### Submit Solution
 
-**POST** `/solve/submit/:id`
+**POST** `{BASE_URL}/solve/submit/:id`
 
 **Authentication:** Required
 
 Submit a solution for a problem.
+
+**Full URL Examples:**
+- Development: `http://localhost:3000/solve/submit/507f1f77bcf86cd799439011`
+- Production: `https://api.yourdomain.com/solve/submit/507f1f77bcf86cd799439011`
 
 **Request Body:**
 ```json
@@ -541,11 +684,15 @@ Submit a solution for a problem.
 
 ### Run Code on Test Cases
 
-**POST** `/solve/run/:id`
+**POST** `{BASE_URL}/solve/run/:id`
 
 **Authentication:** Required
 
 Run code against problem test cases without submitting.
+
+**Full URL Examples:**
+- Development: `http://localhost:3000/solve/run/507f1f77bcf86cd799439011`
+- Production: `https://api.yourdomain.com/solve/run/507f1f77bcf86cd799439011`
 
 **Request Body:**
 ```json
@@ -579,11 +726,15 @@ Run code against problem test cases without submitting.
 
 ### Run Custom Input
 
-**POST** `/solve/run-custom`
+**POST** `{BASE_URL}/solve/run-custom`
 
 **Authentication:** Required
 
 Run code with custom input (not against test cases).
+
+**Full URL Examples:**
+- Development: `http://localhost:3000/solve/run-custom`
+- Production: `https://api.yourdomain.com/solve/run-custom`
 
 **Request Body:**
 ```json
@@ -607,11 +758,15 @@ Run code with custom input (not against test cases).
 
 ### Get User Submissions
 
-**GET** `/solve/submissions/user`
+**GET** `{BASE_URL}/solve/submissions/user`
 
 **Authentication:** Required
 
 Get all submissions by the authenticated user.
+
+**Full URL Examples:**
+- Development: `http://localhost:3000/solve/submissions/user?page=1&limit=10`
+- Production: `https://api.yourdomain.com/solve/submissions/user?page=1&limit=10`
 
 **Query Parameters:**
 - `page` (optional): Page number
@@ -641,11 +796,15 @@ Get all submissions by the authenticated user.
 
 ### Get Problem Submissions
 
-**GET** `/solve/submissions/problem/:id`
+**GET** `{BASE_URL}/solve/submissions/problem/:id`
 
 **Authentication:** Required
 
 Get all submissions for a specific problem by the authenticated user.
+
+**Full URL Examples:**
+- Development: `http://localhost:3000/solve/submissions/problem/507f1f77bcf86cd799439011`
+- Production: `https://api.yourdomain.com/solve/submissions/problem/507f1f77bcf86cd799439011`
 
 **Response (200):**
 ```json
@@ -665,15 +824,19 @@ Get all submissions for a specific problem by the authenticated user.
 
 ## Contests Endpoints
 
-Base path: `/contests`
+**Base Path:** `{BASE_URL}/contests`
 
 ### Get All Contests
 
-**GET** `/contests/getAllContests`
+**GET** `{BASE_URL}/contests/getAllContests`
 
 **Authentication:** Required
 
 Get list of all available contests.
+
+**Full URL Examples:**
+- Development: `http://localhost:3000/contests/getAllContests?page=1&limit=10`
+- Production: `https://api.yourdomain.com/contests/getAllContests?page=1&limit=10`
 
 **Query Parameters:**
 - `page` (optional): Page number
@@ -703,11 +866,15 @@ Get list of all available contests.
 
 ### Get Contest by ID
 
-**GET** `/contests/contestById/:id`
+**GET** `{BASE_URL}/contests/contestById/:id`
 
 **Authentication:** Required
 
 Get detailed contest information.
+
+**Full URL Examples:**
+- Development: `http://localhost:3000/contests/contestById/507f1f77bcf86cd799439011`
+- Production: `https://api.yourdomain.com/contests/contestById/507f1f77bcf86cd799439011`
 
 **Response (200):**
 ```json
@@ -735,11 +902,15 @@ Get detailed contest information.
 
 ### Get My Contests
 
-**GET** `/contests/myContests`
+**GET** `{BASE_URL}/contests/myContests`
 
 **Authentication:** Required
 
 Get contests joined or created by the authenticated user.
+
+**Full URL Examples:**
+- Development: `http://localhost:3000/contests/myContests`
+- Production: `https://api.yourdomain.com/contests/myContests`
 
 **Response (200):**
 ```json
@@ -759,11 +930,15 @@ Get contests joined or created by the authenticated user.
 
 ### Join Contest
 
-**POST** `/contests/join/:id`
+**POST** `{BASE_URL}/contests/join/:id`
 
 **Authentication:** Required
 
 Join a contest.
+
+**Full URL Examples:**
+- Development: `http://localhost:3000/contests/join/507f1f77bcf86cd799439011`
+- Production: `https://api.yourdomain.com/contests/join/507f1f77bcf86cd799439011`
 
 **Response (200):**
 ```json
@@ -781,11 +956,15 @@ Join a contest.
 
 ### Create Personal Contest
 
-**POST** `/contests/createPersonal`
+**POST** `{BASE_URL}/contests/createPersonal`
 
 **Authentication:** Required
 
 Create a personal contest.
+
+**Full URL Examples:**
+- Development: `http://localhost:3000/contests/createPersonal`
+- Production: `https://api.yourdomain.com/contests/createPersonal`
 
 **Request Body:**
 ```json
@@ -810,11 +989,15 @@ Create a personal contest.
 
 ### Get Contest Creation Count
 
-**GET** `/contests/creationCount`
+**GET** `{BASE_URL}/contests/creationCount`
 
 **Authentication:** Required
 
 Get number of contests created by the user.
+
+**Full URL Examples:**
+- Development: `http://localhost:3000/contests/creationCount`
+- Production: `https://api.yourdomain.com/contests/creationCount`
 
 **Response (200):**
 ```json
@@ -827,11 +1010,15 @@ Get number of contests created by the user.
 
 ### Create Contest (Admin)
 
-**POST** `/contests/create`
+**POST** `{BASE_URL}/contests/create`
 
 **Authentication:** Required (Admin only)
 
 Create a new contest.
+
+**Full URL Examples:**
+- Development: `http://localhost:3000/contests/create`
+- Production: `https://api.yourdomain.com/contests/create`
 
 **Request Body:**
 ```json
@@ -856,11 +1043,15 @@ Create a new contest.
 
 ### Update Contest (Admin)
 
-**PATCH** `/contests/update/:id`
+**PATCH** `{BASE_URL}/contests/update/:id`
 
 **Authentication:** Required (Admin only)
 
 Update an existing contest.
+
+**Full URL Examples:**
+- Development: `http://localhost:3000/contests/update/507f1f77bcf86cd799439011`
+- Production: `https://api.yourdomain.com/contests/update/507f1f77bcf86cd799439011`
 
 **Request Body:** Same as create, all fields optional
 
@@ -876,11 +1067,15 @@ Update an existing contest.
 
 ### Delete Contest (Admin)
 
-**DELETE** `/contests/delete/:id`
+**DELETE** `{BASE_URL}/contests/delete/:id`
 
 **Authentication:** Required (Admin only)
 
 Delete a contest.
+
+**Full URL Examples:**
+- Development: `http://localhost:3000/contests/delete/507f1f77bcf86cd799439011`
+- Production: `https://api.yourdomain.com/contests/delete/507f1f77bcf86cd799439011`
 
 **Response (200):**
 ```json
@@ -893,15 +1088,19 @@ Delete a contest.
 
 ## Stats Endpoints
 
-Base path: `/stats`
+**Base Path:** `{BASE_URL}/stats`
 
 ### Get Overview Stats
 
-**GET** `/stats/overview`
+**GET** `{BASE_URL}/stats/overview`
 
 **Authentication:** Required
 
 Get user's overall statistics.
+
+**Full URL Examples:**
+- Development: `http://localhost:3000/stats/overview`
+- Production: `https://api.yourdomain.com/stats/overview`
 
 **Response (200):**
 ```json
@@ -928,11 +1127,15 @@ Get user's overall statistics.
 
 ### Get User Streak
 
-**GET** `/stats/streak`
+**GET** `{BASE_URL}/stats/streak`
 
 **Authentication:** Required
 
 Get user's current streak and streak history.
+
+**Full URL Examples:**
+- Development: `http://localhost:3000/stats/streak`
+- Production: `https://api.yourdomain.com/stats/streak`
 
 **Response (200):**
 ```json
@@ -952,15 +1155,19 @@ Get user's current streak and streak history.
 
 ## Leaderboard Endpoints
 
-Base path: `/leaderboard`
+**Base Path:** `{BASE_URL}/leaderboard`
 
 ### Get Top Users
 
-**GET** `/leaderboard/top`
+**GET** `{BASE_URL}/leaderboard/top`
 
 **Authentication:** Required
 
 Get top users by problems solved.
+
+**Full URL Examples:**
+- Development: `http://localhost:3000/leaderboard/top?limit=20`
+- Production: `https://api.yourdomain.com/leaderboard/top?limit=20`
 
 **Query Parameters:**
 - `limit` (optional): Number of users to return (default: 20, max: 100)
@@ -985,13 +1192,17 @@ Get top users by problems solved.
 
 ## User Management Endpoints
 
-Base path: `/users`
+**Base Path:** `{BASE_URL}/users`
 
 ### Test Route
 
-**GET** `/users/test`
+**GET** `{BASE_URL}/users/test`
 
 Test if user management router is working.
+
+**Full URL Examples:**
+- Development: `http://localhost:3000/users/test`
+- Production: `https://api.yourdomain.com/users/test`
 
 **Response (200):**
 ```json
@@ -1005,11 +1216,15 @@ Test if user management router is working.
 
 ### Get All Users (Admin)
 
-**GET** `/users/all`
+**GET** `{BASE_URL}/users/all`
 
 **Authentication:** Required (Admin only)
 
 Get list of all users.
+
+**Full URL Examples:**
+- Development: `http://localhost:3000/users/all?page=1&limit=10`
+- Production: `https://api.yourdomain.com/users/all?page=1&limit=10`
 
 **Query Parameters:**
 - `page` (optional): Page number
@@ -1037,11 +1252,15 @@ Get list of all users.
 
 ### Create User (Admin)
 
-**POST** `/users/create`
+**POST** `{BASE_URL}/users/create`
 
 **Authentication:** Required (Admin only)
 
 Create a new user.
+
+**Full URL Examples:**
+- Development: `http://localhost:3000/users/create`
+- Production: `https://api.yourdomain.com/users/create`
 
 **Request Body:**
 ```json
@@ -1067,11 +1286,15 @@ Create a new user.
 
 ### Get User by ID (Admin)
 
-**GET** `/users/:id`
+**GET** `{BASE_URL}/users/:id`
 
 **Authentication:** Required (Admin only)
 
 Get user details by ID.
+
+**Full URL Examples:**
+- Development: `http://localhost:3000/users/507f1f77bcf86cd799439011`
+- Production: `https://api.yourdomain.com/users/507f1f77bcf86cd799439011`
 
 **Response (200):**
 ```json
@@ -1090,11 +1313,15 @@ Get user details by ID.
 
 ### Update User (Admin)
 
-**PATCH** `/users/update/:id`
+**PATCH** `{BASE_URL}/users/update/:id`
 
 **Authentication:** Required (Admin only)
 
 Update user information.
+
+**Full URL Examples:**
+- Development: `http://localhost:3000/users/update/507f1f77bcf86cd799439011`
+- Production: `https://api.yourdomain.com/users/update/507f1f77bcf86cd799439011`
 
 **Request Body:**
 ```json
@@ -1116,11 +1343,15 @@ Update user information.
 
 ### Delete User (Admin)
 
-**DELETE** `/users/delete/:id`
+**DELETE** `{BASE_URL}/users/delete/:id`
 
 **Authentication:** Required (Admin only)
 
 Delete a user.
+
+**Full URL Examples:**
+- Development: `http://localhost:3000/users/delete/507f1f77bcf86cd799439011`
+- Production: `https://api.yourdomain.com/users/delete/507f1f77bcf86cd799439011`
 
 **Response (200):**
 ```json
@@ -1133,11 +1364,15 @@ Delete a user.
 
 ### Toggle Subscription Lock (Admin)
 
-**PATCH** `/users/:id/subscription/lock`
+**PATCH** `{BASE_URL}/users/:id/subscription/lock`
 
 **Authentication:** Required (Admin only)
 
 Lock or unlock a user's subscription.
+
+**Full URL Examples:**
+- Development: `http://localhost:3000/users/507f1f77bcf86cd799439011/subscription/lock`
+- Production: `https://api.yourdomain.com/users/507f1f77bcf86cd799439011/subscription/lock`
 
 **Request Body:**
 ```json
@@ -1157,11 +1392,15 @@ Lock or unlock a user's subscription.
 
 ### Update User Subscription (Admin)
 
-**PATCH** `/users/:id/subscription`
+**PATCH** `{BASE_URL}/users/:id/subscription`
 
 **Authentication:** Required (Admin only)
 
 Manually update a user's subscription.
+
+**Full URL Examples:**
+- Development: `http://localhost:3000/users/507f1f77bcf86cd799439011/subscription`
+- Production: `https://api.yourdomain.com/users/507f1f77bcf86cd799439011/subscription`
 
 **Request Body:**
 ```json
@@ -1184,13 +1423,17 @@ Manually update a user's subscription.
 
 ## AI Chat Endpoints
 
-Base path: `/ai`
+**Base Path:** `{BASE_URL}/ai`
 
 ### Test Route
 
-**GET** `/ai/test`
+**GET** `{BASE_URL}/ai/test`
 
 Test if AI chat router is working.
+
+**Full URL Examples:**
+- Development: `http://localhost:3000/ai/test`
+- Production: `https://api.yourdomain.com/ai/test`
 
 **Response (200):**
 ```json
@@ -1203,11 +1446,15 @@ Test if AI chat router is working.
 
 ### Chat with AI
 
-**POST** `/ai/chat`
+**POST** `{BASE_URL}/ai/chat`
 
 **Authentication:** Required
 
 Chat with AI assistant for coding help.
+
+**Full URL Examples:**
+- Development: `http://localhost:3000/ai/chat`
+- Production: `https://api.yourdomain.com/ai/chat`
 
 **Request Body:**
 ```json
@@ -1234,15 +1481,19 @@ Chat with AI assistant for coding help.
 
 ## Videos Endpoints
 
-Base path: `/videos`
+**Base Path:** `{BASE_URL}/videos`
 
 ### Get Upload Token (Admin)
 
-**POST** `/videos/upload-token`
+**POST** `{BASE_URL}/videos/upload-token`
 
 **Authentication:** Required (Admin only)
 
 Get Cloudinary upload token for video upload.
+
+**Full URL Examples:**
+- Development: `http://localhost:3000/videos/upload-token`
+- Production: `https://api.yourdomain.com/videos/upload-token`
 
 **Request Body:**
 ```json
@@ -1264,11 +1515,15 @@ Get Cloudinary upload token for video upload.
 
 ### Save Video (Admin)
 
-**POST** `/videos/save`
+**POST** `{BASE_URL}/videos/save`
 
 **Authentication:** Required (Admin only)
 
 Save video metadata after upload.
+
+**Full URL Examples:**
+- Development: `http://localhost:3000/videos/save`
+- Production: `https://api.yourdomain.com/videos/save`
 
 **Request Body:**
 ```json
@@ -1295,11 +1550,15 @@ Save video metadata after upload.
 
 ### Get All Videos (Admin)
 
-**GET** `/videos/all`
+**GET** `{BASE_URL}/videos/all`
 
 **Authentication:** Required (Admin only)
 
 Get list of all videos.
+
+**Full URL Examples:**
+- Development: `http://localhost:3000/videos/all`
+- Production: `https://api.yourdomain.com/videos/all`
 
 **Response (200):**
 ```json
@@ -1320,11 +1579,15 @@ Get list of all videos.
 
 ### Get Problem Videos
 
-**GET** `/videos/problem/:problemId`
+**GET** `{BASE_URL}/videos/problem/:problemId`
 
 **Authentication:** Required (Paid users only)
 
 Get videos for a specific problem.
+
+**Full URL Examples:**
+- Development: `http://localhost:3000/videos/problem/507f1f77bcf86cd799439011`
+- Production: `https://api.yourdomain.com/videos/problem/507f1f77bcf86cd799439011`
 
 **Response (200):**
 ```json
@@ -1346,9 +1609,13 @@ Get videos for a specific problem.
 
 ### Get Video
 
-**GET** `/videos/:videoId`
+**GET** `{BASE_URL}/videos/:videoId`
 
 Get video details.
+
+**Full URL Examples:**
+- Development: `http://localhost:3000/videos/507f1f77bcf86cd799439011`
+- Production: `https://api.yourdomain.com/videos/507f1f77bcf86cd799439011`
 
 **Response (200):**
 ```json
@@ -1367,9 +1634,13 @@ Get video details.
 
 ### Increment Video Views
 
-**POST** `/videos/:videoId/increment-views`
+**POST** `{BASE_URL}/videos/:videoId/increment-views`
 
 Increment video view count.
+
+**Full URL Examples:**
+- Development: `http://localhost:3000/videos/507f1f77bcf86cd799439011/increment-views`
+- Production: `https://api.yourdomain.com/videos/507f1f77bcf86cd799439011/increment-views`
 
 **Response (200):**
 ```json
@@ -1383,11 +1654,15 @@ Increment video view count.
 
 ### Update Video
 
-**PATCH** `/videos/:videoId`
+**PATCH** `{BASE_URL}/videos/:videoId`
 
 **Authentication:** Required
 
 Update video metadata.
+
+**Full URL Examples:**
+- Development: `http://localhost:3000/videos/507f1f77bcf86cd799439011`
+- Production: `https://api.yourdomain.com/videos/507f1f77bcf86cd799439011`
 
 **Request Body:**
 ```json
@@ -1409,11 +1684,15 @@ Update video metadata.
 
 ### Delete Video
 
-**DELETE** `/videos/:videoId`
+**DELETE** `{BASE_URL}/videos/:videoId`
 
 **Authentication:** Required
 
 Delete a video.
+
+**Full URL Examples:**
+- Development: `http://localhost:3000/videos/507f1f77bcf86cd799439011`
+- Production: `https://api.yourdomain.com/videos/507f1f77bcf86cd799439011`
 
 **Response (200):**
 ```json
@@ -1426,13 +1705,17 @@ Delete a video.
 
 ## Payments Endpoints
 
-Base path: `/payment`
+**Base Path:** `{BASE_URL}/payment`
 
 ### Get Plans
 
-**GET** `/payment/plans`
+**GET** `{BASE_URL}/payment/plans`
 
 Get available subscription plans.
+
+**Full URL Examples:**
+- Development: `http://localhost:3000/payment/plans`
+- Production: `https://api.yourdomain.com/payment/plans`
 
 **Response (200):**
 ```json
@@ -1458,9 +1741,13 @@ Get available subscription plans.
 
 ### Create Order
 
-**POST** `/payment/create-order`
+**POST** `{BASE_URL}/payment/create-order`
 
 Create a payment order.
+
+**Full URL Examples:**
+- Development: `http://localhost:3000/payment/create-order`
+- Production: `https://api.yourdomain.com/payment/create-order`
 
 **Request Body:**
 ```json
@@ -1485,9 +1772,13 @@ Create a payment order.
 
 ### Verify Payment
 
-**POST** `/payment/verify`
+**POST** `{BASE_URL}/payment/verify`
 
 Verify payment after completion.
+
+**Full URL Examples:**
+- Development: `http://localhost:3000/payment/verify`
+- Production: `https://api.yourdomain.com/payment/verify`
 
 **Request Body:**
 ```json
@@ -1513,11 +1804,15 @@ Verify payment after completion.
 
 ### Get Subscription Status
 
-**GET** `/payment/subscription-status`
+**GET** `{BASE_URL}/payment/subscription-status`
 
 **Authentication:** Required
 
 Get current user's subscription status.
+
+**Full URL Examples:**
+- Development: `http://localhost:3000/payment/subscription-status`
+- Production: `https://api.yourdomain.com/payment/subscription-status`
 
 **Response (200):**
 ```json
@@ -1535,11 +1830,15 @@ Get current user's subscription status.
 
 ### Get Payment History
 
-**GET** `/payment/history`
+**GET** `{BASE_URL}/payment/history`
 
 **Authentication:** Required
 
 Get user's payment history.
+
+**Full URL Examples:**
+- Development: `http://localhost:3000/payment/history`
+- Production: `https://api.yourdomain.com/payment/history`
 
 **Response (200):**
 ```json
@@ -1560,9 +1859,13 @@ Get user's payment history.
 
 ### Payment Webhook
 
-**POST** `/payment/webhook`
+**POST** `{BASE_URL}/payment/webhook`
 
 Webhook endpoint for payment gateway callbacks (handled automatically).
+
+**Full URL Examples:**
+- Development: `http://localhost:3000/payment/webhook`
+- Production: `https://api.yourdomain.com/payment/webhook`
 
 ---
 
@@ -1605,5 +1908,4 @@ For API support or questions, please contact the development team.
 
 ---
 
-**Last Updated:** January 2024
-
+**Last Updated:** November 2024
