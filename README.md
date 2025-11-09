@@ -671,6 +671,10 @@ For detailed request/response formats, refer to the controller files in `backend
 
 ## 🚢 Deployment
 
+### Quick Start
+
+For detailed AWS EC2 deployment instructions, see **[AWS_DEPLOYMENT.md](./AWS_DEPLOYMENT.md)** - Complete step-by-step guide with troubleshooting.
+
 ### Backend Deployment
 
 1. **Environment Variables**: Ensure all `.env` variables are set in production
@@ -693,6 +697,7 @@ For detailed request/response formats, refer to the controller files in `backend
    - Vercel
    - Netlify
    - AWS S3 + CloudFront
+   - AWS EC2 with Nginx (see [AWS_DEPLOYMENT.md](./AWS_DEPLOYMENT.md))
    - Any static hosting service
 
 3. **Update API base URL** in production environment
@@ -703,6 +708,7 @@ Same as frontend deployment process.
 
 ### Recommended Stack
 - **Backend**: Railway, Render, Heroku, AWS EC2, DigitalOcean
+- **Full Stack (EC2)**: See [AWS_DEPLOYMENT.md](./AWS_DEPLOYMENT.md) for complete AWS EC2 deployment guide
 - **Frontend**: Vercel, Netlify, AWS Amplify
 - **Database**: MongoDB Atlas
 - **Cache**: Redis Cloud, AWS ElastiCache
