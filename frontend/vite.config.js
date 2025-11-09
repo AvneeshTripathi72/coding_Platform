@@ -15,12 +15,7 @@ export default defineConfig({
     },
   },
   build: {
-    // Suppress version warnings during build
-    minify: 'terser',
-    terserOptions: {
-      compress: {
-        drop_console: false,
-      },
-    },
+    // Use esbuild for minification (default, no additional dependencies needed)
+    minify: 'esbuild',
   },
 })
