@@ -2,7 +2,9 @@
 
 Complete step-by-step guide for deploying Code Verse (or any similar full-stack application) to AWS EC2 with Nginx reverse proxy.
 
+
 ## 📋 Table of Contents
+
 
 - [Prerequisites](#prerequisites)
 - [EC2 Instance Setup](#ec2-instance-setup)

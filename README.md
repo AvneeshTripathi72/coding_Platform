@@ -34,6 +34,7 @@ Code Verse is a modern online coding platform that provides:
 - **Admin Dashboard**: Comprehensive admin panel for content management
 
 The platform consists of three main applications:
+
 1. **Backend API** - Node.js/Express REST API
 2. **Frontend** - React application for end users
 3. **Admin Frontend** - React application for administrators
