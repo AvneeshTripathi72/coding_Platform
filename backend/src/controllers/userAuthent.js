@@ -19,6 +19,11 @@ const register = async (req, res) => {
         if (!firstName || !emailId || !password) {
             return res.status(400).json({ message: 'First name, email, and password are required' });
         }
+        
+        // Validate password for non-OAuth users
+        if (!password || password.length < 6) {
+            return res.status(400).json({ message: 'Password must be at least 6 characters long' });
+        }
 
         // Validate firstName length (matches schema minLength: 3)
         if (firstName.length < 3) {
@@ -244,3 +249,4 @@ const deleteUserProfile = async (req,res) => {
 }
 
 export { adminRegister, deleteUserProfile, getUserProfile, login, logout, register };
+

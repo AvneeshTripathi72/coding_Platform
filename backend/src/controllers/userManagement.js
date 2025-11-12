@@ -209,3 +209,35 @@ export const updateUserSubscription = async (req, res) => {
     res.status(500).json({ message: 'Error updating subscription: ' + err.message })
   }
 }
+
+export const removeUserSubscription = async (req, res) => {
+  try {
+    const { id } = req.params
+    console.log('removeUserSubscription called with id:', id)
+
+    const user = await User.findById(id)
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' })
+    }
+
+    // Reset subscription to default free plan
+    user.subscription.isActive = false
+    user.subscription.planType = 'free'
+    user.subscription.startDate = null
+    user.subscription.expiryDate = null
+    user.subscription.dodoSessionId = null
+    user.subscription.dodoPaymentId = null
+
+    // Mark the subscription object as modified
+    user.markModified('subscription')
+    await user.save()
+
+    res.status(200).json({ 
+      message: 'Subscription removed successfully. User reverted to free plan.', 
+      subscription: user.subscription 
+    })
+  } catch (err) {
+    console.error('Error removing subscription:', err)
+    res.status(500).json({ message: 'Error removing subscription: ' + err.message })
+  }
+}

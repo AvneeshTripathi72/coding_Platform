@@ -22,7 +22,17 @@ const userSchema=new Schema({
     },
     password:{
         type:String,
-        required:true,
+        required:false, // Password is optional for OAuth users
+    },
+    googleId:{
+        type:String,
+        sparse:true,
+        unique:true,
+    },
+    githubId:{
+        type:String,
+        sparse:true,
+        unique:true,
     },
     age:{
         type:Number,

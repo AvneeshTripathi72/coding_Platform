@@ -4,7 +4,7 @@ import Payment from '../models/payment.js';
 import User from '../models/user.js';
 
 const dodoApi = axios.create({
-  baseURL: process.env.DODO_PAYMENTS_BASE_URL || 'https://app.dodopayments.com/api',
+  baseURL:  'https://app.dodopayments.com/api',
   headers: {
     Authorization: `Bearer ${process.env.DODO_API_KEY}`,
     "Content-Type": "application/json"
