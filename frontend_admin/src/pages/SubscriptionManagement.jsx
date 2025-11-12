@@ -1,4 +1,4 @@
-import { Lock, Mail, RefreshCw, Search, Unlock, User } from 'lucide-react'
+import { Lock, Mail, RefreshCw, Search, Trash2, Unlock, User } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import axiosClient from '../api/axiosClient.js'
 
@@ -17,13 +17,21 @@ function SubscriptionManagement() {
   const loadUsers = async () => {
     try {
       setLoading(true)
+      setMessage({ type: '', text: '' })
       const response = await axiosClient.get('/users/all', {
         params: { limit: 100 }
       })
       setUsers(response.data.users || [])
+      if (response.data.users?.length === 0) {
+        setMessage({ type: 'info', text: 'No users found' })
+      }
     } catch (error) {
       console.error('Error loading users:', error)
-      setMessage({ type: 'error', text: 'Failed to load users' })
+      const errorMessage = error.response?.data?.message || 
+                          error.message || 
+                          'Failed to load users. Please check your connection and try again.'
+      setMessage({ type: 'error', text: errorMessage })
+      setUsers([])
     } finally {
       setLoading(false)
     }
@@ -75,6 +83,37 @@ function SubscriptionManagement() {
     }
   }
 
+  const removeSubscription = async (userId) => {
+    if (!window.confirm('Are you sure you want to remove this user\'s subscription? This will revert them to the free plan.')) {
+      return
+    }
+
+    try {
+      setUpdating(true)
+      setMessage({ type: '', text: '' })
+      const response = await axiosClient.delete(`/users/${userId}/subscription`)
+      setMessage({ 
+        type: 'success', 
+        text: response.data?.message || 'Subscription removed successfully. User reverted to free plan.' 
+      })
+      await loadUsers()
+      if (selectedUser?._id === userId) {
+        setSelectedUser({ ...selectedUser, subscription: response.data.subscription })
+      }
+    } catch (error) {
+      console.error('Error removing subscription:', error)
+      const errorMessage = error.response?.data?.message || 
+                          error.message || 
+                          `Failed to remove subscription${error.response?.status ? ` (Status: ${error.response.status})` : ''}`
+      setMessage({
+        type: 'error',
+        text: errorMessage
+      })
+    } finally {
+      setUpdating(false)
+    }
+  }
+
   const filteredUsers = users.filter((u) => {
     const search = searchTerm.toLowerCase()
     return (
@@ -105,7 +144,9 @@ function SubscriptionManagement() {
           className={`mb-4 p-3 rounded-lg ${
             message.type === 'error'
               ? 'bg-red-500/20 border border-red-500/50 text-red-300'
-              : 'bg-emerald-500/20 border border-emerald-500/50 text-emerald-300'
+              : message.type === 'success'
+              ? 'bg-emerald-500/20 border border-emerald-500/50 text-emerald-300'
+              : 'bg-blue-500/20 border border-blue-500/50 text-blue-300'
           }`}
         >
           {message.text}
@@ -251,6 +292,14 @@ function SubscriptionManagement() {
                       Unlock Subscription
                     </>
                   )}
+                </button>
+                <button
+                  onClick={() => removeSubscription(selectedUser._id)}
+                  disabled={updating}
+                  className="w-full px-4 py-2 rounded-xl border transition disabled:opacity-50 flex items-center justify-center gap-2 bg-orange-500/20 border-orange-400/30 text-orange-300 hover:bg-orange-500/30"
+                >
+                  <Trash2 className="w-4 h-4" />
+                  Remove Subscription
                 </button>
               </div>
             </div>
