@@ -98,70 +98,75 @@ function ProblemPage() {
   };
 
   useEffect(() => {
+    const applyProblem = (targetProblem, staticRef) => {
+      if (!targetProblem) return;
+      const ref = staticRef || STATIC_PROBLEMS.find(sp => String(sp._id) === String(id)) || STATIC_PROBLEMS[0];
+      
+      const p = {
+        ...targetProblem,
+        referenceSolutions: (Array.isArray(targetProblem.referenceSolutions) && targetProblem.referenceSolutions.length > 0)
+          ? targetProblem.referenceSolutions
+          : (ref?.referenceSolutions || [])
+      };
+      
+      setProblem(p);
+
+      const refSolutionsArray = p.referenceSolutions || [];
+      const refSolutions = refSolutionsArray
+        .filter(r => r && (r.completeCode || r.code) && r.language)
+        .map((r, idx) => ({
+          _id: r._id || `ref-${idx}`,
+          language: r.language,
+          code: r.completeCode || r.code,
+          status: 'Accepted',
+          isReference: true,
+        }));
+      
+      setSolutions(refSolutions);
+
+      if (p.starterCode && Array.isArray(p.starterCode) && p.starterCode.length > 0) {
+        const starter = p.starterCode[0];
+        if (starter && starter.initialCode) {
+          setCode(cleanCode(starter.initialCode));
+          const mappedLang = normalizeLanguage(starter.language);
+          setLanguage(mappedLang);
+        }
+      }
+    };
+
     const fetchProblem = async () => {
+      const staticMatch = STATIC_PROBLEMS.find(sp => String(sp._id) === String(id)) || STATIC_PROBLEMS[0];
+      
+      // 1. Immediately apply static match to guarantee instant page load without stuck loading spinner
+      applyProblem(staticMatch, staticMatch);
+
+      // 2. Fetch fresh problem data from API
       try {
         const response = await axiosClient.get(`/problems/problemById/${id}`);
-        console.log('=== RAW API RESPONSE ===');
-        console.log('Full response:', response);
-        console.log('Response data:', response.data);
-        console.log('Response data keys:', Object.keys(response.data || {}));
-        
-        const { data } = response;
-        const staticMatch = STATIC_PROBLEMS.find(sp => String(sp._id) === String(id)) || STATIC_PROBLEMS[0];
-        let p = data?.problem || staticMatch;
-        
-        if (!p.referenceSolutions || p.referenceSolutions.length === 0) {
-          p.referenceSolutions = staticMatch.referenceSolutions || [];
+        const apiProblem = response.data?.problem;
+        if (apiProblem) {
+          applyProblem(apiProblem, staticMatch);
         }
-        
-        setProblem(p);
-        
-        const refSolutionsArray = (Array.isArray(p.referenceSolutions) && p.referenceSolutions.length > 0)
-          ? p.referenceSolutions 
-          : (staticMatch?.referenceSolutions || []);
-        
-        const refSolutions = refSolutionsArray
-          .filter(ref => ref && (ref.completeCode || ref.code) && ref.language)
-          .map((ref, idx) => ({
-            _id: ref._id || `ref-${idx}`,
-            language: ref.language,
-            code: ref.completeCode || ref.code,
-            status: 'Accepted',
-            isReference: true,
-          }));
-        
-        setSolutions(refSolutions);
 
-        if (p.starterCode && Array.isArray(p.starterCode) && p.starterCode.length > 0) {
-
-          try {
-            const subData = await axiosClient.get(`/solve/submissions/problem/${id}?user=me&limit=1&status=accepted`);
-            if (subData.data.submissions && subData.data.submissions.length > 0) {
-              const lastSubmission = subData.data.submissions[0];
-            if (lastSubmission.code) {
+        // Fetch recent accepted submission if any
+        try {
+          const subData = await axiosClient.get(`/solve/submissions/problem/${id}?user=me&limit=1&status=accepted`);
+          if (subData.data?.submissions && subData.data.submissions.length > 0) {
+            const lastSubmission = subData.data.submissions[0];
+            if (lastSubmission?.code) {
               setCode(cleanCode(lastSubmission.code));
               const lang = lastSubmission.language || "python";
               const mappedLang = normalizeLanguage(lang);
               setLanguage(mappedLang);
-              return;
             }
-            }
-          } catch (e) {
-            console.log("No previous submission found, using starter code");
           }
-
-          const starter = p.starterCode[0];
-          if (starter && starter.initialCode) {
-            setCode(cleanCode(starter.initialCode));
-
-            const mappedLang = normalizeLanguage(starter.language);
-            setLanguage(mappedLang);
-          }
-        }
+        } catch (_) {}
       } catch (err) {
-        console.error("Error fetching problem:", err);
+        console.warn("Using offline problem definition for:", id, err.message);
+        applyProblem(staticMatch, staticMatch);
       }
     };
+
     fetchProblem();
   }, [id]);
 

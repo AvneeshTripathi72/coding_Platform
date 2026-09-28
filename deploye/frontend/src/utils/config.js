@@ -8,13 +8,9 @@
 export const getApiBaseURL = () => {
   const envUrl = import.meta.env.VITE_API_BASE_URL;
   if (envUrl && envUrl.trim()) {
-    return envUrl.trim().replace(/\/+$/, '');
+    const trimmed = envUrl.trim().replace(/\/+$/, '');
+    return trimmed.endsWith('/api') ? trimmed : `${trimmed}/api`;
   }
-  if (import.meta.env.PROD) {
-    console.warn('VITE_API_BASE_URL is not set in production. Using current origin.');
-    return '';
-  }
-  // In development, use Vite proxy
   return '/api';
 };
 
