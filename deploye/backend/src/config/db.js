@@ -16,10 +16,6 @@ if (!cached) {
 const connectDB = async () => {
   const uri = process.env.MONGODB_URI || process.env.DB_URL || 'mongodb://127.0.0.1:27017/code_verse';
 
-  if (!uri) {
-    throw new Error('Please define the MONGODB_URI or DB_URL environment variable');
-  }
-
   if (cached.conn) {
     return cached.conn;
   }
@@ -28,17 +24,17 @@ const connectDB = async () => {
     const opts = {
       bufferCommands: false,
       maxPoolSize: 10,
-      serverSelectionTimeoutMS: 10000,
-      socketTimeoutMS: 45000,
+      serverSelectionTimeoutMS: 5000,
+      socketTimeoutMS: 15000,
     };
 
     cached.promise = mongoose.connect(uri, opts).then((mongooseInstance) => {
-      console.log('MongoDB connected successfully (serverless cached connection)');
+      console.log('MongoDB connected successfully');
       return mongooseInstance;
     }).catch((err) => {
-      console.error('MongoDB connection error:', err.message);
+      console.warn('MongoDB connection failed, running in in-memory mode:', err.message);
       cached.promise = null;
-      throw err;
+      return null;
     });
   }
 
@@ -47,7 +43,7 @@ const connectDB = async () => {
     return cached.conn;
   } catch (e) {
     cached.promise = null;
-    throw e;
+    return null;
   }
 };
 

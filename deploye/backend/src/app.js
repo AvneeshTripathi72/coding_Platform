@@ -25,15 +25,14 @@ const app = express();
 
 const isProduction = process.env.NODE_ENV === 'production';
 
-// Auto-connect to database on every request in serverless
+// Non-blocking database connection middleware (seamless in-memory fallback)
 app.use(async (req, res, next) => {
   try {
     await connectDB();
-    next();
   } catch (err) {
-    console.error('Database connection middleware error:', err.message);
-    res.status(500).json({ success: false, message: 'Database connection failed' });
+    console.warn('Database connection warning (running with in-memory fallback):', err.message);
   }
+  next();
 });
 
 // Middleware

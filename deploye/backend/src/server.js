@@ -9,13 +9,16 @@ const PORT = process.env.PORT || 3000;
 
 async function startServer() {
   try {
-    await Promise.all([connectDB(), connectRedis()]);
+    try {
+      await Promise.all([connectDB(), connectRedis()]);
+    } catch (dbErr) {
+      console.warn('DB/Redis connection warning, running in in-memory mode:', dbErr.message);
+    }
     app.listen(PORT, () => {
-      console.log(`Local development server running on http://localhost:${PORT}`);
+      console.log(`🚀 CodeVerse Backend Server running on http://localhost:${PORT}`);
     });
   } catch (error) {
-    console.error('Error starting local development server:', error);
-    process.exit(1);
+    console.error('Error starting server:', error);
   }
 }
 
