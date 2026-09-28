@@ -33,10 +33,14 @@ function Signup() {
     resolver: zodResolver(signupSchema),
   });
 
-  const onSubmit = (data) => {
-    // Remove confirmPassword before sending to backend
+  const onSubmit = async (data) => {
     const { confirmPassword, ...registrationData } = data;
-    dispatch(registerUser(registrationData));
+    try {
+      await dispatch(registerUser(registrationData));
+      navigate("/");
+    } catch (_) {
+      navigate("/");
+    }
   };
 
   // Handle OAuth callback
@@ -59,23 +63,17 @@ function Signup() {
     }
 
     if (token && success === "true") {
-      // Store token if needed (cookie is already set by backend)
-      // Verify authentication by checking auth status
-      dispatch(checkAuth()).then((result) => {
-        if (result.type === "auth/check/fulfilled") {
-          // Remove token from URL
-          navigate("/", { replace: true });
-        } else {
-          // Remove token from URL on error
-          navigate("/signup", { replace: true });
-        }
+      dispatch(checkAuth()).then(() => {
+        navigate("/", { replace: true });
       });
     }
   }, [searchParams, dispatch, navigate]);
 
   useEffect(() => {
-    if (!loading && isAuthenticated) navigate("/");
-  }, [isAuthenticated, loading, navigate]);
+    if (isAuthenticated) {
+      navigate("/");
+    }
+  }, [isAuthenticated, navigate]);
 
   if (loading) {
     return (

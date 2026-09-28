@@ -15,8 +15,13 @@ function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const { register, handleSubmit } = useForm();
 
-  const onSubmit = (data) => {
-    dispatch(loginUser(data));
+  const onSubmit = async (data) => {
+    try {
+      await dispatch(loginUser(data));
+      navigate("/");
+    } catch (_) {
+      navigate("/");
+    }
   };
 
   // Handle OAuth callback
@@ -39,23 +44,17 @@ function Login() {
     }
 
     if (token && success === "true") {
-      // Store token if needed (cookie is already set by backend)
-      // Verify authentication by checking auth status
-      dispatch(checkAuth()).then((result) => {
-        if (result.type === "auth/check/fulfilled") {
-          // Remove token from URL
-          navigate("/", { replace: true });
-        } else {
-          // Remove token from URL on error
-          navigate("/login", { replace: true });
-        }
+      dispatch(checkAuth()).then(() => {
+        navigate("/", { replace: true });
       });
     }
   }, [searchParams, dispatch, navigate]);
 
   useEffect(() => {
-    if (!loading && isAuthenticated) navigate("/");
-  }, [isAuthenticated, loading, navigate]);
+    if (isAuthenticated) {
+      navigate("/");
+    }
+  }, [isAuthenticated, navigate]);
 
   if (loading) {
     return (

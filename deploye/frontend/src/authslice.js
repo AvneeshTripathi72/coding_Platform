@@ -25,7 +25,7 @@ export const registerUser = createAsyncThunk(
   async (userData, { rejectWithValue }) => {
     try {
       const response = await axiosClient.post("/auth/register", userData);
-      if (response.data.user) {
+      if (response.data?.user) {
         saveUserLocal(response.data.user);
         return response.data.user;
       }
@@ -36,7 +36,7 @@ export const registerUser = createAsyncThunk(
     // Fallback demo user
     const localUser = {
       _id: "u_" + Date.now(),
-      emailId: userData.emailId,
+      emailId: userData.emailId || "user@codeverse.dev",
       firstName: userData.firstName || "User",
       lastName: userData.lastName || "",
       role: "user",
@@ -52,20 +52,20 @@ export const loginUser = createAsyncThunk(
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await axiosClient.post("/auth/login", credentials);
-      if (response.data.user) {
+      if (response.data?.user) {
         saveUserLocal(response.data.user);
         return response.data.user;
       }
     } catch (error) {
-      console.warn("Server login failed, activating demo session:", error.message);
+      console.warn("Server login fallback activated:", error.message);
     }
 
-    // Fallback demo user from credentials
-    const email = (credentials.emailId || "user@example.com").toLowerCase().trim();
-    const namePart = email.split("@")[0];
+    // Fallback demo user from credentials (100% browser-safe)
+    const email = (credentials?.emailId || "user@example.com").toLowerCase().trim();
+    const namePart = email.split("@")[0] || "User";
     const firstName = namePart.charAt(0).toUpperCase() + namePart.slice(1);
     const localUser = {
-      _id: "demo_" + Buffer.from(email).toString("hex").slice(0, 8),
+      _id: "demo_" + Math.random().toString(36).substring(2, 10),
       emailId: email,
       firstName: firstName || "User",
       lastName: "",
@@ -82,12 +82,11 @@ export const checkAuth = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await axiosClient.get("/auth/checkAuth");
-      if (response.data.user) {
+      if (response.data?.user) {
         saveUserLocal(response.data.user);
         return response.data.user;
       }
     } catch (error) {
-      // Check if user was saved locally
       const saved = getSavedUser();
       if (saved) return saved;
     }
