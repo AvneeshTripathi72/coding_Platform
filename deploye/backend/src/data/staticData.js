@@ -41,6 +41,62 @@ export const STATIC_PROBLEMS = [
         language: "cpp",
         initialCode: "class Solution {\npublic:\n    vector<int> twoSum(vector<int>& nums, int target) {\n        // Write your code here\n    }\n};"
       }
+    ],
+    referenceSolutions: [
+      {
+        language: "javascript",
+        completeCode: `/**
+ * Hash Map Approach - O(n) Time, O(n) Space
+ * @param {number[]} nums
+ * @param {number} target
+ * @return {number[]}
+ */
+function twoSum(nums, target) {
+    const map = new Map();
+    for (let i = 0; i < nums.length; i++) {
+        const complement = target - nums[i];
+        if (map.has(complement)) {
+            return [map.get(complement), i];
+        }
+        map.set(nums[i], i);
+    }
+    return [];
+}`
+      },
+      {
+        language: "python",
+        completeCode: `class Solution:
+    def twoSum(self, nums: list[int], target: int) -> list[int]:
+        # Hash Map Approach - O(n) Time, O(n) Space
+        seen = {}
+        for i, num in enumerate(nums):
+            complement = target - num
+            if complement in seen:
+                return [seen[complement], i]
+            seen[num] = i
+        return []`
+      },
+      {
+        language: "cpp",
+        completeCode: `#include <vector>
+#include <unordered_map>
+using namespace std;
+
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& nums, int target) {
+        unordered_map<int, int> numMap;
+        for (int i = 0; i < nums.size(); i++) {
+            int complement = target - nums[i];
+            if (numMap.find(complement) != numMap.end()) {
+                return {numMap[complement], i};
+            }
+            numMap[nums[i]] = i;
+        }
+        return {};
+    }
+};`
+      }
     ]
   },
   {
@@ -69,6 +125,30 @@ export const STATIC_PROBLEMS = [
       {
         language: "python",
         initialCode: "class Solution:\n    def isPalindrome(self, x: int) -> bool:\n        pass"
+      }
+    ],
+    referenceSolutions: [
+      {
+        language: "javascript",
+        completeCode: `function isPalindrome(x) {
+    if (x < 0 || (x % 10 === 0 && x !== 0)) return false;
+    let reversed = 0;
+    let original = x;
+    while (x > 0) {
+        reversed = reversed * 10 + (x % 10);
+        x = Math.floor(x / 10);
+    }
+    return original === reversed;
+}`
+      },
+      {
+        language: "python",
+        completeCode: `class Solution:
+    def isPalindrome(self, x: int) -> bool:
+        if x < 0:
+            return False
+        s = str(x)
+        return s == s[::-1]`
       }
     ]
   },
@@ -101,6 +181,79 @@ export const STATIC_PROBLEMS = [
         language: "python",
         initialCode: "class Solution:\n    def isValid(self, s: str) -> bool:\n        pass"
       }
+    ],
+    referenceSolutions: [
+      {
+        language: "javascript",
+        completeCode: `/**
+ * Stack Approach - O(n) Time, O(n) Space
+ * @param {string} s
+ * @return {boolean}
+ */
+function isValid(s) {
+    const stack = [];
+    const mapping = {
+        ')': '(',
+        '}': '{',
+        ']': '['
+    };
+    for (let char of s) {
+        if (mapping[char]) {
+            const topElement = stack.length > 0 ? stack.pop() : '#';
+            if (mapping[char] !== topElement) {
+                return false;
+            }
+        } else {
+            stack.push(char);
+        }
+    }
+    return stack.length === 0;
+}`
+      },
+      {
+        language: "python",
+        completeCode: `class Solution:
+    def isValid(self, s: str) -> bool:
+        # Stack Approach - O(n) Time, O(n) Space
+        stack = []
+        mapping = {")": "(", "}": "{", "]": "["}
+        for char in s:
+            if char in mapping:
+                top_element = stack.pop() if stack else '#'
+                if mapping[char] != top_element:
+                    return False
+            else:
+                stack.append(char)
+        return not stack`
+      },
+      {
+        language: "cpp",
+        completeCode: `#include <stack>
+#include <string>
+#include <unordered_map>
+using namespace std;
+
+class Solution {
+public:
+    bool isValid(string s) {
+        stack<char> st;
+        unordered_map<char, char> map = {
+            {')', '('},
+            {'}', '{'},
+            {']', '['}
+        };
+        for (char c : s) {
+            if (map.count(c)) {
+                if (st.empty() || st.top() != map[c]) return false;
+                st.pop();
+            } else {
+                st.push(c);
+            }
+        }
+        return st.empty();
+    }
+};`
+      }
     ]
   },
   {
@@ -129,6 +282,44 @@ export const STATIC_PROBLEMS = [
       {
         language: "python",
         initialCode: "class Solution:\n    def lengthOfLongestSubstring(self, s: str) -> int:\n        pass"
+      }
+    ],
+    referenceSolutions: [
+      {
+        language: "javascript",
+        completeCode: `/**
+ * Sliding Window with Map - O(n) Time, O(min(m, n)) Space
+ * @param {string} s
+ * @return {number}
+ */
+function lengthOfLongestSubstring(s) {
+    let maxLength = 0;
+    let left = 0;
+    const charMap = new Map();
+    for (let right = 0; right < s.length; right++) {
+        const currentChar = s[right];
+        if (charMap.has(currentChar) && charMap.get(currentChar) >= left) {
+            left = charMap.get(currentChar) + 1;
+        }
+        charMap.set(currentChar, right);
+        maxLength = Math.max(maxLength, right - left + 1);
+    }
+    return maxLength;
+}`
+      },
+      {
+        language: "python",
+        completeCode: `class Solution:
+    def lengthOfLongestSubstring(self, s: str) -> int:
+        char_index_map = {}
+        max_length = 0
+        left = 0
+        for right, char in enumerate(s):
+            if char in char_index_map and char_index_map[char] >= left:
+                left = char_index_map[char] + 1
+            char_index_map[char] = right
+            max_length = max(max_length, right - left + 1)
+        return max_length`
       }
     ]
   },
@@ -161,6 +352,47 @@ export const STATIC_PROBLEMS = [
         language: "python",
         initialCode: "class Solution:\n    def search(self, nums: list[int], target: int) -> int:\n        pass"
       }
+    ],
+    referenceSolutions: [
+      {
+        language: "javascript",
+        completeCode: `/**
+ * Classic Binary Search - O(log n) Time, O(1) Space
+ * @param {number[]} nums
+ * @param {number} target
+ * @return {number}
+ */
+function search(nums, target) {
+    let left = 0;
+    let right = nums.length - 1;
+    while (left <= right) {
+        const mid = Math.floor(left + (right - left) / 2);
+        if (nums[mid] === target) {
+            return mid;
+        } else if (nums[mid] < target) {
+            left = mid + 1;
+        } else {
+            right = mid - 1;
+        }
+    }
+    return -1;
+}`
+      },
+      {
+        language: "python",
+        completeCode: `class Solution:
+    def search(self, nums: list[int], target: int) -> int:
+        left, right = 0, len(nums) - 1
+        while left <= right:
+            mid = (left + right) // 2
+            if nums[mid] == target:
+                return mid
+            elif nums[mid] < target:
+                left = mid + 1
+            else:
+                right = mid - 1
+        return -1`
+      }
     ]
   },
   {
@@ -190,6 +422,36 @@ export const STATIC_PROBLEMS = [
       {
         language: "python",
         initialCode: "class Solution:\n    def maxSubArray(self, nums: list[int]) -> int:\n        pass"
+      }
+    ],
+    referenceSolutions: [
+      {
+        language: "javascript",
+        completeCode: `/**
+ * Kadane's Algorithm - O(n) Time, O(1) Space
+ * @param {number[]} nums
+ * @return {number}
+ */
+function maxSubArray(nums) {
+    let maxSoFar = nums[0];
+    let currentMax = nums[0];
+    for (let i = 1; i < nums.length; i++) {
+        currentMax = Math.max(nums[i], currentMax + nums[i]);
+        maxSoFar = Math.max(maxSoFar, currentMax);
+    }
+    return maxSoFar;
+}`
+      },
+      {
+        language: "python",
+        completeCode: `class Solution:
+    def maxSubArray(self, nums: list[int]) -> int:
+        max_so_far = nums[0]
+        current_max = nums[0]
+        for num in nums[1:]:
+            current_max = max(num, current_max + num)
+            max_so_far = max(max_so_far, current_max)
+        return max_so_far`
       }
     ]
   }

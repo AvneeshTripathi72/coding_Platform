@@ -9,6 +9,7 @@ import CodeEditor, { MONACO_THEMES, SUPPORTED_LANGUAGES } from "../components/Co
 import PaymentModal from "../components/PaymentModal.jsx";
 import { useLayoutSettings } from "../context/LayoutSettingsContext.jsx";
 import { useSubscription } from "../hooks/useSubscription.js";
+import { STATIC_PROBLEMS } from "../data/staticData.js";
 
 function ProblemPage() {
   const { id } = useParams();
@@ -106,71 +107,30 @@ function ProblemPage() {
         console.log('Response data keys:', Object.keys(response.data || {}));
         
         const { data } = response;
-        const p = data?.problem;
+        const staticMatch = STATIC_PROBLEMS.find(sp => String(sp._id) === String(id)) || STATIC_PROBLEMS[0];
+        let p = data?.problem || staticMatch;
         
-        console.log('=== PROBLEM FETCHED FROM API ===');
-        console.log('Data object:', data);
-        console.log('Problem object:', p);
-        console.log('Problem is defined:', !!p);
-        console.log('Full problem object:', JSON.stringify(p, null, 2));
-        console.log('Problem keys:', Object.keys(p || {}));
-        console.log('Has referenceSolutions property:', 'referenceSolutions' in (p || {}));
-        console.log('referenceSolutions value:', p?.referenceSolutions);
-        console.log('referenceSolutions type:', typeof p?.referenceSolutions);
-        console.log('referenceSolutions is array:', Array.isArray(p?.referenceSolutions));
-        console.log('referenceSolutions length:', p?.referenceSolutions?.length);
-        
-        if (!p) {
-          console.error('ERROR: Problem object is undefined!');
-          console.error('Response data:', data);
-          return;
+        if (!p.referenceSolutions || p.referenceSolutions.length === 0) {
+          p.referenceSolutions = staticMatch.referenceSolutions || [];
         }
         
         setProblem(p);
         
-        const refSolutionsArray = Array.isArray(p.referenceSolutions) ? p.referenceSolutions : (p.referenceSolutions ? [p.referenceSolutions] : []);
-        console.log('Reference solutions array after normalization:', refSolutionsArray);
-        console.log('Reference solutions array length:', refSolutionsArray.length);
+        const refSolutionsArray = (Array.isArray(p.referenceSolutions) && p.referenceSolutions.length > 0)
+          ? p.referenceSolutions 
+          : (staticMatch?.referenceSolutions || []);
         
-        if (refSolutionsArray.length > 0) {
-          console.log('✓ Loading reference solutions:', refSolutionsArray.length);
-          console.log('Reference solutions raw data:', JSON.stringify(refSolutionsArray, null, 2));
-          
-          const refSolutions = refSolutionsArray
-            .filter(ref => {
-              const isValid = ref && ref.completeCode && ref.language;
-              if (!isValid) {
-                console.warn('Invalid reference solution filtered out:', ref);
-              }
-              return isValid;
-            })
-            .map((ref, idx) => {
-              const solution = {
-                _id: ref._id || `ref-${idx}`,
-                language: ref.language,
-                code: ref.completeCode,
-                status: 'Accepted',
-                isReference: true,
-              };
-              console.log(`Processed solution ${idx}:`, { language: solution.language, codeLength: solution.code?.length });
-              return solution;
-            });
-          
-          console.log('Processed reference solutions on load:', refSolutions);
-          console.log('Processed solutions count:', refSolutions.length);
-          
-          if (refSolutions.length > 0) {
-            setSolutions(refSolutions);
-            console.log('✓ Reference solutions set in state:', refSolutions.length);
-          } else {
-            console.warn('✗ No valid reference solutions found after filtering on initial load');
-            setSolutions([]);
-          }
-        } else {
-          console.log('✗ No reference solutions found in problem (empty array or undefined)');
-          setSolutions([]);
-        }
-        console.log('=== END PROBLEM FETCH ===');
+        const refSolutions = refSolutionsArray
+          .filter(ref => ref && (ref.completeCode || ref.code) && ref.language)
+          .map((ref, idx) => ({
+            _id: ref._id || `ref-${idx}`,
+            language: ref.language,
+            code: ref.completeCode || ref.code,
+            status: 'Accepted',
+            isReference: true,
+          }));
+        
+        setSolutions(refSolutions);
 
         if (p.starterCode && Array.isArray(p.starterCode) && p.starterCode.length > 0) {
 
@@ -257,52 +217,33 @@ function ProblemPage() {
   useEffect(() => {
     const fetchSolutions = async () => {
       if (!id) return;
-      
-      if (!problem) return;
-      
-      if (activeTab !== "solutions") {
+      if (activeTab !== "solutions") return;
+
+      const staticMatch = STATIC_PROBLEMS.find(sp => String(sp._id) === String(id)) || STATIC_PROBLEMS[0];
+      const rawRefSolutions = (Array.isArray(problem?.referenceSolutions) && problem.referenceSolutions.length > 0)
+        ? problem.referenceSolutions
+        : (staticMatch?.referenceSolutions || []);
+
+      const refSolutions = rawRefSolutions
+        .filter(ref => ref && (ref.completeCode || ref.code) && ref.language)
+        .map((ref, idx) => ({
+          _id: ref._id || `ref-${idx}`,
+          language: ref.language,
+          code: ref.completeCode || ref.code,
+          status: 'Accepted',
+          isReference: true,
+        }));
+
+      if (refSolutions.length > 0) {
+        setSolutions(refSolutions);
         return;
       }
-      
+
       try {
-
-        const refSolutionsArray = Array.isArray(problem.referenceSolutions) ? problem.referenceSolutions : [];
-        
-        if (refSolutionsArray.length > 0) {
-          console.log('Loading reference solutions in solutions tab:', refSolutionsArray.length);
-          console.log('Reference solutions data:', refSolutionsArray);
-
-          const refSolutions = refSolutionsArray
-            .filter(ref => ref && ref.completeCode && ref.language)
-            .map((ref, idx) => ({
-              _id: ref._id || `ref-${idx}`,
-              language: ref.language,
-              code: ref.completeCode,
-              status: 'Accepted',
-              isReference: true,
-            }));
-          
-          console.log('Processed reference solutions:', refSolutions);
-          if (refSolutions.length > 0) {
-            setSolutions(refSolutions);
-            console.log('Reference solutions set in solutions tab:', refSolutions.length);
-          } else {
-            console.warn('No valid reference solutions found after filtering');
-            setSolutions([]);
-          }
-          return;
-        }
-
-        try {
-          const { data } = await axiosClient.get(`/solve/submissions/problem/${id}?status=accepted&limit=10`);
-          setSolutions(Array.isArray(data.submissions) ? data.submissions : []);
-        } catch (e) {
-          console.error("Error fetching user solutions:", e);
-          setSolutions([]);
-        }
+        const { data } = await axiosClient.get(`/solve/submissions/problem/${id}?status=accepted&limit=10`);
+        setSolutions(Array.isArray(data.submissions) ? data.submissions : []);
       } catch (e) {
-        console.error("Error fetching solutions:", e);
-        setSolutions([]);
+        setSolutions(refSolutions);
       }
     };
     fetchSolutions();
