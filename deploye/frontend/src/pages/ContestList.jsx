@@ -2,13 +2,14 @@ import { ArrowRight, Calendar, Clock, Play, Plus, Trophy, Users, X, Zap } from '
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import api from '../utils/api.js'
+import { STATIC_CONTESTS } from '../data/staticData.js'
 
 function ContestList(){
   const navigate = useNavigate()
-  const [contests, setContests] = useState([])
+  const [contests, setContests] = useState(STATIC_CONTESTS)
   const [myContests, setMyContests] = useState([])
   const [page, setPage] = useState(1)
-  const [total, setTotal] = useState(0)
+  const [total, setTotal] = useState(STATIC_CONTESTS.length)
   const [statusFilter, setStatusFilter] = useState('all')
   const [viewMode, setViewMode] = useState('all')
   const [loading, setLoading] = useState(false)
@@ -21,7 +22,7 @@ function ContestList(){
     problems: []
   })
   const [submitting, setSubmitting] = useState(false)
-  const [creationCount, setCreationCount] = useState(null)
+  const [creationCount, setCreationCount] = useState({ count: 1, maxAllowed: 3 })
   const [loadingCount, setLoadingCount] = useState(false)
   const limit = 12
 
@@ -32,15 +33,24 @@ function ContestList(){
       if (statusFilter !== 'all') params.status = statusFilter
       
       const { data } = await api.contests.list(params)
-      setContests(Array.isArray(data.contests) ? data.contests : [])
-      setTotal(data.total || 0)
-    } catch (e) {
-      console.error('Failed to load contests:', e)
-
-      if (e.response?.status === 404) {
-        console.error('Contest endpoint not found. Please ensure the backend server is running and the route is registered.')
+      const fetched = Array.isArray(data.contests) ? data.contests : []
+      if (fetched.length > 0) {
+        setContests(fetched)
+        setTotal(data.total || fetched.length)
+      } else {
+        const filtered = statusFilter === 'all' 
+          ? STATIC_CONTESTS 
+          : STATIC_CONTESTS.filter(c => c.status === statusFilter)
+        setContests(filtered)
+        setTotal(filtered.length)
       }
-      setContests([])
+    } catch (e) {
+      console.warn('API error, using static contests dataset:', e.message)
+      const filtered = statusFilter === 'all' 
+        ? STATIC_CONTESTS 
+        : STATIC_CONTESTS.filter(c => c.status === statusFilter)
+      setContests(filtered)
+      setTotal(filtered.length)
     } finally {
       setLoading(false)
     }

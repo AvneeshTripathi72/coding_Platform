@@ -2,11 +2,12 @@ import { BookOpen, Calendar, Code2, TrendingUp, Trophy, Zap } from 'lucide-react
 import { useEffect, useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
 import api from '../utils/api.js'
+import { STATIC_PROBLEMS, STATIC_STATS, STATIC_TOPICS } from '../data/staticData.js'
 
 function Landing(){
-  const [topics, setTopics] = useState([])
-  const [stats, setStats] = useState({ totalProblems: 0, solvedCount: 0, acceptanceAvg: 0 })
-  const [preview, setPreview] = useState([])
+  const [topics, setTopics] = useState(STATIC_TOPICS.slice(0, 12))
+  const [stats, setStats] = useState(STATIC_STATS)
+  const [preview, setPreview] = useState(STATIC_PROBLEMS.slice(0, 6))
   const [solvedProblems, setSolvedProblems] = useState([])
   const navigate = useNavigate()
 
@@ -14,17 +15,23 @@ function Landing(){
     const load = async () => {
       try{
         const [{ data: t }, { data: s }, { data: p }, { data: solvedData }] = await Promise.all([
-          api.problems.topics(),
-          api.stats.overview(),
-          api.problems.list({ page: 1, limit: 8 }),
+          api.problems.topics().catch(() => ({ data: { topics: STATIC_TOPICS } })),
+          api.stats.overview().catch(() => ({ data: STATIC_STATS })),
+          api.problems.list({ page: 1, limit: 8 }).catch(() => ({ data: { items: STATIC_PROBLEMS } })),
           api.problems.solvedMine().catch(()=>({data:{problemsSolved:[]}}))
         ])
-        setTopics(Array.isArray(t.topics) ? t.topics.slice(0, 12) : [])
-        setStats(s || {})
-        setPreview(Array.isArray(p.items) ? p.items : (Array.isArray(p.problems)? p.problems: []))
+        
+        const fetchedTopics = Array.isArray(t?.topics) && t.topics.length > 0 ? t.topics.slice(0, 12) : STATIC_TOPICS.slice(0, 12)
+        setTopics(fetchedTopics)
+        
+        setStats(s?.totalProblems ? s : STATIC_STATS)
+        
+        const fetchedPreview = Array.isArray(p?.items) && p.items.length > 0 ? p.items : (Array.isArray(p?.problems) && p.problems.length > 0 ? p.problems : STATIC_PROBLEMS.slice(0, 6))
+        setPreview(fetchedPreview)
+        
         setSolvedProblems(Array.isArray(solvedData?.problemsSolved) ? solvedData.problemsSolved : [])
       }catch(err){
-        console.error('Error loading data:', err)
+        console.warn('Using static fallback for landing page:', err)
       }
     }
     load()

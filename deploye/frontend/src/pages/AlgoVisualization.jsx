@@ -177,10 +177,6 @@ function AlgoVisualization() {
   const [showPaymentModal, setShowPaymentModal] = useState(false)
 
   const handleAlgorithmClick = (categoryId, algorithmId) => {
-    if (!hasAccess) {
-      setShowPaymentModal(true)
-      return
-    }
     navigate(`/algo-visualization/${categoryId}/${algorithmId}`)
   }
 
@@ -193,33 +189,6 @@ function AlgoVisualization() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-white/60">Loading...</div>
-      </div>
-    )
-  }
-
-  if (!hasAccess) {
-    return (
-      <div className="min-h-screen flex items-center justify-center px-6">
-        <div className="max-w-2xl w-full">
-          <div className="bg-yellow-400/10 border border-yellow-400/30 rounded-2xl p-12 text-center">
-            <Crown className="w-16 h-16 text-yellow-400 mx-auto mb-6" />
-            <h2 className="text-3xl font-bold text-white mb-4">Premium Feature</h2>
-            <p className="text-white/70 mb-8 text-lg">
-              Subscribe to access algorithm visualizations and editorial videos
-            </p>
-            <button
-              onClick={() => setShowPaymentModal(true)}
-              className="bg-yellow-400 text-black font-semibold px-8 py-4 rounded-lg hover:bg-yellow-300 transition text-lg"
-            >
-              <Lock className="w-5 h-5 inline mr-2" />
-              Unlock Premium
-            </button>
-          </div>
-          <PaymentModal
-            isOpen={showPaymentModal}
-            onClose={() => setShowPaymentModal(false)}
-          />
-        </div>
       </div>
     )
   }

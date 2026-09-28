@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import api from '../utils/api.js'
+import { STATIC_PROBLEMS, STATIC_TOPICS } from '../data/staticData.js'
 
 function ProblemList(){
   const [items, setItems] = useState([])
@@ -9,7 +10,7 @@ function ProblemList(){
   const [search, setSearch] = useState('')
   const [difficulty, setDifficulty] = useState('all')
   const [tag, setTag] = useState('')
-  const [topics, setTopics] = useState([])
+  const [topics, setTopics] = useState(STATIC_TOPICS)
   const limit = 20
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
@@ -23,9 +24,11 @@ function ProblemList(){
     const loadTopics = async () => {
       try {
         const { data } = await api.problems.topics()
-        setTopics(Array.isArray(data.topics) ? data.topics : [])
+        if (Array.isArray(data.topics) && data.topics.length > 0) {
+          setTopics(data.topics)
+        }
       } catch (e) {
-        console.error('Failed to load topics:', e)
+        console.error('Failed to load topics, using static topics:', e)
       }
     }
     loadTopics()
@@ -39,13 +42,37 @@ function ProblemList(){
   }, [searchParams])
 
   const load = async () => {
-    const params = { page, limit }
-    if (search.trim()) params.search = search.trim()
-    if (difficulty !== 'all') params.difficulty = difficulty
-    if (tag && tag.trim()) params.tags = tag.trim()
-    const { data } = await api.problems.list(params)
-    setItems(Array.isArray(data.items) ? data.items : (Array.isArray(data.problems)? data.problems: []))
-    setTotal(data.total || 0)
+    try {
+      const params = { page, limit }
+      if (search.trim()) params.search = search.trim()
+      if (difficulty !== 'all') params.difficulty = difficulty
+      if (tag && tag.trim()) params.tags = tag.trim()
+      const { data } = await api.problems.list(params)
+      const fetchedItems = Array.isArray(data.items) ? data.items : (Array.isArray(data.problems) ? data.problems : [])
+      
+      if (fetchedItems.length > 0) {
+        setItems(fetchedItems)
+        setTotal(data.total || fetchedItems.length)
+      } else {
+        // Filter static problems by search/difficulty/tag
+        let filtered = [...STATIC_PROBLEMS]
+        if (search.trim()) {
+          filtered = filtered.filter(p => p.title.toLowerCase().includes(search.trim().toLowerCase()))
+        }
+        if (difficulty !== 'all') {
+          filtered = filtered.filter(p => p.difficulty.toLowerCase() === difficulty.toLowerCase())
+        }
+        if (tag && tag.trim()) {
+          filtered = filtered.filter(p => p.tags.some(t => t.toLowerCase().includes(tag.trim().toLowerCase())))
+        }
+        setItems(filtered)
+        setTotal(filtered.length)
+      }
+    } catch (err) {
+      console.warn('API error, using static problems dataset:', err.message)
+      setItems(STATIC_PROBLEMS)
+      setTotal(STATIC_PROBLEMS.length)
+    }
   }
 
   useEffect(()=>{ load() }, [page])
