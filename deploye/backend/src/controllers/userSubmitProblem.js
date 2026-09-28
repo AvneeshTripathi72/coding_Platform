@@ -3,7 +3,7 @@ import Problem from "../models/problem.js";
 import Submission from "../models/submission.js";
 import User from "../models/user.js";
 import { getLanguageId, submitBatch, submitToken } from "../utils/problemutility.js";
-import { STATIC_PROBLEMS } from "../data/staticData.js";
+import { STATIC_PROBLEMS, findProblemByIdOrSlug } from "../data/staticData.js";
 import { safeRedis, memoryStore } from "../config/redis.js";
 
 const normalizeLanguageForDB = (lang) => {
@@ -36,20 +36,29 @@ const inMemorySubmissions = [];
 
 const userSubmitProblem = async (req, res) => {
   try {
-    const userId = req.user._id;
+    const userId = req.user?._id || 'guest_user';
     const problemId = req.params.id;
     const { language, code } = req.body;
-    if (!language || !code || language.trim() === "" || code.trim() === "" || !userId) {
+    if (!language || !code || language.trim() === "" || code.trim() === "") {
       return res.status(400).json({ message: "Language and code are required" });
     }
 
     let problem = null;
     try {
-      problem = await Problem.findById(problemId);
+      if (problemId && problemId.length === 24 && /^[0-9a-fA-F]{24}$/.test(problemId)) {
+        problem = await Problem.findById(problemId);
+      } else if (problemId) {
+        problem = await Problem.findOne({
+          $or: [
+            { slug: problemId.toLowerCase() },
+            { title: new RegExp(`^${problemId.replace(/-/g, ' ')}$`, 'i') }
+          ]
+        });
+      }
     } catch (_) {}
 
     if (!problem) {
-      problem = STATIC_PROBLEMS.find(p => String(p._id) === String(problemId)) || STATIC_PROBLEMS[0];
+      problem = findProblemByIdOrSlug(problemId);
     }
 
     const normalizedLanguage = normalizeLanguageForDB(language);
@@ -171,20 +180,29 @@ const userSubmitProblem = async (req, res) => {
 
 const userRunCodeOnTestCases = async (req, res) => {
   try {
-    const userId = req.user._id;
+    const userId = req.user?._id || 'guest_user';
     const problemId = req.params.id;
     const { language, code } = req.body;
-    if (!language || !code || language.trim() === "" || code.trim() === "" || !userId) {
+    if (!language || !code || language.trim() === "") {
       return res.status(400).json({ message: "Language and code are required" });
     }
 
     let problem = null;
     try {
-      problem = await Problem.findById(problemId);
+      if (problemId && problemId.length === 24 && /^[0-9a-fA-F]{24}$/.test(problemId)) {
+        problem = await Problem.findById(problemId);
+      } else if (problemId) {
+        problem = await Problem.findOne({
+          $or: [
+            { slug: problemId.toLowerCase() },
+            { title: new RegExp(`^${problemId.replace(/-/g, ' ')}$`, 'i') }
+          ]
+        });
+      }
     } catch (_) {}
 
     if (!problem) {
-      problem = STATIC_PROBLEMS.find(p => String(p._id) === String(problemId)) || STATIC_PROBLEMS[0];
+      problem = findProblemByIdOrSlug(problemId);
     }
 
     const languageid = getLanguageId(language) || 71;
@@ -226,10 +244,10 @@ const userRunCodeOnTestCases = async (req, res) => {
 
 const userRunCustomInput = async (req, res) => {
   try {
-    const userId = req.user._id;
+    const userId = req.user?._id || 'guest_user';
     const { language, code, customInput } = req.body;
     
-    if (!language || !code || language.trim() === "" || code.trim() === "" || !userId) {
+    if (!language || !code || language.trim() === "") {
       return res.status(400).json({ message: "Language and code are required" });
     }
     
