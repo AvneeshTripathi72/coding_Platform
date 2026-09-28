@@ -395,8 +395,12 @@ function ContestSolving() {
                     p: ({ children }) => <p className="mb-3 text-white/80">{children}</p>,
                     h1: ({ children }) => <h1 className="text-lg font-bold mb-2 text-white">{children}</h1>,
                     h2: ({ children }) => <h2 className="text-base font-bold mb-2 text-white">{children}</h2>,
-                    code: ({ children }) => <code className="bg-white/10 px-1 py-0.5 rounded text-xs">{children}</code>,
-                    pre: ({ children }) => <pre className="bg-white/5 p-3 rounded border border-white/10 overflow-x-auto text-xs my-2">{children}</pre>,
+                    code: ({ children }) => (
+                      <code className="bg-white/10 text-emerald-300 font-mono text-xs px-1.5 py-0.5 rounded border border-white/15 inline-block align-baseline mx-0.5">
+                        {children}
+                      </code>
+                    ),
+                    pre: ({ children }) => <pre className="bg-white/5 p-3 rounded border border-white/10 overflow-x-auto text-xs my-2 font-mono text-white/90">{children}</pre>,
                   }}
                 >
                   {problem.description}

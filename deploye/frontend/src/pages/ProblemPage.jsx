@@ -823,11 +823,15 @@ function ProblemPage() {
                     h1: ({ children }) => <h1 className="text-xl font-bold mb-3">{children}</h1>,
                     h2: ({ children }) => <h2 className="text-lg font-bold mb-3">{children}</h2>,
                     h3: ({ children }) => <h3 className="text-base font-semibold mb-2">{children}</h3>,
-                    code: ({ children }) => <code className="bg-white/10 px-1.5 py-1 rounded text-sm">{children}</code>,
-                    pre: ({ children }) => <pre className="bg-white/5 p-4 rounded border border-white/10 overflow-x-auto text-sm my-3">{children}</pre>,
-                    ul: ({ children }) => <ul className="list-disc ml-5 mb-2">{children}</ul>,
-                    ol: ({ children }) => <ol className="list-decimal ml-5 mb-2">{children}</ol>,
-                    li: ({ children }) => <li className="mb-1">{children}</li>,
+                    code: ({ children }) => (
+                      <code className="bg-white/10 text-emerald-300 font-mono text-xs px-1.5 py-0.5 rounded border border-white/15 inline-block align-baseline mx-0.5">
+                        {children}
+                      </code>
+                    ),
+                    pre: ({ children }) => <pre className="bg-white/5 p-4 rounded border border-white/10 overflow-x-auto text-sm my-3 font-mono text-white/90">{children}</pre>,
+                    ul: ({ children }) => <ul className="list-disc ml-5 mb-2 space-y-1">{children}</ul>,
+                    ol: ({ children }) => <ol className="list-decimal ml-5 mb-2 space-y-1">{children}</ol>,
+                    li: ({ children }) => <li className="mb-1 text-white/80">{children}</li>,
                   }}
                 >
                   {problem.description}
