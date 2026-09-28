@@ -419,6 +419,17 @@ export const getSubscriptionStatus = async (req, res) => {
     const userId = req.user?._id;
     if (!userId) return res.status(401).json({ message: 'Unauthorized' });
 
+    if (String(userId).startsWith('demo_') || req.user?.isGuest) {
+      return res.json({
+        subscription: {
+          isActive: true,
+          planType: 'pro',
+          startDate: new Date(),
+          expiryDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)
+        }
+      });
+    }
+
     const user = await User.findById(userId).select('subscription role');
     if (!user) return res.status(404).json({ message: 'User not found' });
 
@@ -444,6 +455,10 @@ export const getPaymentHistory = async (req, res) => {
   try {
     const userId = req.user?._id;
     if (!userId) return res.status(401).json({ message: 'Unauthorized' });
+
+    if (String(userId).startsWith('demo_') || req.user?.isGuest) {
+      return res.json({ payments: [] });
+    }
 
     const payments = await Payment.find({ userId }).sort({ createdAt: -1 });
     return res.json({ payments });

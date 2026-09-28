@@ -3,23 +3,26 @@ import app from './app.js';
 import connectDB from './config/db.js';
 import { connectRedis } from './config/redis.js';
 
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
 dotenv.config();
 
 const PORT = process.env.PORT || 3000;
 
-async function startServer() {
-  try {
-    try {
-      await Promise.all([connectDB(), connectRedis()]);
-    } catch (dbErr) {
-      console.warn('DB/Redis connection warning, running in in-memory mode:', dbErr.message);
-    }
-    app.listen(PORT, () => {
-      console.log(`🚀 CodeVerse Backend Server running on http://localhost:${PORT}`);
-    });
-  } catch (error) {
-    console.error('Error starting server:', error);
-  }
-}
+const server = app.listen(PORT, () => {
+  console.log(`🚀 CodeVerse Backend Server running on http://localhost:${PORT}`);
+});
 
-startServer();
+connectDB().then(() => {
+  console.log('MongoDB connection initialized');
+}).catch((err) => {
+  console.warn('DB initialization error (using in-memory fallback):', err.message);
+});
+
+connectRedis().catch((err) => {
+  console.warn('Redis initialization error (using in-memory fallback):', err.message);
+});
