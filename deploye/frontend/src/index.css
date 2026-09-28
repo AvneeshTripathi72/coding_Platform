@@ -1,0 +1,123 @@
+@import "tailwindcss";
+
+/* Light theme inversion (MVP). We invert the whole app and re-invert media */
+.light {
+  filter: invert(1) hue-rotate(180deg);
+}
+.light img, .light video, .light canvas, .light svg:not([data-keep-invert]) {
+  filter: invert(1) hue-rotate(180deg);
+}
+@plugin "daisyui";
+
+/* Custom select dropdown styling for dark theme */
+select {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  color: white !important;
+}
+
+select option {
+  background-color: #1a1a1a !important;
+  color: white !important;
+  padding: 8px !important;
+}
+
+select option:hover,
+select option:focus,
+select option:checked {
+  background-color: #3b82f6 !important;
+  color: white !important;
+}
+
+select optgroup {
+  background-color: #1a1a1a !important;
+  color: rgba(255, 255, 255, 0.6) !important;
+  font-weight: 600 !important;
+  padding: 4px 8px !important;
+}
+
+/* Ensure dropdown list matches dark theme */
+select:focus {
+  outline: none !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
+}
+
+/* Custom purple range slider styling */
+.range-slider-purple {
+  -webkit-appearance: none;
+  appearance: none;
+  outline: none;
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+}
+
+.range-slider-purple::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+  background: transparent;
+}
+
+.range-slider-purple::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: white;
+  border: 2px solid rgb(147, 51, 234);
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s ease;
+  margin-top: -5px;
+  position: relative;
+  z-index: 1;
+}
+
+.range-slider-purple::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
+}
+
+.range-slider-purple::-moz-range-track {
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+  background: transparent;
+  border: none;
+}
+
+.range-slider-purple::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: white;
+  border: 2px solid rgb(147, 51, 234);
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s ease;
+}
+
+.range-slider-purple::-moz-range-thumb:hover {
+  transform: scale(1.1);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
+}
+
+.range-slider-purple::-ms-track {
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+  background: transparent;
+  border-color: transparent;
+  color: transparent;
+}
+
+.range-slider-purple::-ms-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: white;
+  border: 2px solid rgb(147, 51, 234);
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}

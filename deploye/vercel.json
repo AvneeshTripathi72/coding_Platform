@@ -1,0 +1,67 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "backend/api/index.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "frontend/package.json",
+      "use": "@vercel/static-build",
+      "config": { "distDir": "dist" }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "backend/api/index.js"
+    },
+    {
+      "src": "/auth/(.*)",
+      "dest": "backend/api/index.js"
+    },
+    {
+      "src": "/solve/(.*)",
+      "dest": "backend/api/index.js"
+    },
+    {
+      "src": "/problems/(.*)",
+      "dest": "backend/api/index.js"
+    },
+    {
+      "src": "/contests/(.*)",
+      "dest": "backend/api/index.js"
+    },
+    {
+      "src": "/leaderboard/(.*)",
+      "dest": "backend/api/index.js"
+    },
+    {
+      "src": "/stats/(.*)",
+      "dest": "backend/api/index.js"
+    },
+    {
+      "src": "/users/(.*)",
+      "dest": "backend/api/index.js"
+    },
+    {
+      "src": "/ai/(.*)",
+      "dest": "backend/api/index.js"
+    },
+    {
+      "src": "/videos/(.*)",
+      "dest": "backend/api/index.js"
+    },
+    {
+      "src": "/payment/(.*)",
+      "dest": "backend/api/index.js"
+    },
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
+    }
+  ]
+}
