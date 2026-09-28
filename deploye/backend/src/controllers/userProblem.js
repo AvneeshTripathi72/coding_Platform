@@ -2,7 +2,7 @@ import { getLanguageId, submitBatch, submitToken } from "../utils/problemutility
 import Problem from "../models/problem.js";
 import User from "../models/user.js";
 import Submission from "../models/submission.js";
-import { STATIC_PROBLEMS, STATIC_TOPICS } from "../data/staticData.js";
+import { STATIC_PROBLEMS, STATIC_TOPICS, findProblemByIdOrSlug } from "../data/staticData.js";
 const  createProblem = async (req, res) => {
     try {
         const { title, description, difficulty, tags,
@@ -118,21 +118,29 @@ const getProblemById = async (req,res)=>{
     const {id} = req.params;
     try{
         if(!id){
-            return res.status(400).json({message: "Problem id is required"});
+            return res.status(400).json({message: "Problem identifier is required"});
         }
 
         let existingProblem = null;
         try {
-          existingProblem = await Problem.findById(id)
-              .select('-hiddenTestCases -problemCreator -submissions')
-              .lean();
+          if (id.length === 24 && /^[0-9a-fA-F]{24}$/.test(id)) {
+            existingProblem = await Problem.findById(id)
+                .select('-hiddenTestCases -problemCreator -submissions')
+                .lean();
+          } else {
+            existingProblem = await Problem.findOne({ 
+              $or: [
+                { slug: id.toLowerCase() },
+                { title: new RegExp(`^${id.replace(/-/g, ' ')}$`, 'i') }
+              ]
+            })
+            .select('-hiddenTestCases -problemCreator -submissions')
+            .lean();
+          }
         } catch (_) {}
             
         if(!existingProblem){
-            existingProblem = STATIC_PROBLEMS.find(p => String(p._id) === String(id));
-            if (!existingProblem) {
-              existingProblem = STATIC_PROBLEMS[0]; // fallback to first static problem
-            }
+            existingProblem = findProblemByIdOrSlug(id);
         }
         
         if (!existingProblem.referenceSolutions) {
@@ -142,7 +150,7 @@ const getProblemById = async (req,res)=>{
         res.status(200).json({problem: existingProblem});
     }
     catch(err){
-        const staticFallback = STATIC_PROBLEMS.find(p => String(p._id) === String(id)) || STATIC_PROBLEMS[0];
+        const staticFallback = findProblemByIdOrSlug(id);
         res.status(200).json({problem: staticFallback});
     }
 }

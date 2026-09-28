@@ -129,7 +129,7 @@ function Landing(){
           {preview.map((p, i) => (
             <div
               key={p._id}
-              onClick={() => navigate(`/problem/${p._id}`)}
+              onClick={() => navigate(`/problem/${p.slug || p.problemNumber || p._id}`)}
               className="group rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 hover:border-white/20 transition p-4 cursor-pointer"
             >
               <div className="flex items-start justify-between mb-2">

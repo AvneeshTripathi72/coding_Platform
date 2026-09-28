@@ -134,7 +134,7 @@ function ProblemList(){
             <div
               key={p._id || i}
               className="flex items-center gap-4 px-4 py-3 border-b border-white/10 hover:bg-white/5 cursor-pointer transition"
-              onClick={()=>navigate(`/problem/${p._id}`)}
+              onClick={()=>navigate(`/problem/${p.slug || p.problemNumber || p._id}`)}
             >
               {}
               <div className="flex-1 min-w-0">

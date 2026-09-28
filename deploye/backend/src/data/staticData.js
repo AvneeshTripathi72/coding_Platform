@@ -1,6 +1,8 @@
 export const STATIC_PROBLEMS = [
   {
     _id: "679801000000000000000001",
+    slug: "two-sum",
+    problemNumber: 1,
     title: "Two Sum",
     description: `Given an array of integers \`nums\` and an integer \`target\`, return *indices of the two numbers such that they add up to \`target\`*.\n\nYou may assume that each input would have ***exactly* one solution**, and you may not use the *same* element twice.\n\nYou can return the answer in any order.`,
     difficulty: "Easy",
@@ -101,6 +103,8 @@ public:
   },
   {
     _id: "679801000000000000000002",
+    slug: "palindrome-number",
+    problemNumber: 2,
     title: "Palindrome Number",
     description: `Given an integer \`x\`, return \`true\` *if* \`x\` *is a palindrome, and* \`false\` *otherwise*.\n\nAn integer is a **palindrome** when it reads the same backward as forward.`,
     difficulty: "Easy",
@@ -154,6 +158,8 @@ public:
   },
   {
     _id: "679801000000000000000003",
+    slug: "valid-parentheses",
+    problemNumber: 3,
     title: "Valid Parentheses",
     description: `Given a string \`s\` containing just the characters \`'('\`, \`')'\`, \`'{'\`, \`'}'\`, \`'['\` and \`']'\`, determine if the input string is valid.\n\nAn input string is valid if:\n1. Open brackets must be closed by the same type of brackets.\n2. Open brackets must be closed in the correct order.\n3. Every close bracket has a corresponding open bracket of the same type.`,
     difficulty: "Easy",
@@ -258,6 +264,8 @@ public:
   },
   {
     _id: "679801000000000000000004",
+    slug: "longest-substring-without-repeating-characters",
+    problemNumber: 4,
     title: "Longest Substring Without Repeating Characters",
     description: `Given a string \`s\`, find the length of the **longest substring** without repeating characters.`,
     difficulty: "Medium",
@@ -325,6 +333,8 @@ function lengthOfLongestSubstring(s) {
   },
   {
     _id: "679801000000000000000005",
+    slug: "binary-search",
+    problemNumber: 5,
     title: "Binary Search",
     description: `Given an array of integers \`nums\` which is sorted in ascending order, and an integer \`target\`, write a function to search \`target\` in \`nums\`. If \`target\` exists, then return its index. Otherwise, return \`-1\`.\n\nYou must write an algorithm with \`O(log n)\` runtime complexity.`,
     difficulty: "Easy",
@@ -397,6 +407,8 @@ function search(nums, target) {
   },
   {
     _id: "679801000000000000000006",
+    slug: "maximum-subarray",
+    problemNumber: 6,
     title: "Maximum Subarray (Kadane's Algorithm)",
     description: `Given an integer array \`nums\`, find the subarray with the largest sum, and return *its sum*.`,
     difficulty: "Medium",
@@ -456,6 +468,18 @@ function maxSubArray(nums) {
     ]
   }
 ];
+
+export const findProblemByIdOrSlug = (idOrSlug) => {
+  if (!idOrSlug) return STATIC_PROBLEMS[0];
+  const query = String(idOrSlug).toLowerCase().trim();
+  return STATIC_PROBLEMS.find(p => 
+    String(p._id).toLowerCase() === query ||
+    (p.slug && p.slug.toLowerCase() === query) ||
+    (p.problemNumber && String(p.problemNumber) === query) ||
+    (p.title && p.title.toLowerCase().replace(/[^a-z0-9]/g, '-') === query) ||
+    (p.title && p.title.toLowerCase() === query)
+  ) || STATIC_PROBLEMS[0];
+};
 
 export const STATIC_CONTESTS = [
   {

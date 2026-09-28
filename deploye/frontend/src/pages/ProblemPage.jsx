@@ -9,7 +9,7 @@ import CodeEditor, { MONACO_THEMES, SUPPORTED_LANGUAGES } from "../components/Co
 import PaymentModal from "../components/PaymentModal.jsx";
 import { useLayoutSettings } from "../context/LayoutSettingsContext.jsx";
 import { useSubscription } from "../hooks/useSubscription.js";
-import { STATIC_PROBLEMS } from "../data/staticData.js";
+import { STATIC_PROBLEMS, findProblemByIdOrSlug } from "../data/staticData.js";
 
 function ProblemPage() {
   const { id } = useParams();
@@ -100,7 +100,7 @@ function ProblemPage() {
   useEffect(() => {
     const applyProblem = (targetProblem, staticRef) => {
       if (!targetProblem) return;
-      const ref = staticRef || STATIC_PROBLEMS.find(sp => String(sp._id) === String(id)) || STATIC_PROBLEMS[0];
+      const ref = staticRef || findProblemByIdOrSlug(id);
       
       const p = {
         ...targetProblem,
@@ -135,7 +135,7 @@ function ProblemPage() {
     };
 
     const fetchProblem = async () => {
-      const staticMatch = STATIC_PROBLEMS.find(sp => String(sp._id) === String(id)) || STATIC_PROBLEMS[0];
+      const staticMatch = findProblemByIdOrSlug(id);
       
       // 1. Immediately apply static match to guarantee instant page load without stuck loading spinner
       applyProblem(staticMatch, staticMatch);
